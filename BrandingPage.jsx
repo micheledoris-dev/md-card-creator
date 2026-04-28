@@ -1,26 +1,44 @@
-export default function PhonePreview({ card }) {
+export default function PublicCard({ card }) {
   return (
-    <div className="phone-frame">
-      <div className="phone-screen" style={{ background: card.background }}>
-        <div className="phone-glow" style={{ background: card.accent }} />
-        <div className="phone-logo" style={{ borderColor: card.accent, color: card.accent }}>{card.logoText}</div>
-        <span className="phone-badge">{card.badge}</span>
-        <p className="phone-claim">{card.claim}</p>
-        <h3>{card.headline}</h3>
-        <p className="phone-description">{card.description}</p>
-        <div className="phone-actions">
-          <a href={card.website} target="_blank" rel="noreferrer" style={{ background: card.accent }}>Visita il sito</a>
-          <a href={`https://wa.me/${card.whatsapp}`} target="_blank" rel="noreferrer">WhatsApp</a>
+    <div className="public-wrap" style={{ '--accent': card.accent }}>
+      <section className="public-hero">
+        <div className="public-logo">{card.logoText}</div>
+        <span>{card.badge}</span>
+        <p>{card.claim}</p>
+        <h2>{card.headline}</h2>
+        <p className="public-description">{card.description}</p>
+        <div className="button-row center">
+          <a className="primary-link" href={card.website} target="_blank" rel="noreferrer">Visita il sito</a>
+          <a className="secondary-link" href={`https://wa.me/${card.whatsapp}`} target="_blank" rel="noreferrer">WhatsApp</a>
+          <a className="secondary-link" href={`mailto:${card.email}`}>Email</a>
         </div>
-        <div className="phone-feature-list">
+      </section>
+
+      <section className="public-section">
+        <h3>Funzioni principali</h3>
+        <div className="public-grid">
           {card.sections.map((section) => (
-            <div key={section.title}>
+            <article key={section.title}>
               <strong>{section.title}</strong>
-              <span>{section.text}</span>
-            </div>
+              <p>{section.text}</p>
+            </article>
           ))}
         </div>
-      </div>
+      </section>
+
+      <section className="public-section">
+        <h3>Utile per</h3>
+        <div className="chips">
+          {card.audience.map((item) => <span key={item}>{item}</span>)}
+        </div>
+      </section>
+
+      <section className="public-contact">
+        <h3>Contatti rapidi</h3>
+        <p>{card.email}</p>
+        <p>{card.phone}</p>
+        <p>{card.website}</p>
+      </section>
     </div>
   );
 }

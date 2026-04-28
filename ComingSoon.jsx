@@ -1,44 +1,37 @@
-export default function PublicCard({ card }) {
+import { useEffect, useState } from 'react';
+import QRCode from 'qrcode';
+
+export default function SharePanel({ card }) {
+  const [qr, setQr] = useState('');
+  const shareUrl = card.website;
+
+  useEffect(() => {
+    QRCode.toDataURL(shareUrl, { margin: 2, width: 260 }).then(setQr);
+  }, [shareUrl]);
+
+  async function copyLink() {
+    await navigator.clipboard.writeText(shareUrl);
+    alert('Link copiato');
+  }
+
   return (
-    <div className="public-wrap" style={{ '--accent': card.accent }}>
-      <section className="public-hero">
-        <div className="public-logo">{card.logoText}</div>
-        <span>{card.badge}</span>
-        <p>{card.claim}</p>
-        <h2>{card.headline}</h2>
-        <p className="public-description">{card.description}</p>
-        <div className="button-row center">
-          <a className="primary-link" href={card.website} target="_blank" rel="noreferrer">Visita il sito</a>
-          <a className="secondary-link" href={`https://wa.me/${card.whatsapp}`} target="_blank" rel="noreferrer">WhatsApp</a>
-          <a className="secondary-link" href={`mailto:${card.email}`}>Email</a>
+    <div className="page-content">
+      <div className="page-title">
+        <p className="eyebrow">QR / Share</p>
+        <h2>Condividi la card</h2>
+        <p>Link pubblico, QR code e pulsanti rapidi per inviare la card.</p>
+      </div>
+      <div className="share-layout">
+        <div className="qr-box">{qr && <img src={qr} alt="QR code" />}</div>
+        <div className="section-card compact">
+          <span className="label">Link pubblico</span>
+          <strong>{shareUrl}</strong>
+          <div className="button-row">
+            <button className="primary-button" onClick={copyLink}>Copia link</button>
+            <a className="secondary-button as-link" href={`mailto:?subject=${encodeURIComponent(card.productName)}&body=${encodeURIComponent(shareUrl)}`}>Invia email</a>
+          </div>
         </div>
-      </section>
-
-      <section className="public-section">
-        <h3>Funzioni principali</h3>
-        <div className="public-grid">
-          {card.sections.map((section) => (
-            <article key={section.title}>
-              <strong>{section.title}</strong>
-              <p>{section.text}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="public-section">
-        <h3>Utile per</h3>
-        <div className="chips">
-          {card.audience.map((item) => <span key={item}>{item}</span>)}
-        </div>
-      </section>
-
-      <section className="public-contact">
-        <h3>Contatti rapidi</h3>
-        <p>{card.email}</p>
-        <p>{card.phone}</p>
-        <p>{card.website}</p>
-      </section>
+      </div>
     </div>
   );
 }

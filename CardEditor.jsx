@@ -1,45 +1,32 @@
-import { BarChart3, BriefcaseBusiness, Contact, CreditCard, Home, Palette, QrCode, Settings, Share2, Smartphone } from 'lucide-react';
-
-const navItems = [
-  { id: 'home', label: 'Home', icon: Home },
-  { id: 'cards', label: 'Cards', icon: CreditCard },
-  { id: 'editor', label: 'Editor', icon: Smartphone },
-  { id: 'share', label: 'QR / Share', icon: QrCode },
-  { id: 'public', label: 'Public Card', icon: Share2 },
-  { id: 'wallet', label: 'Wallet', icon: BriefcaseBusiness },
-  { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-  { id: 'branding', label: 'Branding', icon: Palette },
-  { id: 'contacts', label: 'Contacts', icon: Contact },
-  { id: 'settings', label: 'Settings', icon: Settings },
-];
-
-export default function Sidebar({ activePage, setActivePage }) {
+export default function HomePage({ card, setActivePage }) {
   return (
-    <aside className="sidebar">
-      <div className="brand-block">
-        <div className="brand-mark">md</div>
-        <div>
-          <strong>md|studios</strong>
-          <span>Card Creator</span>
+    <div className="page-content">
+      <div className="hero-panel">
+        <p className="eyebrow">Prototipo vendibile</p>
+        <h2>Digital card premium, costruite come mini siti personali.</h2>
+        <p>
+          Una piattaforma semplice, elegante e scalabile per creare card digitali con identità forte,
+          QR code, link pubblico e anteprima smartphone.
+        </p>
+        <div className="button-row">
+          <button className="primary-button" onClick={() => setActivePage('editor')}>Modifica card demo</button>
+          <button className="secondary-button" onClick={() => setActivePage('share')}>Vedi QR / Share</button>
         </div>
       </div>
 
-      <nav className="nav-list">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <button key={item.id} className={`nav-item ${activePage === item.id ? 'active' : ''}`} onClick={() => setActivePage(item.id)}>
-              <Icon size={18} />
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
-      </nav>
-
-      <div className="sidebar-note">
-        <p>Prima demo reale</p>
-        <strong>myVeicolo.net</strong>
+      <div className="stats-grid">
+        <div className="stat-card"><span>Card attiva</span><strong>{card.productName}</strong></div>
+        <div className="stat-card"><span>Stile</span><strong>Premium dark</strong></div>
+        <div className="stat-card"><span>Database</span><strong>Fase 2</strong></div>
       </div>
-    </aside>
+
+      <div className="section-card">
+        <h3>La logica di partenza</h3>
+        <p>
+          Questa versione non usa ancora login o Supabase: serve a validare struttura, grafica e valore commerciale
+          senza complicazioni tecniche. Dopo l’approvazione, collegheremo utenti, database e salvataggio reale.
+        </p>
+      </div>
+    </div>
   );
 }

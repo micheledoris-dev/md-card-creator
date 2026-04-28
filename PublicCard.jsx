@@ -1,23 +1,37 @@
-export default function CardsPage({ cards, selectedId, setSelectedId, setActivePage }) {
+const fields = [
+  ['productName', 'Nome card'],
+  ['claim', 'Claim'],
+  ['headline', 'Headline'],
+  ['description', 'Descrizione'],
+  ['website', 'Sito web'],
+  ['email', 'Email'],
+  ['phone', 'Telefono / WhatsApp'],
+];
+
+export default function CardEditor({ card, onChange }) {
   return (
     <div className="page-content">
       <div className="page-title">
-        <p className="eyebrow">Cards</p>
-        <h2>Le tue digital card</h2>
+        <p className="eyebrow">Editor</p>
+        <h2>Modifica la card demo</h2>
+        <p>In questa prima versione i dati cambiano a video. Il salvataggio reale arriverà con Supabase.</p>
       </div>
-      <div className="cards-list">
-        {cards.map((card) => (
-          <button key={card.id} className={`card-row ${selectedId === card.id ? 'selected' : ''}`} onClick={() => setSelectedId(card.id)}>
-            <div className="mini-logo" style={{ borderColor: card.accent }}>{card.logoText}</div>
-            <div>
-              <strong>{card.productName}</strong>
-              <span>{card.headline}</span>
-            </div>
-            <em>{card.badge}</em>
-          </button>
+      <div className="form-grid">
+        {fields.map(([field, label]) => (
+          <label key={field} className="field-label">
+            <span>{label}</span>
+            {field === 'description' ? (
+              <textarea value={card[field]} onChange={(event) => onChange(field, event.target.value)} />
+            ) : (
+              <input value={card[field]} onChange={(event) => onChange(field, event.target.value)} />
+            )}
+          </label>
         ))}
+        <label className="field-label">
+          <span>Colore accento</span>
+          <input type="color" value={card.accent} onChange={(event) => onChange('accent', event.target.value)} />
+        </label>
       </div>
-      <button className="primary-button" onClick={() => setActivePage('editor')}>Apri editor</button>
     </div>
   );
 }

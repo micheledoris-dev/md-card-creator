@@ -1,36 +1,25 @@
-const fields = [
-  ['productName', 'Nome card'],
-  ['claim', 'Claim'],
-  ['headline', 'Headline'],
-  ['description', 'Descrizione'],
-  ['website', 'Sito web'],
-  ['email', 'Email'],
-  ['phone', 'Telefono / WhatsApp'],
-];
-
-export default function CardEditor({ card, onChange }) {
+export default function PhonePreview({ card }) {
   return (
-    <div className="page-content">
-      <div className="page-title">
-        <p className="eyebrow">Editor</p>
-        <h2>Modifica la card demo</h2>
-        <p>In questa prima versione i dati cambiano a video. Il salvataggio reale arriverà con Supabase.</p>
-      </div>
-      <div className="form-grid">
-        {fields.map(([field, label]) => (
-          <label key={field} className="field-label">
-            <span>{label}</span>
-            {field === 'description' ? (
-              <textarea value={card[field]} onChange={(event) => onChange(field, event.target.value)} />
-            ) : (
-              <input value={card[field]} onChange={(event) => onChange(field, event.target.value)} />
-            )}
-          </label>
-        ))}
-        <label className="field-label">
-          <span>Colore accento</span>
-          <input type="color" value={card.accent} onChange={(event) => onChange('accent', event.target.value)} />
-        </label>
+    <div className="phone-frame">
+      <div className="phone-screen" style={{ background: card.background }}>
+        <div className="phone-glow" style={{ background: card.accent }} />
+        <div className="phone-logo" style={{ borderColor: card.accent, color: card.accent }}>{card.logoText}</div>
+        <span className="phone-badge">{card.badge}</span>
+        <p className="phone-claim">{card.claim}</p>
+        <h3>{card.headline}</h3>
+        <p className="phone-description">{card.description}</p>
+        <div className="phone-actions">
+          <a href={card.website} target="_blank" rel="noreferrer" style={{ background: card.accent }}>Visita il sito</a>
+          <a href={`https://wa.me/${card.whatsapp}`} target="_blank" rel="noreferrer">WhatsApp</a>
+        </div>
+        <div className="phone-feature-list">
+          {card.sections.map((section) => (
+            <div key={section.title}>
+              <strong>{section.title}</strong>
+              <span>{section.text}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -1,36 +1,24 @@
-import { useEffect, useState } from 'react';
-import QRCode from 'qrcode';
+const accents = ['#00E5FF', '#D6B36A', '#6C63FF', '#10B981', '#EF4444', '#111111'];
 
-export default function SharePanel({ card }) {
-  const [qr, setQr] = useState('');
-  const shareUrl = card.website;
-
-  useEffect(() => {
-    QRCode.toDataURL(shareUrl, { margin: 2, width: 260 }).then(setQr);
-  }, [shareUrl]);
-
-  async function copyLink() {
-    await navigator.clipboard.writeText(shareUrl);
-    alert('Link copiato');
-  }
-
+export default function BrandingPage({ card, onChange }) {
   return (
     <div className="page-content">
       <div className="page-title">
-        <p className="eyebrow">QR / Share</p>
-        <h2>Condividi la card</h2>
-        <p>Link pubblico, QR code e pulsanti rapidi per inviare la card.</p>
+        <p className="eyebrow">Branding</p>
+        <h2>Identità visiva</h2>
+        <p>La piattaforma resta nero / bianco / grigio premium. Ogni card può avere il proprio colore accento.</p>
       </div>
-      <div className="share-layout">
-        <div className="qr-box">{qr && <img src={qr} alt="QR code" />}</div>
-        <div className="section-card compact">
-          <span className="label">Link pubblico</span>
-          <strong>{shareUrl}</strong>
-          <div className="button-row">
-            <button className="primary-button" onClick={copyLink}>Copia link</button>
-            <a className="secondary-button as-link" href={`mailto:?subject=${encodeURIComponent(card.productName)}&body=${encodeURIComponent(shareUrl)}`}>Invia email</a>
-          </div>
-        </div>
+      <div className="palette-row">
+        {accents.map((color) => (
+          <button key={color} className={`swatch ${card.accent === color ? 'selected' : ''}`} style={{ background: color }} onClick={() => onChange('accent', color)} aria-label={`Colore ${color}`} />
+        ))}
+      </div>
+      <div className="section-card">
+        <h3>Principio guida</h3>
+        <p>
+          md|studios Card Creator deve sembrare uno strumento premium: sobrio, ordinato, vendibile.
+          Le card invece possono adattarsi al brand del cliente.
+        </p>
       </div>
     </div>
   );
