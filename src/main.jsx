@@ -1,93 +1,16 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import {
-  Home,
-  CreditCard,
-  Edit3,
-  QrCode,
-  Share2,
-  Wallet,
-  BarChart3,
-  Palette,
-  Users,
-  Settings,
-  Menu,
-  X,
-  Eye,
-  EyeOff,
-  Copy,
-  Mail,
-  MessageCircle,
-  ExternalLink,
-  Plus,
-  ArrowLeft,
-  CheckCircle2,
-  CircleOff
-} from 'lucide-react'
 import QRCode from 'qrcode'
+import {
+  Home, CreditCard, Edit3, QrCode, Share2, Wallet, BarChart3, Palette, Users,
+  Settings, Menu, X, Eye, EyeOff, Copy, Mail, MessageCircle, ExternalLink, Plus,
+  ArrowLeft, CheckCircle2, CircleOff, Layers, Sparkles
+} from 'lucide-react'
 import './style.css'
 
-const initialCard = {
-  logoText: 'MV',
-  name: 'myVeicolo.net',
-  claim: 'Il tuo garage digitale',
-  headline: 'Il cuore intelligente del tuo garage.',
-  description: 'Tieni sotto controllo costi, scadenze, manutenzioni e consumi dei tuoi veicoli in un unico spazio digitale.',
-  motto: 'Il tuo garage digitale',
-  website: 'https://myveicolo.net',
-  email: 'myveicolonet@gmail.com',
-  phone: '+39 328 717 9900',
-  whatsapp: '+39 328 717 9900',
-  company: 'myVeicolo.net',
-  vat: '',
-  address: '',
-  maps: '',
-  linkedin: '',
-  instagram: '',
-  accent: '#00E5FF'
-}
-
-const initialVisibility = {
-  logoText: true,
-  name: true,
-  claim: true,
-  headline: true,
-  description: true,
-  motto: true,
-  website: true,
-  email: true,
-  phone: true,
-  whatsapp: true,
-  company: true,
-  vat: false,
-  address: false,
-  maps: false,
-  linkedin: false,
-  instagram: false
-}
-
-
-const STORAGE_CARD = 'md_card_creator_demo_card_v036'
-const STORAGE_VISIBILITY = 'md_card_creator_demo_visibility_v036'
-
-function loadStored(key, fallback) {
-  try {
-    const raw = localStorage.getItem(key)
-    if (!raw) return fallback
-    return { ...fallback, ...JSON.parse(raw) }
-  } catch {
-    return fallback
-  }
-}
-
-function saveStored(key, value) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value))
-  } catch {
-    // localStorage may be blocked in private mode
-  }
-}
+const STORAGE_CARDS = 'md_card_creator_cards_v037'
+const STORAGE_ACTIVE = 'md_card_creator_active_card_v037'
 
 const fieldLabels = {
   logoText: 'Logo / sigla',
@@ -110,6 +33,187 @@ const fieldLabels = {
 
 const premiumFields = new Set(['vat', 'address', 'maps', 'linkedin', 'instagram', 'motto'])
 
+const defaultVisibility = {
+  logoText: true,
+  name: true,
+  claim: true,
+  headline: true,
+  description: true,
+  motto: true,
+  website: true,
+  email: true,
+  phone: true,
+  whatsapp: true,
+  company: true,
+  vat: false,
+  address: false,
+  maps: false,
+  linkedin: false,
+  instagram: false
+}
+
+const templates = {
+  automotive: {
+    name: 'Automotive Dark',
+    accent: '#00E5FF',
+    category: 'Prodotto digitale',
+    tone: 'dark'
+  },
+  personal: {
+    name: 'Personal Premium',
+    accent: '#111111',
+    category: 'Profilo personale',
+    tone: 'light'
+  },
+  creative: {
+    name: 'Creative Portfolio',
+    accent: '#8B5CF6',
+    category: 'Portfolio creativo',
+    tone: 'dark'
+  },
+  corporate: {
+    name: 'Corporate Grey',
+    accent: '#64748B',
+    category: 'Azienda / studio',
+    tone: 'light'
+  },
+  hospitality: {
+    name: 'Hospitality Gold',
+    accent: '#C9A227',
+    category: 'Hospitality premium',
+    tone: 'dark'
+  }
+}
+
+const demoCards = [
+  {
+    id: 'myveicolo',
+    slug: 'myveicolo',
+    template: 'automotive',
+    logoText: 'MV',
+    name: 'myVeicolo.net',
+    claim: 'Il tuo garage digitale',
+    headline: 'Il cuore intelligente del tuo garage.',
+    description: 'Tieni sotto controllo costi, scadenze, manutenzioni e consumi dei tuoi veicoli in un unico spazio digitale.',
+    motto: 'Ricordati che il meglio deve sempre avvenire.',
+    website: 'https://myveicolo.net',
+    email: 'myveicolonet@gmail.com',
+    phone: '+39 328 717 9900',
+    whatsapp: '+39 328 717 9900',
+    company: 'myVeicolo.net',
+    vat: '',
+    address: '',
+    maps: '',
+    linkedin: '',
+    instagram: '',
+    visibility: { ...defaultVisibility, logoText: false, vat: false, address: false, maps: false, linkedin: false, instagram: false }
+  },
+  {
+    id: 'michele-doris',
+    slug: 'michele-doris',
+    template: 'personal',
+    logoText: 'MD',
+    name: 'Michele Doris',
+    claim: 'Strategia, processi, progetti digitali',
+    headline: 'Trasformo idee concrete in sistemi utili.',
+    description: 'Esperienza manageriale, visione operativa e capacità di costruire strumenti semplici per problemi reali.',
+    motto: 'Prima chiarezza. Poi esecuzione.',
+    website: 'https://md-card-creator.netlify.app',
+    email: 'info@mdstudios.it',
+    phone: '',
+    whatsapp: '',
+    company: 'md|studios',
+    vat: '',
+    address: 'Fontaniva, PD',
+    maps: '',
+    linkedin: '',
+    instagram: '',
+    visibility: { ...defaultVisibility, phone: false, whatsapp: false, vat: false, maps: false, linkedin: false, instagram: false }
+  },
+  {
+    id: 'jacopo-doris',
+    slug: 'jacopo-doris',
+    template: 'creative',
+    logoText: 'JD',
+    name: 'Jacopo Doris',
+    claim: 'Art Direction / Visual Identity',
+    headline: 'Creative direction for fashion, editorial and culture.',
+    description: 'Portfolio creativo con focus su identità visiva, direzione artistica e linguaggi contemporanei.',
+    motto: 'Ideas with visual pulse.',
+    website: 'https://jacopodoris.com',
+    email: 'hello@jacopodoris.com',
+    phone: '',
+    whatsapp: '',
+    company: 'Jacopo Doris Studio',
+    vat: '',
+    address: 'Milano',
+    maps: '',
+    linkedin: '',
+    instagram: 'https://instagram.com/',
+    visibility: { ...defaultVisibility, phone: false, whatsapp: false, vat: false, maps: false, linkedin: false }
+  },
+  {
+    id: 'studio-rossi',
+    slug: 'studio-rossi',
+    template: 'corporate',
+    logoText: 'SR',
+    name: 'Studio Rossi',
+    claim: 'Consulenza fiscale e societaria',
+    headline: 'Uno studio professionale vicino alle imprese.',
+    description: 'Assistenza amministrativa, fiscale e societaria con approccio chiaro, ordinato e orientato alle decisioni.',
+    motto: 'Precisione, fiducia, continuità.',
+    website: 'https://studiorossi.example',
+    email: 'info@studiorossi.example',
+    phone: '+39 045 000 0000',
+    whatsapp: '+39 045 000 0000',
+    company: 'Studio Rossi Srl',
+    vat: 'IT00000000000',
+    address: 'Via Roma 1, Verona',
+    maps: 'https://maps.google.com',
+    linkedin: '',
+    instagram: '',
+    visibility: { ...defaultVisibility, linkedin: false, instagram: false }
+  },
+  {
+    id: 'hotel-aurora',
+    slug: 'hotel-aurora',
+    template: 'hospitality',
+    logoText: 'HA',
+    name: 'Hotel Aurora',
+    claim: 'Hospitality premium sul lago',
+    headline: 'Un soggiorno elegante, semplice da ricordare.',
+    description: 'Camere, esperienze e servizi premium raccontati in una card digitale pronta da condividere.',
+    motto: 'Stay close to beauty.',
+    website: 'https://hotelaurora.example',
+    email: 'booking@hotelaurora.example',
+    phone: '+39 030 000 0000',
+    whatsapp: '+39 030 000 0000',
+    company: 'Hotel Aurora',
+    vat: '',
+    address: 'Lago di Garda',
+    maps: 'https://maps.google.com',
+    linkedin: '',
+    instagram: 'https://instagram.com/',
+    visibility: { ...defaultVisibility, vat: false, linkedin: false }
+  }
+]
+
+function loadStored(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key)
+    if (!raw) return fallback
+    return JSON.parse(raw)
+  } catch {
+    return fallback
+  }
+}
+
+function saveStored(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value))
+  } catch {}
+}
+
 function hasValue(value) {
   return String(value || '').trim().length > 0
 }
@@ -118,73 +222,57 @@ function normalizePhone(phone) {
   return String(phone || '').replace(/[^\d]/g, '')
 }
 
-function visibleValue(card, visibility, key) {
-  return Boolean(visibility[key] && hasValue(card[key]))
+function visibleValue(card, key) {
+  return Boolean(card.visibility?.[key] && hasValue(card[key]))
 }
 
-function getPublicCardUrl() {
-  if (typeof window === 'undefined') return 'https://md-card-creator.netlify.app/?card=myveicolo'
-  return `${window.location.origin}${window.location.pathname}?card=myveicolo`
+function getPublicCardUrl(card) {
+  if (typeof window === 'undefined') return `https://md-card-creator.netlify.app/?card=${card.slug}`
+  return `${window.location.origin}${window.location.pathname}?card=${card.slug}`
 }
 
-function buildSmartShare(card, visibility) {
+function buildSmartShare(card) {
   const lines = []
-
-  if (visibleValue(card, visibility, 'name')) lines.push(`🚘 ${card.name}`)
-  if (visibleValue(card, visibility, 'headline')) lines.push(card.headline)
-  if (visibleValue(card, visibility, 'description')) {
+  if (visibleValue(card, 'name')) lines.push(`🔹 ${card.name}`)
+  if (visibleValue(card, 'headline')) lines.push(card.headline)
+  if (visibleValue(card, 'description')) {
     lines.push('')
     lines.push(card.description)
   }
 
   const contact = []
-  if (visibleValue(card, visibility, 'website')) contact.push(`🌐 Sito: ${card.website}`)
-  if (visibleValue(card, visibility, 'email')) contact.push(`📧 Email: ${card.email}`)
-  if (visibleValue(card, visibility, 'phone')) contact.push(`📞 Telefono: ${card.phone}`)
-  if (visibleValue(card, visibility, 'whatsapp')) contact.push(`💬 WhatsApp: ${card.whatsapp}`)
-  if (visibleValue(card, visibility, 'address')) contact.push(`📍 Indirizzo: ${card.address}`)
-  if (visibleValue(card, visibility, 'maps')) contact.push(`🗺️ Google Maps: ${card.maps}`)
-
-  if (contact.length) {
-    lines.push('')
-    lines.push(...contact)
-  }
+  if (visibleValue(card, 'website')) contact.push(`🌐 Sito: ${card.website}`)
+  if (visibleValue(card, 'email')) contact.push(`📧 Email: ${card.email}`)
+  if (visibleValue(card, 'phone')) contact.push(`📞 Telefono: ${card.phone}`)
+  if (visibleValue(card, 'whatsapp')) contact.push(`💬 WhatsApp: ${card.whatsapp}`)
+  if (visibleValue(card, 'address')) contact.push(`📍 Indirizzo: ${card.address}`)
+  if (visibleValue(card, 'maps')) contact.push(`🗺️ Google Maps: ${card.maps}`)
+  if (contact.length) lines.push('', ...contact)
 
   const company = []
-  if (visibleValue(card, visibility, 'company')) company.push(`🏢 Azienda: ${card.company}`)
-  if (visibleValue(card, visibility, 'vat')) company.push(`P.IVA: ${card.vat}`)
-  if (visibleValue(card, visibility, 'motto')) company.push(`Motto: ${card.motto}`)
-
-  if (company.length) {
-    lines.push('')
-    lines.push(...company)
-  }
+  if (visibleValue(card, 'company')) company.push(`🏢 Azienda: ${card.company}`)
+  if (visibleValue(card, 'vat')) company.push(`P.IVA: ${card.vat}`)
+  if (visibleValue(card, 'motto')) company.push(`Motto: ${card.motto}`)
+  if (company.length) lines.push('', ...company)
 
   const social = []
-  if (visibleValue(card, visibility, 'linkedin')) social.push(`LinkedIn: ${card.linkedin}`)
-  if (visibleValue(card, visibility, 'instagram')) social.push(`Instagram: ${card.instagram}`)
+  if (visibleValue(card, 'linkedin')) social.push(`LinkedIn: ${card.linkedin}`)
+  if (visibleValue(card, 'instagram')) social.push(`Instagram: ${card.instagram}`)
+  if (social.length) lines.push('', ...social)
 
-  if (social.length) {
-    lines.push('')
-    lines.push(...social)
-  }
-
-  lines.push('')
-  lines.push('🔗 Card digitale:')
-  lines.push(getPublicCardUrl())
-
+  lines.push('', '🔗 Card digitale:', getPublicCardUrl(card))
   return lines.filter(Boolean).join('\n')
 }
 
-function mailtoLink(card, visibility) {
+function mailtoLink(card) {
   const subject = encodeURIComponent(`Ti condivido ${card.name || 'la mia digital card'}`)
-  const body = encodeURIComponent(buildSmartShare(card, visibility))
+  const body = encodeURIComponent(buildSmartShare(card))
   return `mailto:${card.email || ''}?subject=${subject}&body=${body}`
 }
 
-function whatsappLink(card, visibility) {
+function whatsappLink(card) {
   const number = normalizePhone(card.whatsapp || card.phone)
-  const text = encodeURIComponent(buildSmartShare(card, visibility))
+  const text = encodeURIComponent(buildSmartShare(card))
   return `https://wa.me/${number}?text=${text}`
 }
 
@@ -204,56 +292,31 @@ async function copyText(text) {
 }
 
 function App() {
-  const [active, setActive] = useState(() => new URLSearchParams(window.location.search).get('card') === 'myveicolo' ? 'public' : 'home')
+  const requestedSlug = new URLSearchParams(window.location.search).get('card')
+  const [cards, setCards] = useState(() => loadStored(STORAGE_CARDS, demoCards))
+  const [activeId, setActiveId] = useState(() => {
+    const stored = loadStored(STORAGE_ACTIVE, demoCards[0].id)
+    const bySlug = requestedSlug ? demoCards.find(c => c.slug === requestedSlug)?.id : null
+    return bySlug || stored
+  })
+  const [active, setActive] = useState(() => requestedSlug ? 'public' : 'home')
   const [menuOpen, setMenuOpen] = useState(false)
   const [lastPanel, setLastPanel] = useState('home')
-  const [card, setCard] = useState(() => loadStored(STORAGE_CARD, initialCard))
-  const [visibility, setVisibility] = useState(() => loadStored(STORAGE_VISIBILITY, initialVisibility))
   const [notice, setNotice] = useState('')
 
-  const smartShare = useMemo(() => buildSmartShare(card, visibility), [card, visibility])
+  const activeCard = cards.find(c => c.id === activeId) || cards[0]
+
+  useEffect(() => saveStored(STORAGE_CARDS, cards), [cards])
+  useEffect(() => saveStored(STORAGE_ACTIVE, activeId), [activeId])
 
   const stats = useMemo(() => {
-    const keys = Object.keys(fieldLabels)
-    return keys.reduce((acc, key) => {
-      if (!hasValue(card[key])) acc.empty += 1
-      else if (visibility[key]) acc.visible += 1
+    return Object.keys(fieldLabels).reduce((acc, key) => {
+      if (!hasValue(activeCard[key])) acc.empty += 1
+      else if (activeCard.visibility?.[key]) acc.visible += 1
       else acc.hidden += 1
       return acc
     }, { visible: 0, hidden: 0, empty: 0 })
-  }, [card, visibility])
-
-  useEffect(() => {
-    saveStored(STORAGE_CARD, card)
-  }, [card])
-
-  useEffect(() => {
-    saveStored(STORAGE_VISIBILITY, visibility)
-  }, [visibility])
-
-  const saveDemo = () => {
-    saveStored(STORAGE_CARD, card)
-    saveStored(STORAGE_VISIBILITY, visibility)
-    notify('Demo salvata in questo browser')
-  }
-
-  const resetDemo = () => {
-    setCard(initialCard)
-    setVisibility(initialVisibility)
-    saveStored(STORAGE_CARD, initialCard)
-    saveStored(STORAGE_VISIBILITY, initialVisibility)
-    notify('Demo ripristinata')
-  }
-
-  const navigate = (panel) => {
-    if (panel === 'public') setLastPanel(active)
-    setActive(panel)
-    setMenuOpen(false)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  const updateField = (key, value) => setCard(prev => ({ ...prev, [key]: value }))
-  const toggleVisibility = (key, value) => setVisibility(prev => ({ ...prev, [key]: value }))
+  }, [activeCard])
 
   const notify = (text) => {
     setNotice(text)
@@ -263,6 +326,58 @@ function App() {
   const copy = async (text, label) => {
     await copyText(text)
     notify(`${label} copiato`)
+  }
+
+  const updateCard = (patch) => {
+    setCards(prev => prev.map(card => card.id === activeId ? { ...card, ...patch } : card))
+  }
+
+  const updateVisibility = (key, value) => {
+    setCards(prev => prev.map(card => {
+      if (card.id !== activeId) return card
+      return { ...card, visibility: { ...card.visibility, [key]: value } }
+    }))
+  }
+
+  const updateField = (key, value) => updateCard({ [key]: value })
+
+  const selectCard = (id) => {
+    setActiveId(id)
+    notify('Card attiva aggiornata')
+  }
+
+  const createDemoCard = () => {
+    const id = `demo-${Date.now()}`
+    const newCard = {
+      ...demoCards[1],
+      id,
+      slug: id,
+      name: 'Nuova card demo',
+      claim: 'Bozza locale',
+      headline: 'La tua nuova digital card.',
+      description: 'Modifica i dati nell’editor e scegli quali campi rendere visibili.',
+      template: 'personal',
+      visibility: { ...defaultVisibility, vat: false, address: false, maps: false, linkedin: false, instagram: false }
+    }
+    setCards(prev => [newCard, ...prev])
+    setActiveId(id)
+    setActive('editor')
+    notify('Nuova card demo creata')
+  }
+
+  const resetDemo = () => {
+    setCards(demoCards)
+    setActiveId(demoCards[0].id)
+    saveStored(STORAGE_CARDS, demoCards)
+    saveStored(STORAGE_ACTIVE, demoCards[0].id)
+    notify('Demo ripristinata')
+  }
+
+  const navigate = (panel) => {
+    if (panel === 'public') setLastPanel(active)
+    setActive(panel)
+    setMenuOpen(false)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
@@ -275,48 +390,23 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.3.6.1 · hotfix motto</span>
+              <span className="eyebrow">MVP 0.3.7 · Multi Card / Multi Template</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
           </div>
         )}
 
-        {active === 'home' && <HomePage navigate={navigate} card={card} visibility={visibility} />}
-        {active === 'cards' && <CardsPage navigate={navigate} card={card} visibility={visibility} />}
-        {active === 'editor' && (
-          <EditorPage
-            card={card}
-            visibility={visibility}
-            updateField={updateField}
-            toggleVisibility={toggleVisibility}
-            stats={stats}
-            navigate={navigate}
-            saveDemo={saveDemo}
-            resetDemo={resetDemo}
-          />
-        )}
-        {active === 'share' && (
-          <SharePage
-            card={card}
-            visibility={visibility}
-            smartShare={smartShare}
-            copy={copy}
-            navigate={navigate}
-          />
-        )}
-        {active === 'public' && (
-          <PublicCard
-            card={card}
-            visibility={visibility}
-            back={() => navigate(lastPanel || 'home')}
-          />
-        )}
+        {active === 'home' && <HomePage navigate={navigate} card={activeCard} cards={cards} createDemoCard={createDemoCard} />}
+        {active === 'cards' && <CardsPage navigate={navigate} cards={cards} activeId={activeId} selectCard={selectCard} createDemoCard={createDemoCard} resetDemo={resetDemo} />}
+        {active === 'editor' && <EditorPage card={activeCard} updateField={updateField} updateCard={updateCard} updateVisibility={updateVisibility} stats={stats} navigate={navigate} resetDemo={resetDemo} />}
+        {active === 'share' && <SharePage card={activeCard} copy={copy} navigate={navigate} />}
+        {active === 'public' && <PublicCard card={activeCard} back={() => navigate(lastPanel || 'home')} />}
         {active === 'wallet' && <ComingSoon title="Wallet" items={['Apple Wallet pass', 'Google Wallet pass', 'QR offline', 'Fase 2 dopo database']} />}
-        {active === 'analytics' && <ComingSoon title="Analytics" items={['Visite card', 'Click sui pulsanti', 'Salvataggi contatto', 'Report mensile']} />}
-        {active === 'branding' && <ComingSoon title="Branding" items={['Colori globali', 'Logo cliente', 'Template premium', 'Brand kit']} />}
+        {active === 'analytics' && <ComingSoon title="Analytics" items={['Visite per card', 'Click sui pulsanti', 'Report azienda', 'Card più performanti']} />}
+        {active === 'branding' && <ComingSoon title="Branding" items={['Template aziendali', 'Brand kit', 'Colori globali', 'Rimozione branding']} />}
         {active === 'contacts' && <ComingSoon title="Contacts" items={['Lead raccolti', 'Export contatti', 'Tag e note', 'Integrazioni CRM']} />}
-        {active === 'settings' && <ComingSoon title="Settings" items={['Profilo account', 'Dominio custom', 'Lingua inglese', 'Privacy e termini']} />}
+        {active === 'settings' && <ComingSoon title="Settings" items={['Workspace azienda', 'Utenti e ruoli', 'Dominio custom', 'Privacy e termini']} />}
       </main>
     </div>
   )
@@ -356,8 +446,8 @@ function Sidebar({ active, navigate, open, setOpen }) {
           ))}
         </nav>
         <div className="sidebar-note">
-          <span>Prima demo reale</span>
-          <strong>myVeicolo.net</strong>
+          <span>Piattaforma multi-card</span>
+          <strong>Template · Card · Workspace</strong>
         </div>
       </aside>
       {open && <button className="overlay" onClick={() => setOpen(false)} />}
@@ -375,106 +465,104 @@ function MobileTopbar({ setMenuOpen, navigate }) {
   )
 }
 
-function HomePage({ navigate, card, visibility }) {
+function HomePage({ navigate, card, cards, createDemoCard }) {
   return (
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.3.6.1 · hotfix motto</span>
-          <h2>Digital card premium, costruite come mini siti personali.</h2>
-          <p>Smart Share, QR code, link pubblico, anteprima smartphone e controllo preciso dei campi visibili.</p>
+          <span className="eyebrow">MVP 0.3.7 · prototipo multi-card</span>
+          <h2>Una piattaforma per creare molte card, non una card sola.</h2>
+          <p>Gestisci card diverse, template diversi, QR e Smart Share collegati alla card attiva. Prima demo locale, poi database e account con Supabase.</p>
           <div className="hero-actions">
-            <button className="btn dark" onClick={() => navigate('editor')}>Modifica card demo</button>
-            <button className="btn light" onClick={() => navigate('share')}>Vedi Smart Share</button>
+            <button className="btn dark" onClick={() => navigate('cards')}><Layers size={18} /> Gestisci card</button>
+            <button className="btn light" onClick={createDemoCard}><Plus size={18} /> Nuova card demo</button>
           </div>
           <div className="active-card">
             <span>Card attiva</span>
             <strong>{card.name}</strong>
-            <em>{card.headline}</em>
+            <em>{templates[card.template]?.name}</em>
           </div>
         </div>
+
         <div className="feature-grid">
-          <Feature n="01" title="Crea" text="Parti da una card demo o crea una nuova bozza." />
-          <Feature n="02" title="Controlla" text="Ogni dato può essere visibile, nascosto o non compilato." />
-          <Feature n="03" title="Condividi" text="Invia una scheda completa via WhatsApp, email o QR code." />
+          <Feature n="01" title="Template" text="Automotive, personale, creativo, corporate, hospitality." />
+          <Feature n="02" title="Card" text={`In demo ci sono ${cards.length} card gestibili e modificabili.`} />
+          <Feature n="03" title="Workspace" text="La struttura futura supporta aziende, team e utenti." />
         </div>
+
         <section className="logic-panel">
-          <span className="eyebrow">La logica di partenza</span>
-          <h2>Prima il prodotto visibile. Dopo database e login.</h2>
-          <p>Questa versione valida struttura, grafica e valore commerciale. Dopo l’approvazione collegheremo Supabase, utenti, database e salvataggio reale.</p>
+          <span className="eyebrow">Scopo prodotto</span>
+          <h2>Per aziende con 50 card. Per admin con 30 template diversi.</h2>
+          <p>La direzione commerciale è chiara: creare, duplicare e gestire molte card da un’unica piattaforma, con dati visibili/nascosti e messaggi Smart Share completi.</p>
         </section>
       </section>
-      <PreviewPanel card={card} visibility={visibility} />
+      <PreviewPanel card={card} />
     </div>
   )
 }
 
 function Feature({ n, title, text }) {
-  return (
-    <div className="feature">
-      <span>{n}</span>
-      <h3>{title}</h3>
-      <p>{text}</p>
-    </div>
-  )
+  return <div className="feature"><span>{n}</span><h3>{title}</h3><p>{text}</p></div>
 }
 
-function CardsPage({ navigate, card, visibility }) {
+function CardsPage({ navigate, cards, activeId, selectCard, createDemoCard, resetDemo }) {
   return (
     <div className="main-grid">
       <section className="page-panel">
         <div className="page-head">
-          <span className="eyebrow">Cards</span>
-          <h2>Le tue digital card</h2>
-          <button className="btn dark" onClick={() => alert('Nuova card demo creata a video. Il salvataggio reale arriverà con Supabase.')}><Plus size={18} /> Nuova card demo</button>
-        </div>
-        <div className="card-row">
-          <div className="mini-logo">MV</div>
           <div>
-            <strong>{card.name}</strong>
-            <p>{card.headline}</p>
+            <span className="eyebrow">Cards</span>
+            <h2>Gestione multi-card</h2>
+            <p>Scegli la card attiva. Editor, QR, Smart Share e Public Card cambiano in base alla selezione.</p>
           </div>
-          <span className="badge cyan">Pubblica</span>
+          <div className="editor-actions">
+            <button className="btn dark" onClick={createDemoCard}><Plus size={18} /> Nuova card demo</button>
+            <button className="btn light" onClick={resetDemo}>Ripristina demo</button>
+          </div>
         </div>
+
+        <div className="cards-list">
+          {cards.map(card => (
+            <button key={card.id} className={`card-row card-button ${card.id === activeId ? 'selected' : ''}`} onClick={() => selectCard(card.id)}>
+              <div className="mini-logo" style={{ borderColor: templates[card.template]?.accent, color: templates[card.template]?.accent }}>{card.logoText || 'DC'}</div>
+              <div>
+                <strong>{card.name}</strong>
+                <p>{card.headline}</p>
+                <span>{templates[card.template]?.name} · {templates[card.template]?.category}</span>
+              </div>
+              <span className={`badge ${card.id === activeId ? 'cyan' : ''}`}>{card.id === activeId ? 'Attiva' : 'Seleziona'}</span>
+            </button>
+          ))}
+        </div>
+
         <div className="actions-row">
-          <button className="btn dark" onClick={() => navigate('editor')}>Modifica</button>
+          <button className="btn dark" onClick={() => navigate('editor')}>Apri editor</button>
           <button className="btn light" onClick={() => navigate('share')}>Smart Share</button>
           <button className="btn light" onClick={() => navigate('public')}>Apri card</button>
         </div>
-        <div className="metrics-grid">
-          <Metric label="Tipo" value="Prodotto digitale" />
-          <Metric label="Stato" value="Demo attiva" />
-          <Metric label="Versione" value="V0.3.6.1" />
-        </div>
       </section>
-      <PreviewPanel card={card} visibility={visibility} />
+      <PreviewPanel card={cards.find(c => c.id === activeId) || cards[0]} />
     </div>
   )
 }
 
-function Metric({ label, value }) {
-  return <div className="metric"><span>{label}</span><strong>{value}</strong></div>
-}
-
-function EditorPage({ card, visibility, updateField, toggleVisibility, stats, navigate, saveDemo, resetDemo }) {
+function EditorPage({ card, updateField, updateCard, updateVisibility, stats, navigate, resetDemo }) {
   return (
     <div className="main-grid">
       <section className="page-panel">
         <div className="page-head">
           <div>
             <span className="eyebrow">Editor</span>
-            <h2>Display Control</h2>
-            <p>Decidi cosa mostrare. I campi vuoti non compaiono mai nella card o nello Smart Share.</p>
+            <h2>{card.name}</h2>
+            <p>Modifica la card attiva. Le modifiche sono salvate localmente in questo browser.</p>
           </div>
           <div className="editor-actions">
-            <button className="btn light" onClick={saveDemo}>Salva demo</button>
             <button className="btn light" onClick={resetDemo}>Ripristina</button>
             <button className="btn dark" onClick={() => navigate('public')}>Pubblica · demo</button>
           </div>
         </div>
-        <div className="save-note">
-          Le modifiche vengono salvate automaticamente in questo browser. Con Supabase saranno salvate nel tuo account.
-        </div>
+
+        <div className="save-note">Le modifiche vengono salvate automaticamente. Con Supabase saranno salvate nel tuo account e sincronizzate su tutti i dispositivi.</div>
 
         <div className="visibility-summary">
           <SummaryItem icon={<Eye size={18} />} label="Visibili" value={stats.visible} />
@@ -482,35 +570,36 @@ function EditorPage({ card, visibility, updateField, toggleVisibility, stats, na
           <SummaryItem icon={<CircleOff size={18} />} label="Non compilati" value={stats.empty} />
         </div>
 
+        <EditorSection title="Template">
+          <div className="template-grid">
+            {Object.entries(templates).map(([key, template]) => (
+              <button key={key} className={`template-card ${card.template === key ? 'selected' : ''}`} onClick={() => updateCard({ template: key })}>
+                <span style={{ background: template.accent }} />
+                <strong>{template.name}</strong>
+                <em>{template.category}</em>
+              </button>
+            ))}
+          </div>
+        </EditorSection>
+
         <EditorSection title="Identità">
-          <ControlField k="logoText" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
-          <ControlField k="name" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
-          <ControlField k="claim" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
-          <ControlField k="motto" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
+          {['logoText', 'name', 'claim', 'motto'].map(k => <ControlField key={k} k={k} card={card} updateField={updateField} updateVisibility={updateVisibility} />)}
         </EditorSection>
 
         <EditorSection title="Hero pubblico">
-          <ControlField k="headline" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
-          <ControlField k="description" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} textarea />
+          <ControlField k="headline" card={card} updateField={updateField} updateVisibility={updateVisibility} />
+          <ControlField k="description" card={card} updateField={updateField} updateVisibility={updateVisibility} textarea />
         </EditorSection>
 
         <EditorSection title="Contatti">
-          <ControlField k="website" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
-          <ControlField k="email" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
-          <ControlField k="phone" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
-          <ControlField k="whatsapp" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
+          {['website', 'email', 'phone', 'whatsapp'].map(k => <ControlField key={k} k={k} card={card} updateField={updateField} updateVisibility={updateVisibility} />)}
         </EditorSection>
 
         <EditorSection title="Azienda e Premium">
-          <ControlField k="company" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
-          <ControlField k="vat" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
-          <ControlField k="address" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
-          <ControlField k="maps" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
-          <ControlField k="linkedin" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
-          <ControlField k="instagram" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
+          {['company', 'vat', 'address', 'maps', 'linkedin', 'instagram'].map(k => <ControlField key={k} k={k} card={card} updateField={updateField} updateVisibility={updateVisibility} />)}
         </EditorSection>
       </section>
-      <PreviewPanel card={card} visibility={visibility} />
+      <PreviewPanel card={card} />
     </div>
   )
 }
@@ -520,70 +609,57 @@ function SummaryItem({ icon, label, value }) {
 }
 
 function EditorSection({ title, children }) {
-  return (
-    <section className="editor-section">
-      <h3>{title}</h3>
-      <div className="field-grid">{children}</div>
-    </section>
-  )
+  return <section className="editor-section"><h3>{title}</h3><div className="field-grid">{children}</div></section>
 }
 
-function ControlField({ k, card, visibility, updateField, toggleVisibility, textarea }) {
+function ControlField({ k, card, updateField, updateVisibility, textarea }) {
   const filled = hasValue(card[k])
-  const shown = visibility[k] && filled
-  const hidden = !visibility[k] && filled
+  const isVisible = Boolean(card.visibility?.[k])
+  const shown = isVisible && filled
+  const hidden = !isVisible && filled
 
   return (
     <div className={`control-field ${shown ? 'is-visible' : ''} ${hidden ? 'is-hidden' : ''} ${!filled ? 'is-empty' : ''}`}>
       <div className="field-top">
         <div>
           <strong>{fieldLabels[k]}</strong>
-          {premiumFields.has(k) && <span className="premium-chip">Premium</span>}
-          {!premiumFields.has(k) && <span className="free-chip">Free</span>}
+          {premiumFields.has(k) ? <span className="premium-chip">Premium</span> : <span className="free-chip">Free</span>}
         </div>
-        <div className="status-badge">
-          {!filled ? 'Non compilato' : visibility[k] ? 'Visibile' : 'Nascosto'}
-        </div>
+        <div className="status-badge">{!filled ? 'Non compilato' : isVisible ? 'Visibile' : 'Nascosto'}</div>
       </div>
+
       <div className="segmented">
-        <button
-          className={visibility[k] ? 'selected' : ''}
-          onClick={() => toggleVisibility(k, true)}
-          type="button"
-          disabled={!filled}
-        >
+        <button className={isVisible ? 'selected' : ''} onClick={() => updateVisibility(k, true)} type="button" disabled={!filled}>
           <Eye size={15} /> Visibile
         </button>
-        <button
-          className={!visibility[k] ? 'selected' : ''}
-          onClick={() => toggleVisibility(k, false)}
-          type="button"
-          disabled={!filled}
-        >
+        <button className={!isVisible ? 'selected' : ''} onClick={() => updateVisibility(k, false)} type="button" disabled={!filled}>
           <EyeOff size={15} /> Nascosto
         </button>
       </div>
+
       {textarea ? (
-        <textarea value={card[k]} onChange={e => updateField(k, e.target.value)} placeholder={`Inserisci ${fieldLabels[k].toLowerCase()}`} />
+        <textarea value={card[k] || ''} onChange={e => updateField(k, e.target.value)} placeholder={`Inserisci ${fieldLabels[k].toLowerCase()}`} />
       ) : (
-        <input value={card[k]} onChange={e => updateField(k, e.target.value)} placeholder={`Inserisci ${fieldLabels[k].toLowerCase()}`} />
+        <input value={card[k] || ''} onChange={e => updateField(k, e.target.value)} placeholder={`Inserisci ${fieldLabels[k].toLowerCase()}`} />
       )}
     </div>
   )
 }
 
-function SharePage({ card, visibility, smartShare, copy, navigate }) {
-  const publicUrl = getPublicCardUrl()
+function SharePage({ card, copy, navigate }) {
+  const smartShare = buildSmartShare(card)
+  const publicUrl = getPublicCardUrl(card)
+
   return (
     <div className="main-grid">
       <section className="page-panel">
         <div className="page-head">
           <div>
             <span className="eyebrow">Smart Share</span>
-            <h2>Condividi la scheda completa</h2>
-            <p>WhatsApp, email e copia includono solo i campi visibili e compilati.</p>
+            <h2>{card.name}</h2>
+            <p>QR, email e WhatsApp sono collegati alla card attiva.</p>
           </div>
-          <span className="badge cyan">Display Control attivo</span>
+          <span className="badge cyan">Card attiva</span>
         </div>
 
         <div className="share-layout">
@@ -600,36 +676,27 @@ function SharePage({ card, visibility, smartShare, copy, navigate }) {
             <pre>{smartShare}</pre>
             <div className="share-actions">
               <button className="btn dark" onClick={() => copy(smartShare, 'Scheda completa')}><Copy size={17} /> Copia scheda completa</button>
-              <button className="btn light" onClick={() => copy(card.email, 'Email')}><Copy size={17} /> Copia email</button>
-              <button className="btn light" onClick={() => copy(card.phone, 'Numero')}><Copy size={17} /> Copia numero</button>
-              <a className="btn light" href={mailtoLink(card, visibility)}><Mail size={17} /> Invia email</a>
-              <a className="btn light" href={whatsappLink(card, visibility)} target="_blank" rel="noreferrer"><MessageCircle size={17} /> WhatsApp</a>
+              {hasValue(card.email) && <button className="btn light" onClick={() => copy(card.email, 'Email')}><Copy size={17} /> Copia email</button>}
+              {hasValue(card.phone) && <button className="btn light" onClick={() => copy(card.phone, 'Numero')}><Copy size={17} /> Copia numero</button>}
+              {hasValue(card.email) && <a className="btn light" href={mailtoLink(card)}><Mail size={17} /> Invia email</a>}
+              {(hasValue(card.whatsapp) || hasValue(card.phone)) && <a className="btn light" href={whatsappLink(card)} target="_blank" rel="noreferrer"><MessageCircle size={17} /> WhatsApp</a>}
               <button className="btn light" onClick={() => navigate('public')}><ExternalLink size={17} /> Apri card</button>
             </div>
           </div>
         </div>
       </section>
-      <PreviewPanel card={card} visibility={visibility} />
+      <PreviewPanel card={card} />
     </div>
   )
 }
-
 
 function RealQr({ value, name }) {
   const [qrData, setQrData] = useState('')
 
   useEffect(() => {
     let active = true
-    QRCode.toDataURL(value, {
-      width: 520,
-      margin: 2,
-      color: {
-        dark: '#000000',
-        light: '#ffffff'
-      }
-    }).then((url) => {
-      if (active) setQrData(url)
-    })
+    QRCode.toDataURL(value, { width: 520, margin: 2, color: { dark: '#000000', light: '#ffffff' } })
+      .then(url => { if (active) setQrData(url) })
     return () => { active = false }
   }, [value])
 
@@ -649,39 +716,38 @@ function RealQr({ value, name }) {
   )
 }
 
-
-function PreviewPanel({ card, visibility }) {
+function PreviewPanel({ card }) {
   return (
     <aside className="preview-panel">
       <div className="preview-header">
         <span>Anteprima smartphone</span>
         <strong>{card.name}</strong>
       </div>
-      <PhoneCard card={card} visibility={visibility} compact />
+      <PhoneCard card={card} compact />
     </aside>
   )
 }
 
-function PhoneCard({ card, visibility, compact = false }) {
+function PhoneCard({ card, compact = false }) {
+  const template = templates[card.template] || templates.automotive
   return (
-    <div className={`phone-card ${compact ? 'compact' : ''}`} style={{ '--accent': card.accent }}>
-      <div className="phone-glow" />
+    <div className={`phone-card ${compact ? 'compact' : ''} tone-${template.tone}`} style={{ '--accent': template.accent }}>
       <div className="phone-top">
-        {visibleValue(card, visibility, 'logoText') && <div className="phone-logo">{card.logoText}</div>}
-        <span className="beta">BETA</span>
+        {visibleValue(card, 'logoText') && <div className="phone-logo">{card.logoText}</div>}
+        <span className="beta">{template.name}</span>
       </div>
-      {visibleValue(card, visibility, 'claim') && <p className="phone-claim">{card.claim}</p>}
-      {visibleValue(card, visibility, 'headline') && <h3>{card.headline}</h3>}
-      {visibleValue(card, visibility, 'description') && <p className="phone-desc">{card.description}</p>}
-      {visibleValue(card, visibility, 'motto') && <div className="phone-motto">{card.motto}</div>}
+      {visibleValue(card, 'claim') && <p className="phone-claim">{card.claim}</p>}
+      {visibleValue(card, 'headline') && <h3>{card.headline}</h3>}
+      {visibleValue(card, 'description') && <p className="phone-desc">{card.description}</p>}
+      {visibleValue(card, 'motto') && <div className="phone-motto">{card.motto}</div>}
       <div className="phone-actions">
-        {visibleValue(card, visibility, 'website') && <a href={card.website} target="_blank" rel="noreferrer">Visita il sito</a>}
-        {visibleValue(card, visibility, 'whatsapp') && <a href={whatsappLink(card, visibility)} target="_blank" rel="noreferrer">WhatsApp</a>}
+        {visibleValue(card, 'website') && <a href={card.website} target="_blank" rel="noreferrer">Visita il sito</a>}
+        {visibleValue(card, 'whatsapp') && <a href={whatsappLink(card)} target="_blank" rel="noreferrer">WhatsApp</a>}
       </div>
       <div className="phone-features">
-        <InfoCard title="Costi" text="Spese, manutenzioni, carburante, rate e leasing sempre sotto controllo." />
-        <InfoCard title="Scadenze" text="Assicurazione, bollo, revisione e collaudi in un’unica vista." />
-        <InfoCard title="Consumi" text="Analisi chiara dei consumi anche per benzina, diesel, GPL, metano, ibridi ed elettrici." />
+        <InfoCard title="Dati attivi" text="La card mostra solo i campi compilati e impostati su Visibile." />
+        <InfoCard title="Smart Share" text="WhatsApp, email e QR sono collegati a questa card." />
+        <InfoCard title="Template" text={template.name} />
       </div>
     </div>
   )
@@ -691,26 +757,26 @@ function InfoCard({ title, text }) {
   return <div className="info-card"><strong>{title}</strong><p>{text}</p></div>
 }
 
-function PublicCard({ card, visibility, back }) {
-  const smartShare = buildSmartShare(card, visibility)
+function PublicCard({ card, back }) {
+  const smartShare = buildSmartShare(card)
   return (
     <section className="public-wrap">
       <button className="btn light back-btn" onClick={back}><ArrowLeft size={18} /> Torna al Card Creator</button>
       <div className="public-card">
-        <PhoneCard card={card} visibility={visibility} />
+        <PhoneCard card={card} />
         <div className="public-extra">
-          <h2>Utile per</h2>
+          <h2>{card.name}</h2>
           <div className="tag-list">
-            <span>Famiglie con più veicoli</span>
-            <span>Professionisti</span>
-            <span>Appassionati auto e moto</span>
-            <span>Piccole flotte</span>
+            <span>{templates[card.template]?.category}</span>
+            <span>{templates[card.template]?.name}</span>
+            <span>QR reale</span>
+            <span>Smart Share</span>
           </div>
           <div className="public-links">
-            {visibleValue(card, visibility, 'email') && <a href={mailtoLink(card, visibility)}>{card.email}</a>}
-            {visibleValue(card, visibility, 'website') && <a href={card.website} target="_blank" rel="noreferrer">{card.website}</a>}
-            {visibleValue(card, visibility, 'phone') && <a href={`tel:${normalizePhone(card.phone)}`}>{card.phone}</a>}
-            {visibleValue(card, visibility, 'maps') && <a href={card.maps} target="_blank" rel="noreferrer">Apri posizione Google Maps</a>}
+            {visibleValue(card, 'email') && <a href={mailtoLink(card)}>{card.email}</a>}
+            {visibleValue(card, 'website') && <a href={card.website} target="_blank" rel="noreferrer">{card.website}</a>}
+            {visibleValue(card, 'phone') && <a href={`tel:${normalizePhone(card.phone)}`}>{card.phone}</a>}
+            {visibleValue(card, 'maps') && <a href={card.maps} target="_blank" rel="noreferrer">Apri posizione Google Maps</a>}
           </div>
           <button className="btn dark" onClick={() => copyText(smartShare)}>Copia scheda completa</button>
         </div>
