@@ -1,7 +1,7 @@
 {
-  "name": "md-card-creator",
+  "name": "md-card-creator-v033",
+  "version": "0.3.3",
   "private": true,
-  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,9 +12,7 @@
     "@vitejs/plugin-react": "latest",
     "vite": "latest",
     "react": "latest",
-    "react-dom": "latest",
-    "qrcode": "latest",
-    "lucide-react": "latest"
+    "react-dom": "latest"
   },
   "devDependencies": {}
 }
