@@ -1,23 +1,26 @@
-# md|studios Card Creator — V0.3.5
+# md|studios Card Creator — V0.3.6
 
-Versione **QR reale + Smart Share + Display Control**.
+Versione **Salvataggio locale + QR reale + Display Control**.
 
 ## Novità principali
 
-- QR code reale generato dal link pubblico della card.
-- Il QR punta alla card pubblica dentro il Card Creator.
-- Pulsanti:
-  - Copia link card
-  - Scarica QR
-  - Apri card
-- Display Control migliorato:
+- Salvataggio automatico nel browser con `localStorage`.
+- Le modifiche non si perdono più al refresh.
+- Pulsante `Salva demo`.
+- Pulsante `Ripristina demo`.
+- Display Control:
   - Visibile
   - Nascosto
   - Non compilato
-- Smart Share aggiornato: WhatsApp, email e copia scheda includono solo i campi visibili e compilati.
+- Smart Share usa solo campi visibili e compilati.
+- QR reale generato dal link pubblico della card.
 - Public Card senza campi vuoti.
 - Pulsante `← Torna al Card Creator`.
-- Pulsante `+ Nuova card demo`.
+
+## Nota
+
+Questa versione salva solo nel browser/dispositivo usato.  
+Il salvataggio vero multiutente arriverà con Supabase.
 
 ## Build Netlify
 

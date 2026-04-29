@@ -67,6 +67,28 @@ const initialVisibility = {
   instagram: false
 }
 
+
+const STORAGE_CARD = 'md_card_creator_demo_card_v036'
+const STORAGE_VISIBILITY = 'md_card_creator_demo_visibility_v036'
+
+function loadStored(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key)
+    if (!raw) return fallback
+    return { ...fallback, ...JSON.parse(raw) }
+  } catch {
+    return fallback
+  }
+}
+
+function saveStored(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value))
+  } catch {
+    // localStorage may be blocked in private mode
+  }
+}
+
 const fieldLabels = {
   logoText: 'Logo / sigla',
   name: 'Nome card',
@@ -185,8 +207,8 @@ function App() {
   const [active, setActive] = useState(() => new URLSearchParams(window.location.search).get('card') === 'myveicolo' ? 'public' : 'home')
   const [menuOpen, setMenuOpen] = useState(false)
   const [lastPanel, setLastPanel] = useState('home')
-  const [card, setCard] = useState(initialCard)
-  const [visibility, setVisibility] = useState(initialVisibility)
+  const [card, setCard] = useState(() => loadStored(STORAGE_CARD, initialCard))
+  const [visibility, setVisibility] = useState(() => loadStored(STORAGE_VISIBILITY, initialVisibility))
   const [notice, setNotice] = useState('')
 
   const smartShare = useMemo(() => buildSmartShare(card, visibility), [card, visibility])
@@ -200,6 +222,28 @@ function App() {
       return acc
     }, { visible: 0, hidden: 0, empty: 0 })
   }, [card, visibility])
+
+  useEffect(() => {
+    saveStored(STORAGE_CARD, card)
+  }, [card])
+
+  useEffect(() => {
+    saveStored(STORAGE_VISIBILITY, visibility)
+  }, [visibility])
+
+  const saveDemo = () => {
+    saveStored(STORAGE_CARD, card)
+    saveStored(STORAGE_VISIBILITY, visibility)
+    notify('Demo salvata in questo browser')
+  }
+
+  const resetDemo = () => {
+    setCard(initialCard)
+    setVisibility(initialVisibility)
+    saveStored(STORAGE_CARD, initialCard)
+    saveStored(STORAGE_VISIBILITY, initialVisibility)
+    notify('Demo ripristinata')
+  }
 
   const navigate = (panel) => {
     if (panel === 'public') setLastPanel(active)
@@ -231,7 +275,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.3.5 · QR reale</span>
+              <span className="eyebrow">MVP 0.3.6 · salvataggio locale</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -239,7 +283,7 @@ function App() {
         )}
 
         {active === 'home' && <HomePage navigate={navigate} card={card} visibility={visibility} />}
-        {active === 'cards' && <CardsPage navigate={navigate} card={card} />}
+        {active === 'cards' && <CardsPage navigate={navigate} card={card} visibility={visibility} />}
         {active === 'editor' && (
           <EditorPage
             card={card}
@@ -248,6 +292,8 @@ function App() {
             toggleVisibility={toggleVisibility}
             stats={stats}
             navigate={navigate}
+            saveDemo={saveDemo}
+            resetDemo={resetDemo}
           />
         )}
         {active === 'share' && (
@@ -334,7 +380,7 @@ function HomePage({ navigate, card, visibility }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.3.5 · QR reale</span>
+          <span className="eyebrow">MVP 0.3.6 · salvataggio locale</span>
           <h2>Digital card premium, costruite come mini siti personali.</h2>
           <p>Smart Share, QR code, link pubblico, anteprima smartphone e controllo preciso dei campi visibili.</p>
           <div className="hero-actions">
@@ -373,7 +419,7 @@ function Feature({ n, title, text }) {
   )
 }
 
-function CardsPage({ navigate, card }) {
+function CardsPage({ navigate, card, visibility }) {
   return (
     <div className="main-grid">
       <section className="page-panel">
@@ -398,10 +444,10 @@ function CardsPage({ navigate, card }) {
         <div className="metrics-grid">
           <Metric label="Tipo" value="Prodotto digitale" />
           <Metric label="Stato" value="Demo attiva" />
-          <Metric label="Versione" value="V0.3.5" />
+          <Metric label="Versione" value="V0.3.6" />
         </div>
       </section>
-      <PreviewPanel card={card} visibility={initialVisibility} />
+      <PreviewPanel card={card} visibility={visibility} />
     </div>
   )
 }
@@ -410,7 +456,7 @@ function Metric({ label, value }) {
   return <div className="metric"><span>{label}</span><strong>{value}</strong></div>
 }
 
-function EditorPage({ card, visibility, updateField, toggleVisibility, stats, navigate }) {
+function EditorPage({ card, visibility, updateField, toggleVisibility, stats, navigate, saveDemo, resetDemo }) {
   return (
     <div className="main-grid">
       <section className="page-panel">
@@ -420,7 +466,14 @@ function EditorPage({ card, visibility, updateField, toggleVisibility, stats, na
             <h2>Display Control</h2>
             <p>Decidi cosa mostrare. I campi vuoti non compaiono mai nella card o nello Smart Share.</p>
           </div>
-          <button className="btn dark" onClick={() => navigate('public')}>Pubblica · demo</button>
+          <div className="editor-actions">
+            <button className="btn light" onClick={saveDemo}>Salva demo</button>
+            <button className="btn light" onClick={resetDemo}>Ripristina</button>
+            <button className="btn dark" onClick={() => navigate('public')}>Pubblica · demo</button>
+          </div>
+        </div>
+        <div className="save-note">
+          Le modifiche vengono salvate automaticamente in questo browser. Con Supabase saranno salvate nel tuo account.
         </div>
 
         <div className="visibility-summary">
