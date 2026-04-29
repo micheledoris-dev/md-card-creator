@@ -1,17 +1,22 @@
-# md|studios Card Creator — V0.3.7.2
+# md|studios Card Creator — V0.3.7.3
 
-Hotfix: **Desktop Layout Fix**.
+Hotfix: **Salva demo visibile**.
 
 ## Correzioni
 
-- Risolto problema della colonna destra / anteprima smartphone tagliata su schermi non abbastanza larghi.
-- La griglia ora passa a colonna singola prima, così la preview non finisce fuori schermo.
-- Su desktop largo la preview resta sticky.
-- Su desktop medio/notebook la preview va sotto al contenuto e rimane visibile.
+- Ripristinato il pulsante `Salva demo` nell'Editor.
+- Il salvataggio automatico locale resta attivo.
+- Il pulsante `Salva demo` dà conferma visiva: `Demo salvata`.
+- Desktop Layout Fix invariato.
 - Multi Card / Multi Template invariato.
 - QR reale invariato.
 - Smart Share invariato.
 - Display Control invariato.
+
+## Nota
+
+Il salvataggio è locale al browser/dispositivo.  
+La sincronizzazione vera tra PC, iPhone e utenti arriverà con Supabase.
 
 ## Build Netlify
 

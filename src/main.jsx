@@ -328,6 +328,12 @@ function App() {
     notify(`${label} copiato`)
   }
 
+  const saveDemo = () => {
+    saveStored(STORAGE_CARDS, cards)
+    saveStored(STORAGE_ACTIVE, activeId)
+    notify('Demo salvata')
+  }
+
   const updateCard = (patch) => {
     setCards(prev => prev.map(card => card.id === activeId ? { ...card, ...patch } : card))
   }
@@ -390,7 +396,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.3.7.2 · Desktop Layout Fix</span>
+              <span className="eyebrow">MVP 0.3.7.3 · Salva demo</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -399,7 +405,7 @@ function App() {
 
         {active === 'home' && <HomePage navigate={navigate} card={activeCard} cards={cards} createDemoCard={createDemoCard} />}
         {active === 'cards' && <CardsPage navigate={navigate} cards={cards} activeId={activeId} selectCard={selectCard} createDemoCard={createDemoCard} resetDemo={resetDemo} />}
-        {active === 'editor' && <EditorPage card={activeCard} updateField={updateField} updateCard={updateCard} updateVisibility={updateVisibility} stats={stats} navigate={navigate} resetDemo={resetDemo} />}
+        {active === 'editor' && <EditorPage card={activeCard} updateField={updateField} updateCard={updateCard} updateVisibility={updateVisibility} stats={stats} navigate={navigate} resetDemo={resetDemo} saveDemo={saveDemo} />}
         {active === 'share' && <SharePage card={activeCard} copy={copy} navigate={navigate} />}
         {active === 'public' && <PublicCard card={activeCard} back={() => navigate(lastPanel || 'home')} />}
         {active === 'wallet' && <ComingSoon title="Wallet" items={['Apple Wallet pass', 'Google Wallet pass', 'QR offline', 'Fase 2 dopo database']} />}
@@ -470,7 +476,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.3.7.2 · prototipo multi-card</span>
+          <span className="eyebrow">MVP 0.3.7.3 · prototipo multi-card</span>
           <h2>Una piattaforma per creare molte card, non una card sola.</h2>
           <p>Gestisci card diverse, template diversi, QR e Smart Share collegati alla card attiva. Prima demo locale, poi database e account con Supabase.</p>
           <div className="hero-actions">
@@ -546,7 +552,7 @@ function CardsPage({ navigate, cards, activeId, selectCard, createDemoCard, rese
   )
 }
 
-function EditorPage({ card, updateField, updateCard, updateVisibility, stats, navigate, resetDemo }) {
+function EditorPage({ card, updateField, updateCard, updateVisibility, stats, navigate, resetDemo, saveDemo }) {
   return (
     <div className="main-grid">
       <section className="page-panel">
@@ -557,6 +563,7 @@ function EditorPage({ card, updateField, updateCard, updateVisibility, stats, na
             <p>Modifica la card attiva. Le modifiche sono salvate localmente in questo browser.</p>
           </div>
           <div className="editor-actions">
+            <button className="btn light" onClick={saveDemo}>Salva demo</button>
             <button className="btn light" onClick={resetDemo}>Ripristina</button>
             <button className="btn dark" onClick={() => navigate('public')}>Pubblica · demo</button>
           </div>
