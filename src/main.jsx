@@ -1,21 +1,40 @@
+
 import React, { useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
+import {
+  Home,
+  CreditCard,
+  Edit3,
+  QrCode,
+  Share2,
+  Wallet,
+  BarChart3,
+  Palette,
+  Users,
+  Settings,
+  Menu,
+  X,
+  Eye,
+  EyeOff,
+  Copy,
+  Mail,
+  MessageCircle,
+  ExternalLink,
+  Plus,
+  ArrowLeft,
+  CheckCircle2,
+  CircleOff
+} from 'lucide-react'
 import './style.css'
 
-const defaultVisibility = {
-  claim: true, headline: true, description: true,
-  url: true, email: true, phone: false, whatsapp: true,
-  company: true, vat: false, address: false, maps: false,
-  motto: true, logo: true, linkedin: false, instagram: false
-}
-
-const defaultCard = {
+const initialCard = {
+  logoText: 'MV',
   name: 'myVeicolo.net',
   claim: 'Il tuo garage digitale',
   headline: 'Il cuore intelligente del tuo garage.',
   description: 'Tieni sotto controllo costi, scadenze, manutenzioni e consumi dei tuoi veicoli in un unico spazio digitale.',
-  motto: 'Controllo, semplicità e memoria digitale per ogni veicolo.',
-  url: 'https://myveicolo.net',
+  motto: 'Il tuo garage digitale',
+  website: 'https://myveicolo.net',
   email: 'myveicolonet@gmail.com',
   phone: '+39 328 717 9900',
   whatsapp: '+39 328 717 9900',
@@ -25,351 +44,599 @@ const defaultCard = {
   maps: '',
   linkedin: '',
   instagram: '',
-  logoText: 'MV',
-  accent: '#00E5FF',
-  status: 'Pubblica',
-  type: 'Prodotto digitale',
-  updated: '29 Apr 2026',
-  plan: 'Free demo',
-  visibility: defaultVisibility,
-  features: [
-    ['Costi', 'Spese, manutenzioni, carburante, rate e leasing sempre sotto controllo.'],
-    ['Scadenze', 'Assicurazione, bollo, revisione e collaudi in un’unica vista.'],
-    ['Consumi', 'Analisi chiara dei consumi anche per benzina, diesel, GPL, metano, ibridi ed elettrici.']
-  ],
-  audience: ['Famiglie con più veicoli', 'Professionisti', 'Appassionati auto e moto', 'Piccole flotte']
+  accent: '#00E5FF'
 }
 
-const navItems = [
-  ['home', 'Home', '⌂'],
-  ['cards', 'Cards', '▭'],
-  ['editor', 'Editor', '▯'],
-  ['share', 'Smart Share', '▦'],
-  ['public', 'Public Card', '↗'],
-  ['wallet', 'Wallet', '◫'],
-  ['analytics', 'Analytics', '▥'],
-  ['branding', 'Branding', '◌'],
-  ['contacts', 'Contacts', '☷'],
-  ['settings', 'Settings', '⚙']
-]
-
-const roadmap = {
-  wallet: ['Apple Wallet pass', 'Google Wallet pass', 'QR offline', 'Fase 2 dopo database'],
-  analytics: ['Visite card', 'Click sui pulsanti', 'Salvataggi contatto', 'Report mensile'],
-  branding: ['Colori globali', 'Logo cliente', 'Template premium', 'Brand kit'],
-  contacts: ['Lead raccolti', 'Export contatti', 'Tag e note', 'Integrazioni CRM'],
-  settings: ['Profilo account', 'Dominio custom', 'Lingua inglese', 'Privacy e termini']
+const initialVisibility = {
+  logoText: true,
+  name: true,
+  claim: true,
+  headline: true,
+  description: true,
+  motto: true,
+  website: true,
+  email: true,
+  phone: true,
+  whatsapp: true,
+  company: true,
+  vat: false,
+  address: false,
+  maps: false,
+  linkedin: false,
+  instagram: false
 }
 
-function cleanPhone(phone = '') {
-  return phone.replace(/\D/g, '')
+const fieldLabels = {
+  logoText: 'Logo / sigla',
+  name: 'Nome card',
+  claim: 'Claim',
+  headline: 'Headline',
+  description: 'Descrizione',
+  motto: 'Motto aziendale',
+  website: 'Sito web',
+  email: 'Email',
+  phone: 'Telefono',
+  whatsapp: 'WhatsApp',
+  company: 'Nome azienda',
+  vat: 'Partita IVA',
+  address: 'Indirizzo',
+  maps: 'Google Maps',
+  linkedin: 'LinkedIn',
+  instagram: 'Instagram'
 }
 
-function isVisible(card, key) {
-  const valueMap = { logo: card.logoText, whatsapp: card.whatsapp, maps: card.maps }
-  const value = valueMap[key] ?? card[key]
-  return Boolean(card.visibility?.[key] && String(value || '').trim())
+const premiumFields = new Set(['vat', 'address', 'maps', 'linkedin', 'instagram', 'motto'])
+
+function hasValue(value) {
+  return String(value || '').trim().length > 0
 }
 
-function buildSmartShare(card) {
-  const rows = []
-  rows.push(`${card.logoText || '•'} ${card.name}`)
-  if (isVisible(card, 'headline')) rows.push(card.headline)
-  if (isVisible(card, 'claim')) rows.push(`\n${card.claim}`)
-  if (isVisible(card, 'description')) rows.push(card.description)
-  if (isVisible(card, 'motto')) rows.push(`\nMotto: ${card.motto}`)
-  if (isVisible(card, 'company')) rows.push(`\nAzienda: ${card.company}`)
-  if (isVisible(card, 'vat')) rows.push(`P.IVA: ${card.vat}`)
-  if (isVisible(card, 'address')) rows.push(`Indirizzo: ${card.address}`)
-  if (isVisible(card, 'maps')) rows.push(`Google Maps: ${card.maps}`)
-  if (isVisible(card, 'url')) rows.push(`\nSito: ${card.url}`)
-  if (isVisible(card, 'email')) rows.push(`Email: ${card.email}`)
-  if (isVisible(card, 'phone')) rows.push(`Telefono: ${card.phone}`)
-  if (isVisible(card, 'whatsapp')) rows.push(`WhatsApp: ${card.whatsapp}`)
-  if (isVisible(card, 'linkedin')) rows.push(`LinkedIn: ${card.linkedin}`)
-  if (isVisible(card, 'instagram')) rows.push(`Instagram: ${card.instagram}`)
-  rows.push('\nCard digitale: https://md-card-creator.netlify.app')
-  return rows.join('\n')
+function normalizePhone(phone) {
+  return String(phone || '').replace(/[^\d]/g, '')
 }
 
-function copyText(text) {
-  if (navigator.clipboard) return navigator.clipboard.writeText(text)
-  const area = document.createElement('textarea')
-  area.value = text
-  document.body.appendChild(area)
-  area.select()
-  document.execCommand('copy')
-  document.body.removeChild(area)
+function visibleValue(card, visibility, key) {
+  return Boolean(visibility[key] && hasValue(card[key]))
+}
+
+function buildSmartShare(card, visibility) {
+  const lines = []
+
+  if (visibleValue(card, visibility, 'name')) lines.push(`🚘 ${card.name}`)
+  if (visibleValue(card, visibility, 'headline')) lines.push(card.headline)
+  if (visibleValue(card, visibility, 'description')) {
+    lines.push('')
+    lines.push(card.description)
+  }
+
+  const contact = []
+  if (visibleValue(card, visibility, 'website')) contact.push(`🌐 Sito: ${card.website}`)
+  if (visibleValue(card, visibility, 'email')) contact.push(`📧 Email: ${card.email}`)
+  if (visibleValue(card, visibility, 'phone')) contact.push(`📞 Telefono: ${card.phone}`)
+  if (visibleValue(card, visibility, 'whatsapp')) contact.push(`💬 WhatsApp: ${card.whatsapp}`)
+  if (visibleValue(card, visibility, 'address')) contact.push(`📍 Indirizzo: ${card.address}`)
+  if (visibleValue(card, visibility, 'maps')) contact.push(`🗺️ Google Maps: ${card.maps}`)
+
+  if (contact.length) {
+    lines.push('')
+    lines.push(...contact)
+  }
+
+  const company = []
+  if (visibleValue(card, visibility, 'company')) company.push(`🏢 Azienda: ${card.company}`)
+  if (visibleValue(card, visibility, 'vat')) company.push(`P.IVA: ${card.vat}`)
+  if (visibleValue(card, visibility, 'motto')) company.push(`Motto: ${card.motto}`)
+
+  if (company.length) {
+    lines.push('')
+    lines.push(...company)
+  }
+
+  const social = []
+  if (visibleValue(card, visibility, 'linkedin')) social.push(`LinkedIn: ${card.linkedin}`)
+  if (visibleValue(card, visibility, 'instagram')) social.push(`Instagram: ${card.instagram}`)
+
+  if (social.length) {
+    lines.push('')
+    lines.push(...social)
+  }
+
+  lines.push('')
+  lines.push('🔗 Card digitale:')
+  lines.push(card.website || 'https://md-card-creator.netlify.app')
+
+  return lines.filter(Boolean).join('\n')
+}
+
+function mailtoLink(card, visibility) {
+  const subject = encodeURIComponent(`Ti condivido ${card.name || 'la mia digital card'}`)
+  const body = encodeURIComponent(buildSmartShare(card, visibility))
+  return `mailto:${card.email || ''}?subject=${subject}&body=${body}`
+}
+
+function whatsappLink(card, visibility) {
+  const number = normalizePhone(card.whatsapp || card.phone)
+  const text = encodeURIComponent(buildSmartShare(card, visibility))
+  return `https://wa.me/${number}?text=${text}`
+}
+
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text)
+    return true
+  } catch {
+    const area = document.createElement('textarea')
+    area.value = text
+    document.body.appendChild(area)
+    area.select()
+    document.execCommand('copy')
+    document.body.removeChild(area)
+    return true
+  }
 }
 
 function App() {
   const [active, setActive] = useState('home')
   const [menuOpen, setMenuOpen] = useState(false)
-  const [card, setCard] = useState(defaultCard)
+  const [lastPanel, setLastPanel] = useState('home')
+  const [card, setCard] = useState(initialCard)
+  const [visibility, setVisibility] = useState(initialVisibility)
   const [notice, setNotice] = useState('')
-  const isPublic = active === 'public'
-  const flash = (text) => { setNotice(text); setTimeout(() => setNotice(''), 1700) }
+
+  const smartShare = useMemo(() => buildSmartShare(card, visibility), [card, visibility])
+
+  const stats = useMemo(() => {
+    const keys = Object.keys(fieldLabels)
+    return keys.reduce((acc, key) => {
+      if (!hasValue(card[key])) acc.empty += 1
+      else if (visibility[key]) acc.visible += 1
+      else acc.hidden += 1
+      return acc
+    }, { visible: 0, hidden: 0, empty: 0 })
+  }, [card, visibility])
+
+  const navigate = (panel) => {
+    if (panel === 'public') setLastPanel(active)
+    setActive(panel)
+    setMenuOpen(false)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const updateField = (key, value) => setCard(prev => ({ ...prev, [key]: value }))
+  const toggleVisibility = (key, value) => setVisibility(prev => ({ ...prev, [key]: value }))
+
+  const notify = (text) => {
+    setNotice(text)
+    setTimeout(() => setNotice(''), 2200)
+  }
+
+  const copy = async (text, label) => {
+    await copyText(text)
+    notify(`${label} copiato`)
+  }
 
   return (
-    <div className={`app ${isPublic ? 'public-mode' : ''}`}>
-      {notice && <div className="toast">{notice}</div>}
-      {!isPublic && <Sidebar active={active} setActive={setActive} open={menuOpen} setOpen={setMenuOpen} card={card} />}
-      <main className={isPublic ? 'public-main' : 'main'}>
-        {!isPublic && <Topbar setMenuOpen={setMenuOpen} setActive={setActive} />}
-        {isPublic ? (
-          <PublicCard card={card} setActive={setActive} flash={flash} />
-        ) : (
-          <div className="workspace">
-            <div className="content-area">
-              {active === 'home' && <HomePage card={card} setActive={setActive} />}
-              {active === 'cards' && <CardsPage card={card} setCard={setCard} setActive={setActive} flash={flash} />}
-              {active === 'editor' && <EditorPage card={card} setCard={setCard} setActive={setActive} />}
-              {active === 'share' && <SharePage card={card} setActive={setActive} flash={flash} />}
-              {['wallet', 'analytics', 'branding', 'contacts', 'settings'].includes(active) && <ComingSoon page={active} />}
+    <div className="app-shell">
+      <Sidebar active={active} navigate={navigate} open={menuOpen} setOpen={setMenuOpen} />
+      <main className="workspace">
+        <MobileTopbar setMenuOpen={setMenuOpen} navigate={navigate} />
+        {notice && <div className="toast"><CheckCircle2 size={18} />{notice}</div>}
+
+        {active !== 'public' && (
+          <div className="desktop-title">
+            <div>
+              <span className="eyebrow">MVP 0.3.4 · Display Control</span>
+              <h1>md|studios Card Creator</h1>
             </div>
-            <div className={`preview-column ${['wallet', 'analytics', 'branding', 'contacts', 'settings'].includes(active) ? 'hide-on-mobile' : ''}`}>
-              <PhonePreview card={card} />
-            </div>
+            <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
           </div>
         )}
+
+        {active === 'home' && <HomePage navigate={navigate} card={card} visibility={visibility} />}
+        {active === 'cards' && <CardsPage navigate={navigate} card={card} />}
+        {active === 'editor' && (
+          <EditorPage
+            card={card}
+            visibility={visibility}
+            updateField={updateField}
+            toggleVisibility={toggleVisibility}
+            stats={stats}
+            navigate={navigate}
+          />
+        )}
+        {active === 'share' && (
+          <SharePage
+            card={card}
+            visibility={visibility}
+            smartShare={smartShare}
+            copy={copy}
+            navigate={navigate}
+          />
+        )}
+        {active === 'public' && (
+          <PublicCard
+            card={card}
+            visibility={visibility}
+            back={() => navigate(lastPanel || 'home')}
+          />
+        )}
+        {active === 'wallet' && <ComingSoon title="Wallet" items={['Apple Wallet pass', 'Google Wallet pass', 'QR offline', 'Fase 2 dopo database']} />}
+        {active === 'analytics' && <ComingSoon title="Analytics" items={['Visite card', 'Click sui pulsanti', 'Salvataggi contatto', 'Report mensile']} />}
+        {active === 'branding' && <ComingSoon title="Branding" items={['Colori globali', 'Logo cliente', 'Template premium', 'Brand kit']} />}
+        {active === 'contacts' && <ComingSoon title="Contacts" items={['Lead raccolti', 'Export contatti', 'Tag e note', 'Integrazioni CRM']} />}
+        {active === 'settings' && <ComingSoon title="Settings" items={['Profilo account', 'Dominio custom', 'Lingua inglese', 'Privacy e termini']} />}
       </main>
     </div>
   )
 }
 
-function Topbar({ setMenuOpen, setActive }) {
-  return (
-    <header className="topbar">
-      <button className="menu-button" onClick={() => setMenuOpen(true)} aria-label="Apri menu">☰</button>
-      <div className="mobile-title"><strong>md|studios</strong><span>Card Creator</span></div>
-      <button className="ghost-button" onClick={() => setActive('public')}>Apri demo pubblica</button>
-    </header>
-  )
-}
+const nav = [
+  ['home', Home, 'Home'],
+  ['cards', CreditCard, 'Cards'],
+  ['editor', Edit3, 'Editor'],
+  ['share', QrCode, 'Smart Share'],
+  ['public', Share2, 'Public Card'],
+  ['wallet', Wallet, 'Wallet'],
+  ['analytics', BarChart3, 'Analytics'],
+  ['branding', Palette, 'Branding'],
+  ['contacts', Users, 'Contacts'],
+  ['settings', Settings, 'Settings']
+]
 
-function Sidebar({ active, setActive, open, setOpen, card }) {
+function Sidebar({ active, navigate, open, setOpen }) {
   return (
     <>
-      <aside className={`sidebar ${open ? 'is-open' : ''}`}>
-        <div className="side-head">
-          <div className="brand-mark">md</div>
-          <div><strong>md|studios</strong><span>Card Creator</span></div>
-          <button className="close-menu" onClick={() => setOpen(false)}>×</button>
+      <aside className={`sidebar ${open ? 'open' : ''}`}>
+        <div className="brand">
+          <div className="brand-logo">md</div>
+          <div>
+            <strong>md|studios</strong>
+            <span>Card Creator</span>
+          </div>
+          <button className="close-menu" onClick={() => setOpen(false)}><X size={22} /></button>
         </div>
-        <nav className="nav-list">
-          {navItems.map(([key, label, icon]) => (
-            <button key={key} className={`nav-item ${active === key ? 'active' : ''}`} onClick={() => { setActive(key); setOpen(false) }}>
-              <span className="nav-icon">{icon}</span><span>{label}</span>
+        <nav>
+          {nav.map(([id, Icon, label]) => (
+            <button key={id} className={`nav-item ${active === id ? 'active' : ''}`} onClick={() => navigate(id)}>
+              <Icon size={18} />
+              <span>{label}</span>
             </button>
           ))}
         </nav>
-        <div className="sidebar-card"><small>Prima demo reale</small><strong>{card.name}</strong><span>{card.status} · {card.type}</span></div>
+        <div className="sidebar-note">
+          <span>Prima demo reale</span>
+          <strong>myVeicolo.net</strong>
+        </div>
       </aside>
-      {open && <button className="scrim" onClick={() => setOpen(false)} aria-label="Chiudi menu" />}
+      {open && <button className="overlay" onClick={() => setOpen(false)} />}
     </>
   )
 }
 
-function HomePage({ card, setActive }) {
+function MobileTopbar({ setMenuOpen, navigate }) {
   return (
-    <div className="page-stack">
-      <section className="hero-card">
-        <div className="hero-copy">
-          <span className="eyebrow">MVP 0.3.3 · Smart Share</span>
-          <h1>Digital card premium, senza campi vuoti e condivisione intelligente.</h1>
-          <p>Ogni informazione ha un interruttore: compare solo se è compilata e attiva. Email e WhatsApp generano una scheda completa, non un link povero.</p>
-          <div className="button-row"><button onClick={() => setActive('editor')}>Modifica demo</button><button className="light-button" onClick={() => setActive('share')}>Smart Share</button></div>
+    <div className="mobile-topbar">
+      <button className="menu-btn" onClick={() => setMenuOpen(true)}><Menu size={28} /></button>
+      <strong>md|studios</strong>
+      <button className="btn small ghost" onClick={() => navigate('public')}>Demo</button>
+    </div>
+  )
+}
+
+function HomePage({ navigate, card, visibility }) {
+  return (
+    <div className="main-grid">
+      <section className="page-panel">
+        <div className="hero-card">
+          <span className="eyebrow">MVP 0.3.4 · prototipo vendibile</span>
+          <h2>Digital card premium, costruite come mini siti personali.</h2>
+          <p>Smart Share, QR code, link pubblico, anteprima smartphone e controllo preciso dei campi visibili.</p>
+          <div className="hero-actions">
+            <button className="btn dark" onClick={() => navigate('editor')}>Modifica card demo</button>
+            <button className="btn light" onClick={() => navigate('share')}>Vedi Smart Share</button>
+          </div>
+          <div className="active-card">
+            <span>Card attiva</span>
+            <strong>{card.name}</strong>
+            <em>{card.headline}</em>
+          </div>
         </div>
-        <div className="hero-summary"><span>Card attiva</span><strong>{card.name}</strong><small>{card.headline}</small></div>
-      </section>
-
-      <section className="process-grid">
-        <article><span>01</span><h3>Compila</h3><p>Aggiungi contatti, azienda, indirizzo, P.IVA, social e motto.</p></article>
-        <article><span>02</span><h3>Attiva</h3><p>Decidi con i flag cosa mostrare nella card e nei messaggi.</p></article>
-        <article><span>03</span><h3>Condividi</h3><p>Invia una scheda completa via WhatsApp, email, QR o link.</p></article>
-      </section>
-
-      <section className="value-card">
-        <span className="eyebrow">Nuovo pilastro</span>
-        <h2>Smart Share: non condividi solo un link, ma una scheda digitale pulita.</h2>
-        <p>La card pubblica e i messaggi non mostrano mai dati vuoti. Questo rende il prodotto più elegante, più serio e più vendibile anche in ottica Free/Premium.</p>
-      </section>
-    </div>
-  )
-}
-
-function CardsPage({ card, setCard, setActive, flash }) {
-  const createDemoCard = () => {
-    setCard({
-      ...defaultCard,
-      name: 'Nuova card demo',
-      claim: 'Bozza digitale',
-      headline: 'La tua nuova presenza digitale.',
-      description: 'Questa è una bozza temporanea. Il salvataggio reale arriverà con Supabase.',
-      logoText: 'NC',
-      status: 'Bozza',
-      type: 'Persona / attività',
-      updated: 'oggi',
-      visibility: { ...defaultVisibility, vat: false, address: false, maps: false, phone: false }
-    })
-    flash('Nuova card demo creata')
-    setActive('editor')
-  }
-
-  return (
-    <div className="page-panel">
-      <div className="section-heading split"><div><span className="eyebrow">Cards</span><h1>Le tue digital card</h1><p>Una prima card reale e il flusso demo per creare nuove card.</p></div><button onClick={createDemoCard}>+ Nuova card demo</button></div>
-      <article className="card-manager">
-        <div className="card-avatar">{card.logoText || 'MD'}</div><div className="card-info"><strong>{card.name}</strong><span>{card.headline}</span></div>
-        <div className="metric"><small>Stato</small><b>{card.status}</b></div><div className="metric"><small>Tipo</small><b>{card.type}</b></div><div className="metric"><small>Piano</small><b>{card.plan}</b></div>
-      </article>
-      <div className="action-grid"><button onClick={() => setActive('editor')}>Modifica</button><button className="soft-button" onClick={() => setActive('share')}>Smart Share</button><button className="soft-button" onClick={() => setActive('public')}>Apri demo</button></div>
-      <section className="mini-roadmap"><h3>Free / Premium</h3><div><span>Base gratis</span><span>Logo e branding premium</span><span>Maps e P.IVA premium</span><span>Analytics premium</span></div></section>
-    </div>
-  )
-}
-
-function EditorPage({ card, setCard, setActive }) {
-  const update = (field, value) => setCard({ ...card, [field]: value })
-  const toggle = (field) => setCard({ ...card, visibility: { ...card.visibility, [field]: !card.visibility[field] } })
-
-  return (
-    <div className="page-panel">
-      <div className="section-heading split"><div><span className="eyebrow">Editor</span><h1>Dati + visibilità</h1><p>Un campo appare solo se è compilato e attivato. Zero vuoti, zero placeholder brutti.</p></div><div className="compact-actions"><button className="soft-button" onClick={() => setActive('public')}>Anteprima</button><button onClick={() => setActive('share')}>Smart Share</button></div></div>
-
-      <FormSection title="Identità">
-        <Field label="Logo / sigla" value={card.logoText} onChange={(v) => update('logoText', v)} active={card.visibility.logo} onToggle={() => toggle('logo')} premium="Free" />
-        <Field label="Nome card" value={card.name} onChange={(v) => update('name', v)} locked />
-        <Field label="Claim" value={card.claim} onChange={(v) => update('claim', v)} active={card.visibility.claim} onToggle={() => toggle('claim')} />
-        <Field label="Headline" value={card.headline} onChange={(v) => update('headline', v)} active={card.visibility.headline} onToggle={() => toggle('headline')} />
-        <Field label="Descrizione" value={card.description} onChange={(v) => update('description', v)} active={card.visibility.description} onToggle={() => toggle('description')} textarea />
-        <Field label="Motto aziendale" value={card.motto} onChange={(v) => update('motto', v)} active={card.visibility.motto} onToggle={() => toggle('motto')} premium="Premium" />
-      </FormSection>
-
-      <FormSection title="Contatti">
-        <Field label="Sito web" value={card.url} onChange={(v) => update('url', v)} active={card.visibility.url} onToggle={() => toggle('url')} />
-        <Field label="Email" value={card.email} onChange={(v) => update('email', v)} active={card.visibility.email} onToggle={() => toggle('email')} />
-        <Field label="Telefono" value={card.phone} onChange={(v) => update('phone', v)} active={card.visibility.phone} onToggle={() => toggle('phone')} />
-        <Field label="WhatsApp" value={card.whatsapp} onChange={(v) => update('whatsapp', v)} active={card.visibility.whatsapp} onToggle={() => toggle('whatsapp')} />
-      </FormSection>
-
-      <FormSection title="Azienda e posizione">
-        <Field label="Nome azienda" value={card.company} onChange={(v) => update('company', v)} active={card.visibility.company} onToggle={() => toggle('company')} />
-        <Field label="Partita IVA" value={card.vat} onChange={(v) => update('vat', v)} active={card.visibility.vat} onToggle={() => toggle('vat')} premium="Premium" />
-        <Field label="Indirizzo" value={card.address} onChange={(v) => update('address', v)} active={card.visibility.address} onToggle={() => toggle('address')} premium="Premium" />
-        <Field label="Google Maps" value={card.maps} onChange={(v) => update('maps', v)} active={card.visibility.maps} onToggle={() => toggle('maps')} premium="Premium" />
-      </FormSection>
-
-      <FormSection title="Social e stile">
-        <Field label="LinkedIn" value={card.linkedin} onChange={(v) => update('linkedin', v)} active={card.visibility.linkedin} onToggle={() => toggle('linkedin')} premium="Premium" />
-        <Field label="Instagram" value={card.instagram} onChange={(v) => update('instagram', v)} active={card.visibility.instagram} onToggle={() => toggle('instagram')} premium="Premium" />
-        <label>Colore accento<input type="color" value={card.accent} onChange={(e) => update('accent', e.target.value)} /></label>
-      </FormSection>
-    </div>
-  )
-}
-
-function Field({ label, value, onChange, active, onToggle, textarea, premium, locked }) {
-  return (
-    <label className="field-with-toggle">
-      <span className="field-line"><span>{label}</span>{premium && <em>{premium}</em>}{!locked && <button type="button" className={`toggle ${active ? 'on' : ''}`} onClick={onToggle}>{active ? 'Mostra' : 'Nascondi'}</button>}</span>
-      {textarea ? <textarea value={value} onChange={(e) => onChange(e.target.value)} /> : <input value={value} onChange={(e) => onChange(e.target.value)} />}
-    </label>
-  )
-}
-
-function FormSection({ title, children }) {
-  return <section className="form-section"><h2>{title}</h2><div className="form-grid">{children}</div></section>
-}
-
-function SharePage({ card, setActive, flash }) {
-  const message = useMemo(() => buildSmartShare(card), [card])
-  const qr = `https://api.qrserver.com/v1/create-qr-code/?size=520x520&data=${encodeURIComponent(card.url)}`
-  const mail = `mailto:${card.email}?subject=${encodeURIComponent(card.name + ' - scheda digitale')}&body=${encodeURIComponent(message)}`
-  const wa = `https://wa.me/${cleanPhone(card.whatsapp)}?text=${encodeURIComponent(message)}`
-
-  return (
-    <div className="page-panel">
-      <div className="section-heading"><span className="eyebrow">Smart Share</span><h1>Condividi la scheda completa</h1><p>WhatsApp ed email usano solo i campi attivi e compilati. Nessun dato vuoto viene mostrato.</p><strong className="active-pill">Display Control attivo</strong></div>
-      <div className="share-grid smart-share-grid">
-        <div className="qr-box"><img src={qr} alt="QR code myVeicolo" /><strong>QR pubblico</strong><span>{card.url}</span></div>
-        <div className="share-box">
-          <label>Messaggio generato</label>
-          <pre className="message-preview">{message}</pre>
-          <button onClick={() => { copyText(message); flash('Scheda completa copiata') }}>Copia scheda completa</button>
-          <button className="soft-button" onClick={() => { copyText(card.email); flash('Email copiata') }}>Copia email</button>
-          <button className="soft-button" onClick={() => { copyText(card.whatsapp); flash('Numero copiato') }}>Copia numero</button>
-          <a className="soft-link" href={mail}>Invia email</a>
-          <a className="soft-link" href={wa} target="_blank" rel="noreferrer">WhatsApp con testo</a>
-          <button className="soft-button" onClick={() => setActive('public')}>Apri card</button>
+        <div className="feature-grid">
+          <Feature n="01" title="Crea" text="Parti da una card demo o crea una nuova bozza." />
+          <Feature n="02" title="Controlla" text="Ogni dato può essere visibile, nascosto o non compilato." />
+          <Feature n="03" title="Condividi" text="Invia una scheda completa via WhatsApp, email o QR code." />
         </div>
+        <section className="logic-panel">
+          <span className="eyebrow">La logica di partenza</span>
+          <h2>Prima il prodotto visibile. Dopo database e login.</h2>
+          <p>Questa versione valida struttura, grafica e valore commerciale. Dopo l’approvazione collegheremo Supabase, utenti, database e salvataggio reale.</p>
+        </section>
+      </section>
+      <PreviewPanel card={card} visibility={visibility} />
+    </div>
+  )
+}
+
+function Feature({ n, title, text }) {
+  return (
+    <div className="feature">
+      <span>{n}</span>
+      <h3>{title}</h3>
+      <p>{text}</p>
+    </div>
+  )
+}
+
+function CardsPage({ navigate, card }) {
+  return (
+    <div className="main-grid">
+      <section className="page-panel">
+        <div className="page-head">
+          <span className="eyebrow">Cards</span>
+          <h2>Le tue digital card</h2>
+          <button className="btn dark" onClick={() => alert('Nuova card demo creata a video. Il salvataggio reale arriverà con Supabase.')}><Plus size={18} /> Nuova card demo</button>
+        </div>
+        <div className="card-row">
+          <div className="mini-logo">MV</div>
+          <div>
+            <strong>{card.name}</strong>
+            <p>{card.headline}</p>
+          </div>
+          <span className="badge cyan">Pubblica</span>
+        </div>
+        <div className="actions-row">
+          <button className="btn dark" onClick={() => navigate('editor')}>Modifica</button>
+          <button className="btn light" onClick={() => navigate('share')}>Smart Share</button>
+          <button className="btn light" onClick={() => navigate('public')}>Apri card</button>
+        </div>
+        <div className="metrics-grid">
+          <Metric label="Tipo" value="Prodotto digitale" />
+          <Metric label="Stato" value="Demo attiva" />
+          <Metric label="Versione" value="V0.3.4" />
+        </div>
+      </section>
+      <PreviewPanel card={card} visibility={initialVisibility} />
+    </div>
+  )
+}
+
+function Metric({ label, value }) {
+  return <div className="metric"><span>{label}</span><strong>{value}</strong></div>
+}
+
+function EditorPage({ card, visibility, updateField, toggleVisibility, stats, navigate }) {
+  return (
+    <div className="main-grid">
+      <section className="page-panel">
+        <div className="page-head">
+          <div>
+            <span className="eyebrow">Editor</span>
+            <h2>Display Control</h2>
+            <p>Decidi cosa mostrare. I campi vuoti non compaiono mai nella card o nello Smart Share.</p>
+          </div>
+          <button className="btn dark" onClick={() => navigate('public')}>Pubblica · demo</button>
+        </div>
+
+        <div className="visibility-summary">
+          <SummaryItem icon={<Eye size={18} />} label="Visibili" value={stats.visible} />
+          <SummaryItem icon={<EyeOff size={18} />} label="Nascosti" value={stats.hidden} />
+          <SummaryItem icon={<CircleOff size={18} />} label="Non compilati" value={stats.empty} />
+        </div>
+
+        <EditorSection title="Identità">
+          <ControlField k="logoText" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
+          <ControlField k="name" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
+          <ControlField k="claim" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
+          <ControlField k="motto" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
+        </EditorSection>
+
+        <EditorSection title="Hero pubblico">
+          <ControlField k="headline" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
+          <ControlField k="description" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} textarea />
+        </EditorSection>
+
+        <EditorSection title="Contatti">
+          <ControlField k="website" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
+          <ControlField k="email" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
+          <ControlField k="phone" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
+          <ControlField k="whatsapp" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
+        </EditorSection>
+
+        <EditorSection title="Azienda e Premium">
+          <ControlField k="company" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
+          <ControlField k="vat" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
+          <ControlField k="address" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
+          <ControlField k="maps" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
+          <ControlField k="linkedin" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
+          <ControlField k="instagram" card={card} visibility={visibility} updateField={updateField} toggleVisibility={toggleVisibility} />
+        </EditorSection>
+      </section>
+      <PreviewPanel card={card} visibility={visibility} />
+    </div>
+  )
+}
+
+function SummaryItem({ icon, label, value }) {
+  return <div className="summary-item">{icon}<span>{label}</span><strong>{value}</strong></div>
+}
+
+function EditorSection({ title, children }) {
+  return (
+    <section className="editor-section">
+      <h3>{title}</h3>
+      <div className="field-grid">{children}</div>
+    </section>
+  )
+}
+
+function ControlField({ k, card, visibility, updateField, toggleVisibility, textarea }) {
+  const filled = hasValue(card[k])
+  const shown = visibility[k] && filled
+  const hidden = !visibility[k] && filled
+
+  return (
+    <div className={`control-field ${shown ? 'is-visible' : ''} ${hidden ? 'is-hidden' : ''} ${!filled ? 'is-empty' : ''}`}>
+      <div className="field-top">
+        <div>
+          <strong>{fieldLabels[k]}</strong>
+          {premiumFields.has(k) && <span className="premium-chip">Premium</span>}
+          {!premiumFields.has(k) && <span className="free-chip">Free</span>}
+        </div>
+        <div className="status-badge">
+          {!filled ? 'Non compilato' : visibility[k] ? 'Visibile' : 'Nascosto'}
+        </div>
+      </div>
+      <div className="segmented">
+        <button
+          className={visibility[k] ? 'selected' : ''}
+          onClick={() => toggleVisibility(k, true)}
+          type="button"
+          disabled={!filled}
+        >
+          <Eye size={15} /> Visibile
+        </button>
+        <button
+          className={!visibility[k] ? 'selected' : ''}
+          onClick={() => toggleVisibility(k, false)}
+          type="button"
+          disabled={!filled}
+        >
+          <EyeOff size={15} /> Nascosto
+        </button>
+      </div>
+      {textarea ? (
+        <textarea value={card[k]} onChange={e => updateField(k, e.target.value)} placeholder={`Inserisci ${fieldLabels[k].toLowerCase()}`} />
+      ) : (
+        <input value={card[k]} onChange={e => updateField(k, e.target.value)} placeholder={`Inserisci ${fieldLabels[k].toLowerCase()}`} />
+      )}
+    </div>
+  )
+}
+
+function SharePage({ card, visibility, smartShare, copy, navigate }) {
+  return (
+    <div className="main-grid">
+      <section className="page-panel">
+        <div className="page-head">
+          <div>
+            <span className="eyebrow">Smart Share</span>
+            <h2>Condividi la scheda completa</h2>
+            <p>WhatsApp, email e copia includono solo i campi visibili e compilati.</p>
+          </div>
+          <span className="badge cyan">Display Control attivo</span>
+        </div>
+
+        <div className="share-layout">
+          <div className="qr-card">
+            <div className="qr-fake">
+              <div></div><div></div><div></div><div></div>
+            </div>
+            <strong>QR pubblico</strong>
+            <span>{card.website}</span>
+          </div>
+          <div className="share-box">
+            <span>Messaggio generato</span>
+            <pre>{smartShare}</pre>
+            <div className="share-actions">
+              <button className="btn dark" onClick={() => copy(smartShare, 'Scheda completa')}><Copy size={17} /> Copia scheda completa</button>
+              <button className="btn light" onClick={() => copy(card.email, 'Email')}><Copy size={17} /> Copia email</button>
+              <button className="btn light" onClick={() => copy(card.phone, 'Numero')}><Copy size={17} /> Copia numero</button>
+              <a className="btn light" href={mailtoLink(card, visibility)}><Mail size={17} /> Invia email</a>
+              <a className="btn light" href={whatsappLink(card, visibility)} target="_blank" rel="noreferrer"><MessageCircle size={17} /> WhatsApp</a>
+              <button className="btn light" onClick={() => navigate('public')}><ExternalLink size={17} /> Apri card</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <PreviewPanel card={card} visibility={visibility} />
+    </div>
+  )
+}
+
+function PreviewPanel({ card, visibility }) {
+  return (
+    <aside className="preview-panel">
+      <div className="preview-header">
+        <span>Anteprima smartphone</span>
+        <strong>{card.name}</strong>
+      </div>
+      <PhoneCard card={card} visibility={visibility} compact />
+    </aside>
+  )
+}
+
+function PhoneCard({ card, visibility, compact = false }) {
+  return (
+    <div className={`phone-card ${compact ? 'compact' : ''}`} style={{ '--accent': card.accent }}>
+      <div className="phone-glow" />
+      <div className="phone-top">
+        {visibleValue(card, visibility, 'logoText') && <div className="phone-logo">{card.logoText}</div>}
+        <span className="beta">BETA</span>
+      </div>
+      {visibleValue(card, visibility, 'claim') && <p className="phone-claim">{card.claim}</p>}
+      {visibleValue(card, visibility, 'headline') && <h3>{card.headline}</h3>}
+      {visibleValue(card, visibility, 'description') && <p className="phone-desc">{card.description}</p>}
+      <div className="phone-actions">
+        {visibleValue(card, visibility, 'website') && <a href={card.website} target="_blank" rel="noreferrer">Visita il sito</a>}
+        {visibleValue(card, visibility, 'whatsapp') && <a href={whatsappLink(card, visibility)} target="_blank" rel="noreferrer">WhatsApp</a>}
+      </div>
+      <div className="phone-features">
+        <InfoCard title="Costi" text="Spese, manutenzioni, carburante, rate e leasing sempre sotto controllo." />
+        <InfoCard title="Scadenze" text="Assicurazione, bollo, revisione e collaudi in un’unica vista." />
+        <InfoCard title="Consumi" text="Analisi chiara dei consumi anche per benzina, diesel, GPL, metano, ibridi ed elettrici." />
       </div>
     </div>
   )
 }
 
-function ComingSoon({ page }) {
-  const labels = { wallet: 'Wallet', analytics: 'Analytics', branding: 'Branding', contacts: 'Contacts', settings: 'Settings' }
-  return (
-    <div className="page-panel coming-panel"><span className="eyebrow">Coming soon</span><h1>{labels[page]}</h1><p>Questa area sarà attivata dopo la validazione del prototipo e l’integrazione con database, login e salvataggio reale.</p><div className="roadmap-list">{roadmap[page].map((item, index) => <article key={item}><span>{String(index + 1).padStart(2, '0')}</span><strong>{item}</strong></article>)}</div></div>
-  )
+function InfoCard({ title, text }) {
+  return <div className="info-card"><strong>{title}</strong><p>{text}</p></div>
 }
 
-function PhonePreview({ card }) {
+function PublicCard({ card, visibility, back }) {
+  const smartShare = buildSmartShare(card, visibility)
   return (
-    <section className="phone-preview">
-      <div className="preview-head"><span>Anteprima smartphone</span><strong>{card.name}</strong></div>
-      <div className="device"><div className="device-screen">
-        <div className="phone-top">{isVisible(card, 'logo') && <div className="mv-badge">{card.logoText}</div>}<span>BETA</span></div>
-        {isVisible(card, 'claim') && <p className="phone-claim">{card.claim}</p>}
-        {isVisible(card, 'headline') && <h2>{card.headline}</h2>}
-        {isVisible(card, 'description') && <p className="phone-copy">{card.description}</p>}
-        <div className="phone-buttons">
-          {isVisible(card, 'url') && <a href={card.url} target="_blank" rel="noreferrer">Visita il sito</a>}
-          {isVisible(card, 'whatsapp') && <a className="dark" href={`https://wa.me/${cleanPhone(card.whatsapp)}?text=${encodeURIComponent(buildSmartShare(card))}`} target="_blank" rel="noreferrer">WhatsApp</a>}
+    <section className="public-wrap">
+      <button className="btn light back-btn" onClick={back}><ArrowLeft size={18} /> Torna al Card Creator</button>
+      <div className="public-card">
+        <PhoneCard card={card} visibility={visibility} />
+        <div className="public-extra">
+          <h2>Utile per</h2>
+          <div className="tag-list">
+            <span>Famiglie con più veicoli</span>
+            <span>Professionisti</span>
+            <span>Appassionati auto e moto</span>
+            <span>Piccole flotte</span>
+          </div>
+          <div className="public-links">
+            {visibleValue(card, visibility, 'email') && <a href={mailtoLink(card, visibility)}>{card.email}</a>}
+            {visibleValue(card, visibility, 'website') && <a href={card.website} target="_blank" rel="noreferrer">{card.website}</a>}
+            {visibleValue(card, visibility, 'phone') && <a href={`tel:${normalizePhone(card.phone)}`}>{card.phone}</a>}
+            {visibleValue(card, visibility, 'maps') && <a href={card.maps} target="_blank" rel="noreferrer">Apri posizione Google Maps</a>}
+          </div>
+          <button className="btn dark" onClick={() => copyText(smartShare)}>Copia scheda completa</button>
         </div>
-        <VisibleContactList card={card} compact />
-        <div className="phone-features">{card.features.map(([title, desc]) => <article key={title}><strong>{title}</strong><p>{desc}</p></article>)}</div>
-      </div></div>
+      </div>
     </section>
   )
 }
 
-function VisibleContactList({ card, compact = false }) {
-  const items = [
-    ['company', 'Azienda', card.company], ['vat', 'P.IVA', card.vat], ['address', 'Indirizzo', card.address], ['maps', 'Google Maps', card.maps],
-    ['email', 'Email', card.email], ['phone', 'Telefono', card.phone], ['whatsapp', 'WhatsApp', card.whatsapp], ['linkedin', 'LinkedIn', card.linkedin], ['instagram', 'Instagram', card.instagram]
-  ].filter(([key]) => isVisible(card, key))
-  if (!items.length) return null
-  return <div className={compact ? 'visible-list compact' : 'visible-list'}>{items.map(([key, label, value]) => <div key={key}><span>{label}</span><strong>{value}</strong></div>)}</div>
-}
-
-function PublicCard({ card, setActive, flash }) {
-  const message = buildSmartShare(card)
+function ComingSoon({ title, items }) {
   return (
-    <div className="public-page">
-      <button className="back-button" onClick={() => setActive('home')}>← Torna al Card Creator</button>
-      <main className="public-card">
-        <section className="public-hero">
-          <div className="road-light" />
-          <div className="phone-top">{isVisible(card, 'logo') && <div className="mv-badge">{card.logoText}</div>}<span>BETA</span></div>
-          {isVisible(card, 'claim') && <p>{card.claim}</p>}
-          {isVisible(card, 'headline') && <h1>{card.headline}</h1>}
-          {isVisible(card, 'description') && <p className="public-copy">{card.description}</p>}
-          <div className="phone-buttons">
-            {isVisible(card, 'url') && <a href={card.url} target="_blank" rel="noreferrer">Visita il sito</a>}
-            {isVisible(card, 'whatsapp') && <a className="dark" href={`https://wa.me/${cleanPhone(card.whatsapp)}?text=${encodeURIComponent(message)}`} target="_blank" rel="noreferrer">WhatsApp</a>}
-          </div>
-        </section>
-        <section className="public-section"><span className="eyebrow">Scheda digitale</span><h2>{isVisible(card, 'motto') ? card.motto : 'Informazioni essenziali, pulite e sempre condivisibili.'}</h2><VisibleContactList card={card} /></section>
-        <section className="public-section feature-public-grid">{card.features.map(([title, desc]) => <article key={title}><strong>{title}</strong><p>{desc}</p></article>)}</section>
-        <section className="public-section"><h2>Utile per</h2><div className="tag-list">{card.audience.map(item => <span key={item}>{item}</span>)}</div></section>
-        <footer className="public-footer">
-          <button onClick={() => { copyText(message); flash('Scheda completa copiata') }}>Copia scheda completa</button>
-          {isVisible(card, 'email') && <a href={`mailto:${card.email}?subject=${encodeURIComponent(card.name)}&body=${encodeURIComponent(message)}`}>{card.email}</a>}
-          {isVisible(card, 'url') && <a href={card.url} target="_blank" rel="noreferrer">{card.url}</a>}
-        </footer>
-      </main>
+    <div className="main-grid coming-grid">
+      <section className="page-panel coming">
+        <span className="eyebrow">Coming soon</span>
+        <h2>{title}</h2>
+        <p>Questa area sarà attivata dopo la validazione del prototipo e l’integrazione con database, login e salvataggio reale.</p>
+        <div className="roadmap">
+          {items.map((item, index) => (
+            <div key={item} className="roadmap-item">
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <strong>{item}</strong>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   )
 }
