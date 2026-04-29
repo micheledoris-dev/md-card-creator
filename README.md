@@ -1,28 +1,17 @@
-# md|studios Card Creator — V0.3.6
+# md|studios Card Creator — V0.3.6.1
 
-Versione **Salvataggio locale + QR reale + Display Control**.
+Hotfix: **motto aziendale visibile nella preview telefono e nella public card**.
 
-## Novità principali
+## Correzioni
 
-- Salvataggio automatico nel browser con `localStorage`.
-- Le modifiche non si perdono più al refresh.
-- Pulsante `Salva demo`.
-- Pulsante `Ripristina demo`.
-- Display Control:
-  - Visibile
-  - Nascosto
-  - Non compilato
-- Smart Share usa solo campi visibili e compilati.
-- QR reale generato dal link pubblico della card.
-- Public Card senza campi vuoti.
-- Pulsante `← Torna al Card Creator`.
+- Il campo `Motto aziendale`, se compilato e impostato su `Visibile`, ora compare anche nella preview smartphone.
+- La Public Card usa la stessa logica della preview.
+- Smart Share continua a includere solo campi visibili e compilati.
+- Salvataggio locale invariato.
+- QR reale invariato.
+- Display Control invariato.
 
 ## Nota
 
-Questa versione salva solo nel browser/dispositivo usato.  
-Il salvataggio vero multiutente arriverà con Supabase.
-
-## Build Netlify
-
-- Build command: `npm run build`
-- Publish directory: `dist`
+Le modifiche salvate sono locali al browser/dispositivo usato.  
+La sincronizzazione tra PC e iPhone arriverà con Supabase.

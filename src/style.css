@@ -397,3 +397,16 @@ textarea { min-height: 110px; resize: vertical; }
     flex: 1;
   }
 }
+
+
+.phone-motto {
+  margin: 18px 0 4px;
+  padding: 13px 15px;
+  border-left: 3px solid var(--accent);
+  border-radius: 14px;
+  background: rgba(0, 229, 255, .08);
+  color: #eaffff;
+  font-weight: 900;
+  line-height: 1.35;
+  text-transform: none;
+}

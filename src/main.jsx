@@ -275,7 +275,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.3.6 · salvataggio locale</span>
+              <span className="eyebrow">MVP 0.3.6.1 · hotfix motto</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -380,7 +380,7 @@ function HomePage({ navigate, card, visibility }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.3.6 · salvataggio locale</span>
+          <span className="eyebrow">MVP 0.3.6.1 · hotfix motto</span>
           <h2>Digital card premium, costruite come mini siti personali.</h2>
           <p>Smart Share, QR code, link pubblico, anteprima smartphone e controllo preciso dei campi visibili.</p>
           <div className="hero-actions">
@@ -444,7 +444,7 @@ function CardsPage({ navigate, card, visibility }) {
         <div className="metrics-grid">
           <Metric label="Tipo" value="Prodotto digitale" />
           <Metric label="Stato" value="Demo attiva" />
-          <Metric label="Versione" value="V0.3.6" />
+          <Metric label="Versione" value="V0.3.6.1" />
         </div>
       </section>
       <PreviewPanel card={card} visibility={visibility} />
@@ -673,6 +673,7 @@ function PhoneCard({ card, visibility, compact = false }) {
       {visibleValue(card, visibility, 'claim') && <p className="phone-claim">{card.claim}</p>}
       {visibleValue(card, visibility, 'headline') && <h3>{card.headline}</h3>}
       {visibleValue(card, visibility, 'description') && <p className="phone-desc">{card.description}</p>}
+      {visibleValue(card, visibility, 'motto') && <div className="phone-motto">{card.motto}</div>}
       <div className="phone-actions">
         {visibleValue(card, visibility, 'website') && <a href={card.website} target="_blank" rel="noreferrer">Visita il sito</a>}
         {visibleValue(card, visibility, 'whatsapp') && <a href={whatsappLink(card, visibility)} target="_blank" rel="noreferrer">WhatsApp</a>}
