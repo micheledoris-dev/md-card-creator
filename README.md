@@ -1,34 +1,15 @@
-# md|studios Card Creator — V0.3.8
+# md|studios Card Creator — V0.3.8.1
 
-Versione **rifinitura prodotto prima di Supabase**.
+Hotfix: **Cards page fix**.
 
-## Obiettivo
+## Correzioni
 
-Rendere la demo multi-card più ordinata, più leggibile e più pronta per il passaggio successivo: database, account e salvataggio reale.
-
-## Novità principali
-
-- Home più commerciale.
-- Lista card più professionale.
-- Pulsanti rapidi per ogni card:
-  - Seleziona
-  - Editor
-  - Smart Share
-  - Public Card
-- Editor riordinato in sezioni più chiare:
-  - Template
-  - Identità
-  - Contenuto principale
-  - Contatti
-  - Azienda
-  - Social / Premium
-- Box `Preparazione Supabase` con struttura futura:
-  - Workspace
-  - Template
-  - Card
-  - Campi
-  - Visibilità
-- Preview più compatta su desktop.
+- Risolto bug pagina `Cards` che poteva diventare vuota.
+- Rimossa dipendenza da componente metrica non definito nella pagina Cards.
+- Cards page ora mostra direttamente:
+  - campi visibili
+  - slug
+  - stato demo locale
 - Mantiene:
   - Multi Card / Multi Template
   - QR reale
@@ -37,11 +18,8 @@ Rendere la demo multi-card più ordinata, più leggibile e più pronta per il pa
   - Salvataggio locale
   - Salva demo
   - Ripristina
-
-## Limite attuale
-
-Il salvataggio è ancora locale al browser/dispositivo.  
-La sincronizzazione multiutente arriverà con Supabase.
+  - Desktop Layout Fix
+  - Preparazione Supabase
 
 ## Build Netlify
 

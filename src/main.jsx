@@ -396,7 +396,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.3.8 · rifinitura prodotto</span>
+              <span className="eyebrow">MVP 0.3.8.1 · Cards fix</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -476,7 +476,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.3.8 · prototipo multi-card</span>
+          <span className="eyebrow">MVP 0.3.8.1 · prototipo multi-card</span>
           <h2>Crea, gestisci e condividi molte digital card da un’unica piattaforma.</h2>
           <p>Ogni card può avere dati, template, QR, Smart Share e campi visibili diversi. Pensata per professionisti, aziende, team, prodotti ed eventi.</p>
           <div className="hero-actions">
@@ -563,9 +563,9 @@ function CardsPage({ navigate, cards, activeId, selectCard, createDemoCard, rese
                   <span className={`badge ${card.id === activeId ? 'cyan' : ''}`}>{card.id === activeId ? 'Attiva' : 'Seleziona'}</span>
                 </button>
                 <div className="card-pro-meta">
-                  <Metric label="Campi visibili" value={visibleCount} />
-                  <Metric label="Slug" value={card.slug} />
-                  <Metric label="Stato" value="Demo locale" />
+                  <div className="metric"><span>Campi visibili</span><strong>{visibleCount}</strong></div>
+                  <div className="metric"><span>Slug</span><strong>{card.slug}</strong></div>
+                  <div className="metric"><span>Stato</span><strong>Demo locale</strong></div>
                 </div>
                 <div className="quick-actions">
                   <button className="btn light" onClick={() => openFor(card.id, 'editor')}>Editor</button>
