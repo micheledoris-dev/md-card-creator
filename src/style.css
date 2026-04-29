@@ -335,3 +335,38 @@ textarea { min-height: 110px; resize: vertical; }
   .phone-card h3 { font-size: 34px; }
   .public-card { padding: 16px; border-radius: 26px; }
 }
+
+
+.real-qr {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+}
+.real-qr img {
+  width: min(100%, 260px);
+  height: auto;
+  display: block;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid #e5e3dc;
+  padding: 12px;
+}
+.qr-loading {
+  width: 260px;
+  height: 260px;
+  border-radius: 18px;
+  background: #f2f1ed;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  color: #777;
+}
+.qr-actions {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+}
+.real-qr .btn:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}

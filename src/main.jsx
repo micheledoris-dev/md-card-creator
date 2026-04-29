@@ -1,5 +1,5 @@
 
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import {
   Home,
@@ -25,6 +25,7 @@ import {
   CheckCircle2,
   CircleOff
 } from 'lucide-react'
+import QRCode from 'qrcode'
 import './style.css'
 
 const initialCard = {
@@ -99,6 +100,11 @@ function visibleValue(card, visibility, key) {
   return Boolean(visibility[key] && hasValue(card[key]))
 }
 
+function getPublicCardUrl() {
+  if (typeof window === 'undefined') return 'https://md-card-creator.netlify.app/?card=myveicolo'
+  return `${window.location.origin}${window.location.pathname}?card=myveicolo`
+}
+
 function buildSmartShare(card, visibility) {
   const lines = []
 
@@ -143,7 +149,7 @@ function buildSmartShare(card, visibility) {
 
   lines.push('')
   lines.push('🔗 Card digitale:')
-  lines.push(card.website || 'https://md-card-creator.netlify.app')
+  lines.push(getPublicCardUrl())
 
   return lines.filter(Boolean).join('\n')
 }
@@ -176,7 +182,7 @@ async function copyText(text) {
 }
 
 function App() {
-  const [active, setActive] = useState('home')
+  const [active, setActive] = useState(() => new URLSearchParams(window.location.search).get('card') === 'myveicolo' ? 'public' : 'home')
   const [menuOpen, setMenuOpen] = useState(false)
   const [lastPanel, setLastPanel] = useState('home')
   const [card, setCard] = useState(initialCard)
@@ -225,7 +231,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.3.4 · Display Control</span>
+              <span className="eyebrow">MVP 0.3.5 · QR reale</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -328,7 +334,7 @@ function HomePage({ navigate, card, visibility }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.3.4 · prototipo vendibile</span>
+          <span className="eyebrow">MVP 0.3.5 · QR reale</span>
           <h2>Digital card premium, costruite come mini siti personali.</h2>
           <p>Smart Share, QR code, link pubblico, anteprima smartphone e controllo preciso dei campi visibili.</p>
           <div className="hero-actions">
@@ -392,7 +398,7 @@ function CardsPage({ navigate, card }) {
         <div className="metrics-grid">
           <Metric label="Tipo" value="Prodotto digitale" />
           <Metric label="Stato" value="Demo attiva" />
-          <Metric label="Versione" value="V0.3.4" />
+          <Metric label="Versione" value="V0.3.5" />
         </div>
       </section>
       <PreviewPanel card={card} visibility={initialVisibility} />
@@ -514,6 +520,7 @@ function ControlField({ k, card, visibility, updateField, toggleVisibility, text
 }
 
 function SharePage({ card, visibility, smartShare, copy, navigate }) {
+  const publicUrl = getPublicCardUrl()
   return (
     <div className="main-grid">
       <section className="page-panel">
@@ -528,11 +535,12 @@ function SharePage({ card, visibility, smartShare, copy, navigate }) {
 
         <div className="share-layout">
           <div className="qr-card">
-            <div className="qr-fake">
-              <div></div><div></div><div></div><div></div>
-            </div>
+            <RealQr value={publicUrl} name={card.name} />
             <strong>QR pubblico</strong>
-            <span>{card.website}</span>
+            <span>{publicUrl}</span>
+            <div className="qr-actions">
+              <button className="btn light" onClick={() => copy(publicUrl, 'Link card')}>Copia link card</button>
+            </div>
           </div>
           <div className="share-box">
             <span>Messaggio generato</span>
@@ -552,6 +560,42 @@ function SharePage({ card, visibility, smartShare, copy, navigate }) {
     </div>
   )
 }
+
+
+function RealQr({ value, name }) {
+  const [qrData, setQrData] = useState('')
+
+  useEffect(() => {
+    let active = true
+    QRCode.toDataURL(value, {
+      width: 520,
+      margin: 2,
+      color: {
+        dark: '#000000',
+        light: '#ffffff'
+      }
+    }).then((url) => {
+      if (active) setQrData(url)
+    })
+    return () => { active = false }
+  }, [value])
+
+  const downloadQr = () => {
+    if (!qrData) return
+    const a = document.createElement('a')
+    a.href = qrData
+    a.download = `${(name || 'digital-card').toLowerCase().replace(/[^a-z0-9]+/g, '-')}-qr.png`
+    a.click()
+  }
+
+  return (
+    <div className="real-qr">
+      {qrData ? <img src={qrData} alt={`QR code ${name}`} /> : <div className="qr-loading">Genero QR…</div>}
+      <button className="btn dark" onClick={downloadQr} disabled={!qrData}>Scarica QR</button>
+    </div>
+  )
+}
+
 
 function PreviewPanel({ card, visibility }) {
   return (
