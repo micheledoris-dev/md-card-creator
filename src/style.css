@@ -317,3 +317,137 @@ textarea { min-height: 110px; resize: vertical; }
     margin: 0 auto;
   }
 }
+
+
+/* V0.3.8 — Rifinitura prodotto */
+.supabase-panel {
+  margin-top: 22px;
+  border: 1px solid #d9d8d2;
+  background: linear-gradient(135deg, #fff, #f0efeb);
+  border-radius: 28px;
+  padding: 26px;
+  display: grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap: 18px;
+  align-items: center;
+}
+
+.supabase-panel h3 {
+  margin: 10px 0 10px;
+}
+
+.data-model {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.data-model span {
+  background: #111;
+  color: #fff;
+  border-radius: 999px;
+  padding: 11px 14px;
+  font-weight: 900;
+  font-size: 13px;
+}
+
+.cards-list.refined {
+  gap: 18px;
+}
+
+.card-row-pro {
+  border: 1px solid #deddd7;
+  border-radius: 28px;
+  background: #fff;
+  padding: 16px;
+}
+
+.card-row-pro.selected {
+  border-color: #111;
+  box-shadow: 0 0 0 4px rgba(0,0,0,.06);
+}
+
+.card-main-action {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 58px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.card-main-action p {
+  margin: 4px 0;
+  font-size: 15px;
+}
+
+.card-main-action span {
+  color: #777;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.card-pro-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.card-pro-meta .metric {
+  padding: 16px;
+  border-radius: 18px;
+  background: #f7f6f2;
+}
+
+.card-pro-meta .metric strong {
+  font-size: 16px;
+  word-break: break-word;
+}
+
+.quick-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.quick-actions .btn {
+  min-height: 42px;
+  padding: 11px 16px;
+}
+
+@media (max-width: 1050px) {
+  .supabase-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .card-main-action {
+    grid-template-columns: 54px 1fr;
+  }
+
+  .card-main-action .badge {
+    grid-column: 1 / -1;
+    width: fit-content;
+  }
+
+  .card-pro-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-actions .btn {
+    flex: 1;
+  }
+}
+
+@media (min-width: 1251px) {
+  .preview-panel {
+    width: 330px;
+  }
+
+  .main-grid {
+    grid-template-columns: minmax(0, 1fr) 330px;
+  }
+}

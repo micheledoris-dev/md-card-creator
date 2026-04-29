@@ -396,7 +396,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.3.7.3 · Salva demo</span>
+              <span className="eyebrow">MVP 0.3.8 · rifinitura prodotto</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -476,9 +476,9 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.3.7.3 · prototipo multi-card</span>
-          <h2>Una piattaforma per creare molte card, non una card sola.</h2>
-          <p>Gestisci card diverse, template diversi, QR e Smart Share collegati alla card attiva. Prima demo locale, poi database e account con Supabase.</p>
+          <span className="eyebrow">MVP 0.3.8 · prototipo multi-card</span>
+          <h2>Crea, gestisci e condividi molte digital card da un’unica piattaforma.</h2>
+          <p>Ogni card può avere dati, template, QR, Smart Share e campi visibili diversi. Pensata per professionisti, aziende, team, prodotti ed eventi.</p>
           <div className="hero-actions">
             <button className="btn dark" onClick={() => navigate('cards')}><Layers size={18} /> Gestisci card</button>
             <button className="btn light" onClick={createDemoCard}><Plus size={18} /> Nuova card demo</button>
@@ -491,15 +491,30 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
         </div>
 
         <div className="feature-grid">
-          <Feature n="01" title="Template" text="Automotive, personale, creativo, corporate, hospitality." />
-          <Feature n="02" title="Card" text={`In demo ci sono ${cards.length} card gestibili e modificabili.`} />
-          <Feature n="03" title="Workspace" text="La struttura futura supporta aziende, team e utenti." />
+          <Feature n="01" title="Template" text="Stili diversi per persone, aziende, prodotti, eventi e hospitality." />
+          <Feature n="02" title="Card" text={`Gestisci ${cards.length} card demo, ognuna con dati e QR dedicati.`} />
+          <Feature n="03" title="Workspace" text="La struttura futura supporta aziende, reparti, utenti e permessi." />
         </div>
 
         <section className="logic-panel">
           <span className="eyebrow">Scopo prodotto</span>
           <h2>Per aziende con 50 card. Per admin con 30 template diversi.</h2>
           <p>La direzione commerciale è chiara: creare, duplicare e gestire molte card da un’unica piattaforma, con dati visibili/nascosti e messaggi Smart Share completi.</p>
+        </section>
+
+        <section className="supabase-panel">
+          <div>
+            <span className="eyebrow">Preparazione Supabase</span>
+            <h3>La demo è già pensata per database e account.</h3>
+            <p>Il prossimo salto sarà salvare tutto su account: workspace, template, card, campi e visibilità.</p>
+          </div>
+          <div className="data-model">
+            <span>Workspace</span>
+            <span>Template</span>
+            <span>Card</span>
+            <span>Fields</span>
+            <span>Visibility</span>
+          </div>
         </section>
       </section>
       <PreviewPanel card={card} />
@@ -512,6 +527,11 @@ function Feature({ n, title, text }) {
 }
 
 function CardsPage({ navigate, cards, activeId, selectCard, createDemoCard, resetDemo }) {
+  const openFor = (cardId, panel) => {
+    selectCard(cardId)
+    navigate(panel)
+  }
+
   return (
     <div className="main-grid">
       <section className="page-panel">
@@ -519,7 +539,7 @@ function CardsPage({ navigate, cards, activeId, selectCard, createDemoCard, rese
           <div>
             <span className="eyebrow">Cards</span>
             <h2>Gestione multi-card</h2>
-            <p>Scegli la card attiva. Editor, QR, Smart Share e Public Card cambiano in base alla selezione.</p>
+            <p>Scegli la card attiva. Ogni card ha template, QR, Smart Share e Display Control dedicati.</p>
           </div>
           <div className="editor-actions">
             <button className="btn dark" onClick={createDemoCard}><Plus size={18} /> Nuova card demo</button>
@@ -527,24 +547,34 @@ function CardsPage({ navigate, cards, activeId, selectCard, createDemoCard, rese
           </div>
         </div>
 
-        <div className="cards-list">
-          {cards.map(card => (
-            <button key={card.id} className={`card-row card-button ${card.id === activeId ? 'selected' : ''}`} onClick={() => selectCard(card.id)}>
-              <div className="mini-logo" style={{ borderColor: templates[card.template]?.accent, color: templates[card.template]?.accent }}>{card.logoText || 'DC'}</div>
-              <div>
-                <strong>{card.name}</strong>
-                <p>{card.headline}</p>
-                <span>{templates[card.template]?.name} · {templates[card.template]?.category}</span>
+        <div className="cards-list refined">
+          {cards.map(card => {
+            const template = templates[card.template] || templates.automotive
+            const visibleCount = Object.keys(fieldLabels).filter(k => visibleValue(card, k)).length
+            return (
+              <div key={card.id} className={`card-row-pro ${card.id === activeId ? 'selected' : ''}`}>
+                <button className="card-main-action" onClick={() => selectCard(card.id)}>
+                  <div className="mini-logo" style={{ borderColor: template.accent, color: template.accent }}>{card.logoText || 'DC'}</div>
+                  <div>
+                    <strong>{card.name}</strong>
+                    <p>{card.headline}</p>
+                    <span>{template.name} · {template.category}</span>
+                  </div>
+                  <span className={`badge ${card.id === activeId ? 'cyan' : ''}`}>{card.id === activeId ? 'Attiva' : 'Seleziona'}</span>
+                </button>
+                <div className="card-pro-meta">
+                  <Metric label="Campi visibili" value={visibleCount} />
+                  <Metric label="Slug" value={card.slug} />
+                  <Metric label="Stato" value="Demo locale" />
+                </div>
+                <div className="quick-actions">
+                  <button className="btn light" onClick={() => openFor(card.id, 'editor')}>Editor</button>
+                  <button className="btn light" onClick={() => openFor(card.id, 'share')}>Smart Share</button>
+                  <button className="btn dark" onClick={() => openFor(card.id, 'public')}>Public Card</button>
+                </div>
               </div>
-              <span className={`badge ${card.id === activeId ? 'cyan' : ''}`}>{card.id === activeId ? 'Attiva' : 'Seleziona'}</span>
-            </button>
-          ))}
-        </div>
-
-        <div className="actions-row">
-          <button className="btn dark" onClick={() => navigate('editor')}>Apri editor</button>
-          <button className="btn light" onClick={() => navigate('share')}>Smart Share</button>
-          <button className="btn light" onClick={() => navigate('public')}>Apri card</button>
+            )
+          })}
         </div>
       </section>
       <PreviewPanel card={cards.find(c => c.id === activeId) || cards[0]} />
@@ -593,7 +623,7 @@ function EditorPage({ card, updateField, updateCard, updateVisibility, stats, na
           {['logoText', 'name', 'claim', 'motto'].map(k => <ControlField key={k} k={k} card={card} updateField={updateField} updateVisibility={updateVisibility} />)}
         </EditorSection>
 
-        <EditorSection title="Hero pubblico">
+        <EditorSection title="Contenuto principale">
           <ControlField k="headline" card={card} updateField={updateField} updateVisibility={updateVisibility} />
           <ControlField k="description" card={card} updateField={updateField} updateVisibility={updateVisibility} textarea />
         </EditorSection>
@@ -602,8 +632,12 @@ function EditorPage({ card, updateField, updateCard, updateVisibility, stats, na
           {['website', 'email', 'phone', 'whatsapp'].map(k => <ControlField key={k} k={k} card={card} updateField={updateField} updateVisibility={updateVisibility} />)}
         </EditorSection>
 
-        <EditorSection title="Azienda e Premium">
-          {['company', 'vat', 'address', 'maps', 'linkedin', 'instagram'].map(k => <ControlField key={k} k={k} card={card} updateField={updateField} updateVisibility={updateVisibility} />)}
+        <EditorSection title="Azienda">
+          {['company', 'vat', 'address', 'maps'].map(k => <ControlField key={k} k={k} card={card} updateField={updateField} updateVisibility={updateVisibility} />)}
+        </EditorSection>
+
+        <EditorSection title="Social / Premium">
+          {['linkedin', 'instagram'].map(k => <ControlField key={k} k={k} card={card} updateField={updateField} updateVisibility={updateVisibility} />)}
         </EditorSection>
       </section>
       <PreviewPanel card={card} />
