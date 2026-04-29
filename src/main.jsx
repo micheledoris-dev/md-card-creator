@@ -390,7 +390,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.3.7.1 · Sticky Preview Fix</span>
+              <span className="eyebrow">MVP 0.3.7.2 · Desktop Layout Fix</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -470,7 +470,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.3.7.1 · prototipo multi-card</span>
+          <span className="eyebrow">MVP 0.3.7.2 · prototipo multi-card</span>
           <h2>Una piattaforma per creare molte card, non una card sola.</h2>
           <p>Gestisci card diverse, template diversi, QR e Smart Share collegati alla card attiva. Prima demo locale, poi database e account con Supabase.</p>
           <div className="hero-actions">

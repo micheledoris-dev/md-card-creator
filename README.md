@@ -1,13 +1,13 @@
-# md|studios Card Creator — V0.3.7.1
+# md|studios Card Creator — V0.3.7.2
 
-Hotfix: **Sticky Preview Fix**.
+Hotfix: **Desktop Layout Fix**.
 
 ## Correzioni
 
-- Anteprima smartphone più stabile su desktop.
-- La colonna destra resta visibile mentre scorri l’editor.
-- Altezza controllata con scroll interno se necessario.
-- Su mobile il comportamento resta normale, senza preview fissa invasiva.
+- Risolto problema della colonna destra / anteprima smartphone tagliata su schermi non abbastanza larghi.
+- La griglia ora passa a colonna singola prima, così la preview non finisce fuori schermo.
+- Su desktop largo la preview resta sticky.
+- Su desktop medio/notebook la preview va sotto al contenuto e rimane visibile.
 - Multi Card / Multi Template invariato.
 - QR reale invariato.
 - Smart Share invariato.

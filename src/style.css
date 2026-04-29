@@ -264,3 +264,56 @@ textarea { min-height: 110px; resize: vertical; }
     max-height: none;
   }
 }
+
+
+/* V0.3.7.2 — Desktop Layout Fix
+   La preview a destra veniva tagliata su schermi notebook/finestra non piena.
+   Manteniamo due colonne solo quando c'è spazio reale. */
+@media (min-width: 1251px) {
+  .main-grid {
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 20px;
+  }
+
+  .preview-panel {
+    width: 340px;
+  }
+
+  .preview-panel .phone-card.compact {
+    padding: 22px;
+    border-width: 8px;
+    border-radius: 32px;
+  }
+
+  .preview-panel .phone-card.compact h3 {
+    font-size: 34px;
+  }
+
+  .preview-panel .phone-desc {
+    font-size: 15px;
+  }
+
+  .preview-panel .info-card {
+    padding: 14px;
+  }
+}
+
+@media (max-width: 1250px) {
+  .main-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .preview-panel {
+    position: static !important;
+    width: 100%;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+@media (min-width: 1051px) and (max-width: 1250px) {
+  .preview-panel {
+    max-width: 520px;
+    margin: 0 auto;
+  }
+}
