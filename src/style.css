@@ -230,3 +230,37 @@ textarea { min-height: 110px; resize: vertical; }
   .phone-card h3 { font-size: 34px; }
   .public-card { padding: 16px; border-radius: 26px; }
 }
+
+
+/* V0.3.7.1 — Sticky Preview Fix */
+@media (min-width: 1051px) {
+  .main-grid {
+    align-items: start;
+  }
+
+  .preview-panel {
+    position: sticky;
+    top: 24px;
+    align-self: start;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  .preview-panel::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .preview-panel::-webkit-scrollbar-thumb {
+    background: #d6d3ca;
+    border-radius: 999px;
+  }
+
+  .preview-panel::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .preview-panel .phone-card.compact {
+    max-height: none;
+  }
+}
