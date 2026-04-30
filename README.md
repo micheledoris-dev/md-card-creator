@@ -1,32 +1,21 @@
-# md|studios Card Creator — V0.4.0
+# md|studios Card Creator — V0.4.1
 
-Prima versione **Supabase base**.
+Hotfix: **Build fix V0.4**.
 
-## Novità
+## Correzione
 
-- Nuova sezione `Account`.
-- Login con email/password tramite Supabase Auth.
-- Creazione account.
-- Stato connessione Supabase.
-- Salvataggio card attiva su Supabase.
-- Lettura card salvate da Supabase dopo login.
-- Salvataggio `cards`.
-- Salvataggio `card_visibility`.
-- Mantiene fallback locale se non sei loggato.
+- Risolto errore di build della V0.4.0.
+- Mantiene la sezione `Account`.
+- Mantiene collegamento Supabase.
+- Mantiene login email/password.
+- Mantiene salvataggio card attiva su Supabase.
+- Mantiene salvataggio `cards` e `card_visibility`.
 
 ## Variabili ambiente Netlify richieste
 
 ```text
 VITE_SUPABASE_URL
 VITE_SUPABASE_ANON_KEY
-```
-
-## Tabelle richieste
-
-```text
-profiles
-cards
-card_visibility
 ```
 
 ## Build Netlify
