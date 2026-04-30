@@ -7,6 +7,7 @@ import {
   Settings, Menu, X, Eye, EyeOff, Copy, Mail, MessageCircle, ExternalLink, Plus,
   ArrowLeft, CheckCircle2, CircleOff, Layers, Sparkles
 } from 'lucide-react'
+import { supabase, isSupabaseConfigured } from './supabaseClient.js'
 import './style.css'
 
 const STORAGE_CARDS = 'md_card_creator_cards_v037'
@@ -291,6 +292,73 @@ async function copyText(text) {
   }
 }
 
+
+function slugify(value) {
+  return String(value || 'digital-card')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '') || `card-${Date.now()}`
+}
+
+function cardToDb(card, userId) {
+  return {
+    user_id: userId,
+    slug: slugify(card.slug || card.name),
+    template_key: card.template || 'automotive',
+    logo_text: card.logoText || '',
+    name: card.name || '',
+    claim: card.claim || '',
+    headline: card.headline || '',
+    description: card.description || '',
+    motto: card.motto || '',
+    website: card.website || '',
+    email: card.email || '',
+    phone: card.phone || '',
+    whatsapp: card.whatsapp || '',
+    company: card.company || '',
+    vat: card.vat || '',
+    address: card.address || '',
+    maps: card.maps || '',
+    linkedin: card.linkedin || '',
+    instagram: card.instagram || '',
+    status: 'published'
+  }
+}
+
+function dbToCard(row, visibilityRows = []) {
+  const visibility = { ...defaultVisibility }
+  visibilityRows.filter(v => v.card_id === row.id).forEach(v => {
+    visibility[v.field_key] = Boolean(v.is_visible)
+  })
+
+  return {
+    id: row.id,
+    dbId: row.id,
+    slug: row.slug,
+    template: row.template_key || 'automotive',
+    logoText: row.logo_text || '',
+    name: row.name || '',
+    claim: row.claim || '',
+    headline: row.headline || '',
+    description: row.description || '',
+    motto: row.motto || '',
+    website: row.website || '',
+    email: row.email || '',
+    phone: row.phone || '',
+    whatsapp: row.whatsapp || '',
+    company: row.company || '',
+    vat: row.vat || '',
+    address: row.address || '',
+    maps: row.maps || '',
+    linkedin: row.linkedin || '',
+    instagram: row.instagram || '',
+    visibility
+  }
+}
+
+
 function App() {
   const requestedSlug = new URLSearchParams(window.location.search).get('card')
   const [cards, setCards] = useState(() => loadStored(STORAGE_CARDS, demoCards))
@@ -303,8 +371,73 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [lastPanel, setLastPanel] = useState('home')
   const [notice, setNotice] = useState('')
+  const [session, setSession] = useState(null)
+  const [authLoading, setAuthLoading] = useState(true)
+  const [cloudLoading, setCloudLoading] = useState(false)
+  const [cloudStatus, setCloudStatus] = useState(isSupabaseConfigured ? 'Supabase configurato' : 'Supabase non configurato')
 
   const activeCard = cards.find(c => c.id === activeId) || cards[0]
+
+  useEffect(() => {
+    if (!supabase) {
+      setAuthLoading(false)
+      return
+    }
+
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session)
+      setAuthLoading(false)
+    })
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession)
+    })
+
+    return () => listener?.subscription?.unsubscribe()
+  }, [])
+
+  useEffect(() => {
+    if (!session?.user || !supabase) return
+
+    async function loadCloudCards() {
+      setCloudLoading(true)
+
+      const { data: cardRows, error: cardError } = await supabase
+        .from('cards')
+        .select('*')
+        .eq('user_id', session.user.id)
+        .order('created_at', { ascending: true })
+
+      if (cardError) {
+        setCloudStatus(`Errore caricamento cloud: ${cardError.message}`)
+        setCloudLoading(false)
+        return
+      }
+
+      if (cardRows?.length) {
+        const ids = cardRows.map(c => c.id)
+        const { data: visRows, error: visError } = await supabase
+          .from('card_visibility')
+          .select('*')
+          .in('card_id', ids)
+
+        if (visError) {
+          setCloudStatus(`Errore visibility: ${visError.message}`)
+        } else {
+          const mapped = cardRows.map(row => dbToCard(row, visRows || []))
+          setCards(mapped)
+          setActiveId(mapped[0].id)
+          setCloudStatus('Card caricate da Supabase')
+        }
+      } else {
+        setCloudStatus('Account collegato. Nessuna card cloud: salva una card demo per iniziare.')
+      }
+
+      setCloudLoading(false)
+    }
+
+    loadCloudCards()
+  }, [session?.user?.id])
 
   useEffect(() => saveStored(STORAGE_CARDS, cards), [cards])
   useEffect(() => saveStored(STORAGE_ACTIVE, activeId), [activeId])
@@ -328,10 +461,75 @@ function App() {
     notify(`${label} copiato`)
   }
 
-  const saveDemo = () => {
+  const saveDemo = async () => {
     saveStored(STORAGE_CARDS, cards)
     saveStored(STORAGE_ACTIVE, activeId)
-    notify('Demo salvata')
+
+    if (!session?.user || !supabase) {
+      notify('Demo salvata in locale')
+      return
+    }
+
+    setCloudLoading(true)
+    const payload = cardToDb(activeCard, session.user.id)
+
+    let saved
+    if (activeCard.dbId) {
+      const { data, error } = await supabase
+        .from('cards')
+        .update(payload)
+        .eq('id', activeCard.dbId)
+        .eq('user_id', session.user.id)
+        .select()
+        .single()
+
+      if (error) {
+        setCloudStatus(`Errore salvataggio: ${error.message}`)
+        notify('Errore salvataggio cloud')
+        setCloudLoading(false)
+        return
+      }
+      saved = data
+    } else {
+      const { data, error } = await supabase
+        .from('cards')
+        .insert(payload)
+        .select()
+        .single()
+
+      if (error) {
+        setCloudStatus(`Errore salvataggio: ${error.message}`)
+        notify('Errore salvataggio cloud')
+        setCloudLoading(false)
+        return
+      }
+      saved = data
+    }
+
+    const visibilityPayload = Object.entries(activeCard.visibility || {}).map(([field_key, is_visible]) => ({
+      card_id: saved.id,
+      field_key,
+      is_visible: Boolean(is_visible)
+    }))
+
+    const { error: visibilityError } = await supabase
+      .from('card_visibility')
+      .upsert(visibilityPayload, { onConflict: 'card_id,field_key' })
+
+    if (visibilityError) {
+      setCloudStatus(`Card salvata, errore visibilità: ${visibilityError.message}`)
+      notify('Card salvata, visibility da controllare')
+      setCloudLoading(false)
+      return
+    }
+
+    const updatedCard = { ...activeCard, id: saved.id, dbId: saved.id, slug: saved.slug, template: saved.template_key }
+    setCards(prev => prev.map(card => card.id === activeId ? updatedCard : card))
+    setActiveId(saved.id)
+    saveStored(STORAGE_ACTIVE, saved.id)
+    setCloudStatus('Card salvata su Supabase')
+    notify('Card salvata su Supabase')
+    setCloudLoading(false)
   }
 
   const updateCard = (patch) => {
@@ -396,7 +594,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.3.8.2 · Fixed Preview</span>
+              <span className="eyebrow">MVP 0.4.0 · Supabase base</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -404,6 +602,7 @@ function App() {
         )}
 
         {active === 'home' && <HomePage navigate={navigate} card={activeCard} cards={cards} createDemoCard={createDemoCard} />}
+        {active === 'account' && <AccountPage session={session} authLoading={authLoading} cloudLoading={cloudLoading} cloudStatus={cloudStatus} cards={cards} />}
         {active === 'cards' && <CardsPage navigate={navigate} cards={cards} activeId={activeId} selectCard={selectCard} createDemoCard={createDemoCard} resetDemo={resetDemo} />}
         {active === 'editor' && <EditorPage card={activeCard} updateField={updateField} updateCard={updateCard} updateVisibility={updateVisibility} stats={stats} navigate={navigate} resetDemo={resetDemo} saveDemo={saveDemo} />}
         {active === 'share' && <SharePage card={activeCard} copy={copy} navigate={navigate} />}
@@ -420,6 +619,7 @@ function App() {
 
 const nav = [
   ['home', Home, 'Home'],
+  ['account', Users, 'Account'],
   ['cards', CreditCard, 'Cards'],
   ['editor', Edit3, 'Editor'],
   ['share', QrCode, 'Smart Share'],
@@ -476,7 +676,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.3.8.2 · prototipo multi-card</span>
+          <span className="eyebrow">MVP 0.4.0 · cloud base</span>
           <h2>Crea, gestisci e condividi molte digital card da un’unica piattaforma.</h2>
           <p>Ogni card può avere dati, template, QR, Smart Share e campi visibili diversi. Pensata per professionisti, aziende, team, prodotti ed eventi.</p>
           <div className="hero-actions">
@@ -525,6 +725,128 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
 function Feature({ n, title, text }) {
   return <div className="feature"><span>{n}</span><h3>{title}</h3><p>{text}</p></div>
 }
+
+
+function AccountPage({ session, authLoading, cloudLoading, cloudStatus, cards }) {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [fullName, setFullName] = useState('')
+  const [message, setMessage] = useState('')
+
+  const signUp = async () => {
+    if (!supabase) {
+      setMessage('Supabase non configurato.')
+      return
+    }
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: fullName } }
+    })
+
+    if (error) {
+      setMessage(error.message)
+      return
+    }
+
+    if (data.user) {
+      await supabase.from('profiles').upsert({
+        id: data.user.id,
+        email,
+        full_name: fullName
+      })
+    }
+
+    setMessage('Account creato. Se Supabase richiede conferma email, controlla la posta.')
+  }
+
+  const signIn = async () => {
+    if (!supabase) {
+      setMessage('Supabase non configurato.')
+      return
+    }
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    setMessage(error ? error.message : 'Login effettuato.')
+  }
+
+  const signOut = async () => {
+    if (!supabase) return
+    await supabase.auth.signOut()
+    setMessage('Logout effettuato.')
+  }
+
+  return (
+    <div className="main-grid">
+      <section className="page-panel">
+        <div className="page-head">
+          <div>
+            <span className="eyebrow">Account / Supabase</span>
+            <h2>Salvataggio cloud</h2>
+            <p>Prima base V0.4: login, account e salvataggio card su Supabase.</p>
+          </div>
+          <span className={`badge ${session ? 'cyan' : ''}`}>{session ? 'Connesso' : 'Non connesso'}</span>
+        </div>
+
+        <div className="cloud-status">
+          <strong>Stato Supabase</strong>
+          <p>{authLoading ? 'Controllo sessione...' : cloudStatus}</p>
+          {cloudLoading && <span>Sincronizzazione in corso…</span>}
+        </div>
+
+        {session ? (
+          <div className="account-card">
+            <h3>Account collegato</h3>
+            <p>{session.user.email}</p>
+            <div className="account-stats">
+              <div><strong>{cards.length}</strong><span>Card in app</span></div>
+              <div><strong>V0.4</strong><span>Cloud base</span></div>
+            </div>
+            <button className="btn dark" onClick={signOut}>Logout</button>
+          </div>
+        ) : (
+          <div className="auth-grid">
+            <label>
+              Nome completo
+              <input value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Michele Doris" />
+            </label>
+            <label>
+              Email
+              <input value={email} onChange={e => setEmail(e.target.value)} placeholder="nome@email.it" />
+            </label>
+            <label>
+              Password
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="almeno 6 caratteri" />
+            </label>
+            <div className="auth-actions">
+              <button className="btn dark" onClick={signIn}>Login</button>
+              <button className="btn light" onClick={signUp}>Crea account</button>
+            </div>
+          </div>
+        )}
+
+        {message && <div className="save-note">{message}</div>}
+
+        <section className="supabase-panel">
+          <div>
+            <span className="eyebrow">Come funziona ora</span>
+            <h3>Locale + Cloud</h3>
+            <p>La demo continua a funzionare in locale. Quando sei loggato, il pulsante Salva demo salva la card attiva anche su Supabase.</p>
+          </div>
+          <div className="data-model">
+            <span>Auth</span>
+            <span>profiles</span>
+            <span>cards</span>
+            <span>card_visibility</span>
+          </div>
+        </section>
+      </section>
+      <PreviewPanel card={cards[0] || demoCards[0]} />
+    </div>
+  )
+}
+
 
 function CardsPage({ navigate, cards, activeId, selectCard, createDemoCard, resetDemo }) {
   const openFor = (cardId, panel) => {
@@ -599,7 +921,7 @@ function EditorPage({ card, updateField, updateCard, updateVisibility, stats, na
           </div>
         </div>
 
-        <div className="save-note">Le modifiche vengono salvate automaticamente. Con Supabase saranno salvate nel tuo account e sincronizzate su tutti i dispositivi.</div>
+        <div className="save-note">Le modifiche vengono salvate localmente. Se sei loggato, premi Salva demo per salvarle anche su Supabase.</div>
 
         <div className="visibility-summary">
           <SummaryItem icon={<Eye size={18} />} label="Visibili" value={stats.visible} />

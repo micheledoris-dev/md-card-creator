@@ -1,25 +1,33 @@
-# md|studios Card Creator — V0.3.8.2
+# md|studios Card Creator — V0.4.0
 
-Hotfix: **Fixed Preview Desktop**.
+Prima versione **Supabase base**.
 
-## Correzioni
+## Novità
 
-- Su desktop largo l'anteprima smartphone resta fissa a destra mentre scorri.
-- Il controllo dell'Editor diventa più comodo: modifichi a sinistra e vedi subito l'effetto a destra.
-- Su schermi medi/notebook la preview resta sotto, per evitare tagli laterali.
-- Su mobile/iPhone il comportamento resta normale, senza preview fissa invasiva.
+- Nuova sezione `Account`.
+- Login con email/password tramite Supabase Auth.
+- Creazione account.
+- Stato connessione Supabase.
+- Salvataggio card attiva su Supabase.
+- Lettura card salvate da Supabase dopo login.
+- Salvataggio `cards`.
+- Salvataggio `card_visibility`.
+- Mantiene fallback locale se non sei loggato.
 
-## Mantiene
+## Variabili ambiente Netlify richieste
 
-- Multi Card / Multi Template
-- Cards page corretta
-- QR reale
-- Smart Share
-- Display Control
-- Salvataggio locale
-- Salva demo
-- Ripristina
-- Preparazione Supabase
+```text
+VITE_SUPABASE_URL
+VITE_SUPABASE_ANON_KEY
+```
+
+## Tabelle richieste
+
+```text
+profiles
+cards
+card_visibility
+```
 
 ## Build Netlify
 

@@ -1,6 +1,6 @@
 {
-  "name": "md-card-creator-v03-8-2",
-  "version": "0.3.8-2",
+  "name": "md-card-creator-v04-0",
+  "version": "0.4.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -14,7 +14,8 @@
     "react": "latest",
     "react-dom": "latest",
     "lucide-react": "latest",
-    "qrcode": "latest"
+    "qrcode": "latest",
+    "@supabase/supabase-js": "latest"
   },
   "devDependencies": {}
 }
