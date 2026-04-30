@@ -1,15 +1,21 @@
-# md|studios Card Creator — V0.4.1
+# md|studios Card Creator — V0.4.2
 
-Hotfix: **Build fix V0.4**.
+Hotfix: **Syntax fix V0.4**.
 
 ## Correzione
 
-- Risolto errore di build della V0.4.0.
-- Mantiene la sezione `Account`.
-- Mantiene collegamento Supabase.
-- Mantiene login email/password.
-- Mantiene salvataggio card attiva su Supabase.
-- Mantiene salvataggio `cards` e `card_visibility`.
+- Risolto errore sintattico in `src/main.jsx` vicino alla variabile `cloudStatus`.
+- Aggiunto terminatore esplicito della riga per evitare errore parser Vite/Rolldown.
+
+## Mantiene
+
+- Sezione `Account`.
+- Collegamento Supabase tramite variabili Netlify.
+- Login email/password.
+- Creazione account.
+- Salvataggio card attiva su Supabase.
+- Salvataggio `cards` e `card_visibility`.
+- Fallback locale se non sei loggato.
 
 ## Variabili ambiente Netlify richieste
 
