@@ -451,3 +451,77 @@ textarea { min-height: 110px; resize: vertical; }
     grid-template-columns: minmax(0, 1fr) 330px;
   }
 }
+
+
+/* V0.3.8.2 — Fixed Preview Desktop
+   Su desktop largo l'anteprima resta sempre visibile a destra mentre scorri.
+   Su schermi medi resta sotto per evitare tagli. */
+@media (min-width: 1280px) {
+  .main-grid {
+    grid-template-columns: minmax(0, 1fr) 330px !important;
+    gap: 22px;
+    align-items: start;
+  }
+
+  .preview-panel {
+    position: fixed !important;
+    right: 30px;
+    top: 24px;
+    width: 330px !important;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    z-index: 6;
+    scrollbar-width: thin;
+  }
+
+  .preview-panel::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .preview-panel::-webkit-scrollbar-thumb {
+    background: #d6d3ca;
+    border-radius: 999px;
+  }
+
+  .preview-panel::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .preview-panel .phone-card.compact {
+    padding: 22px;
+    border-width: 8px;
+    border-radius: 32px;
+  }
+
+  .preview-panel .phone-card.compact h3 {
+    font-size: 33px;
+  }
+
+  .preview-panel .phone-desc {
+    font-size: 15px;
+  }
+
+  .preview-panel .info-card {
+    padding: 14px;
+  }
+}
+
+@media (max-width: 1279px) {
+  .main-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .preview-panel {
+    position: static !important;
+    width: 100% !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
+
+@media (min-width: 1051px) and (max-width: 1279px) {
+  .preview-panel {
+    max-width: 520px;
+    margin: 0 auto;
+  }
+}
