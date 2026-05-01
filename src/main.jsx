@@ -7,7 +7,7 @@ import {
   Settings, Menu, X, Eye, EyeOff, Copy, Mail, MessageCircle, ExternalLink, Plus,
   ArrowLeft, CheckCircle2, CircleOff, Layers, Sparkles
 } from 'lucide-react'
-import { supabase, isSupabaseConfigured, supabaseConfig } from './supabaseClient.js'
+import { supabase, isSupabaseConfigured, supabaseConfig, supabaseUrl, supabaseAnonKey } from './supabaseClient.js'
 import './style.css'
 
 const STORAGE_CARDS = 'md_card_creator_cards_v037'
@@ -594,7 +594,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.4.3 · Diagnostica Supabase</span>
+              <span className="eyebrow">MVP 0.4.4 · Diagnostica automatica</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -676,7 +676,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.4.3 · diagnostics</span>
+          <span className="eyebrow">MVP 0.4.4 · auto diagnostics</span>
           <h2>Crea, gestisci e condividi molte digital card da un’unica piattaforma.</h2>
           <p>Ogni card può avere dati, template, QR, Smart Share e campi visibili diversi. Pensata per professionisti, aziende, team, prodotti ed eventi.</p>
           <div className="hero-actions">
@@ -728,32 +728,59 @@ function Feature({ n, title, text }) {
 
 
 
+
 function AccountPage({ session, authLoading, cloudLoading, cloudStatus, cards }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
   const [message, setMessage] = useState('')
-  const [diagnostic, setDiagnostic] = useState('Test non ancora eseguito.')
+  const [diagnostic, setDiagnostic] = useState('Avvio test automatico…')
+  const [manualCount, setManualCount] = useState(0)
 
   const runDiagnostic = async () => {
-    if (!supabase) {
-      setDiagnostic(`Supabase non configurato. URL: ${supabaseConfig.urlPreview} · KEY: ${supabaseConfig.keyPreview}`)
+    setManualCount(prev => prev + 1)
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      setDiagnostic('Variabili mancanti: controlla VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY in Netlify.')
+      return
+    }
+
+    if (!supabaseConfig.urlLooksValid) {
+      setDiagnostic(`URL non valido: ${supabaseUrl}`)
+      return
+    }
+
+    if (!supabaseConfig.keyLooksValid) {
+      setDiagnostic('Key non valida o non riconosciuta. Usa anon public legacy oppure publishable key corretta.')
       return
     }
 
     try {
-      const { data, error } = await supabase.from('cards').select('id').limit(1)
+      const healthUrl = `${supabaseUrl}/rest/v1/cards?select=id&limit=1`
+      const response = await fetch(healthUrl, {
+        method: 'GET',
+        headers: {
+          apikey: supabaseAnonKey,
+          Authorization: `Bearer ${supabaseAnonKey}`
+        }
+      })
 
-      if (error) {
-        setDiagnostic(`Connessione raggiunta, ma errore database/RLS: ${error.message}`)
+      const text = await response.text()
+
+      if (!response.ok) {
+        setDiagnostic(`Supabase raggiunto, ma risposta non OK: ${response.status} ${response.statusText}. Dettaglio: ${text.slice(0, 180)}`)
         return
       }
 
-      setDiagnostic(`Connessione OK. Risposta database ricevuta. Righe test: ${data?.length ?? 0}`)
+      setDiagnostic(`Connessione OK. Supabase risponde. Status ${response.status}.`)
     } catch (error) {
-      setDiagnostic(`Errore rete/CORS: ${error?.message || 'Failed to fetch'}`)
+      setDiagnostic(`Errore rete/DNS/CORS: ${error?.message || 'Failed to fetch'}`)
     }
   }
+
+  useEffect(() => {
+    runDiagnostic()
+  }, [])
 
   const signUp = async () => {
     if (!supabase) {
@@ -813,8 +840,8 @@ function AccountPage({ session, authLoading, cloudLoading, cloudStatus, cards })
         <div className="page-head">
           <div>
             <span className="eyebrow">Account / Supabase</span>
-            <h2>Diagnostica cloud</h2>
-            <p>Questa versione serve a capire se Netlify legge URL e key e se Supabase risponde.</p>
+            <h2>Diagnostica automatica</h2>
+            <p>Questa versione esegue il test da sola appena entri in Account.</p>
           </div>
           <span className={`badge ${session ? 'cyan' : ''}`}>{session ? 'Connesso' : 'Non connesso'}</span>
         </div>
@@ -843,10 +870,10 @@ function AccountPage({ session, authLoading, cloudLoading, cloudStatus, cards })
         </div>
 
         <div className="cloud-status">
-          <strong>Test connessione</strong>
+          <strong>Test connessione automatico</strong>
           <p>{diagnostic}</p>
-          {cloudLoading && <span>Sincronizzazione in corso…</span>}
-          <button className="btn dark" onClick={runDiagnostic}>Esegui test Supabase</button>
+          <span>Click manuali test: {manualCount}</span>
+          <button type="button" className="btn dark" onClick={runDiagnostic}>Riprova test Supabase</button>
         </div>
 
         {session ? (
@@ -855,9 +882,9 @@ function AccountPage({ session, authLoading, cloudLoading, cloudStatus, cards })
             <p>{session.user.email}</p>
             <div className="account-stats">
               <div><strong>{cards.length}</strong><span>Card in app</span></div>
-              <div><strong>V0.4.3</strong><span>Diagnostica</span></div>
+              <div><strong>V0.4.4</strong><span>Auto test</span></div>
             </div>
-            <button className="btn dark" onClick={signOut}>Logout</button>
+            <button type="button" className="btn dark" onClick={signOut}>Logout</button>
           </div>
         ) : (
           <div className="auth-grid">
@@ -874,8 +901,8 @@ function AccountPage({ session, authLoading, cloudLoading, cloudStatus, cards })
               <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="almeno 6 caratteri" />
             </label>
             <div className="auth-actions">
-              <button className="btn dark" onClick={signIn}>Login</button>
-              <button className="btn light" onClick={signUp}>Crea account</button>
+              <button type="button" className="btn dark" onClick={signIn}>Login</button>
+              <button type="button" className="btn light" onClick={signUp}>Crea account</button>
             </div>
           </div>
         )}
@@ -885,13 +912,13 @@ function AccountPage({ session, authLoading, cloudLoading, cloudStatus, cards })
         <section className="supabase-panel">
           <div>
             <span className="eyebrow">Nota operativa</span>
-            <h3>Se il test fallisce ancora, il problema è esterno al codice.</h3>
-            <p>Controlleremo URL, key, dominio autorizzato e risposta Auth. La build e la UI ora sono funzionanti.</p>
+            <h3>Prima deve funzionare il test. Poi usiamo login e salvataggio.</h3>
+            <p>Se il test dice Connessione OK, passiamo al login. Se dice DNS/CORS, il problema è ancora nella URL/key o nei domini autorizzati.</p>
           </div>
           <div className="data-model">
             <span>URL</span>
             <span>KEY</span>
-            <span>CORS</span>
+            <span>REST</span>
             <span>Auth</span>
           </div>
         </section>

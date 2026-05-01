@@ -1,19 +1,18 @@
-# md|studios Card Creator — V0.4.3
+# md|studios Card Creator — V0.4.4
 
-Versione diagnostica Supabase.
+Versione diagnostica automatica Supabase.
 
-## Perché esiste
+## Novità
 
-La V0.4.2 carica correttamente ma il login mostra `Failed to fetch`.  
-Questa versione aggiunge controlli visibili nella pagina `Account`.
-
-## Diagnostica aggiunta
-
-- Verifica se Netlify legge `VITE_SUPABASE_URL`.
-- Verifica se Netlify legge `VITE_SUPABASE_ANON_KEY`.
-- Mostra anteprima sicura di URL/key.
-- Esegue un test connessione verso la tabella `cards`.
-- Mostra errore più leggibile in caso di CORS/rete/database.
+- Il test Supabase parte automaticamente entrando in `Account`.
+- Aggiunto test diretto REST verso `/rest/v1/cards`.
+- Il pulsante è ora `Riprova test Supabase`.
+- Mostra se il problema è:
+  - variabile mancante
+  - URL non valido
+  - key non valida
+  - rete/DNS/CORS
+  - risposta Supabase non OK
 
 ## Variabili richieste
 
