@@ -1,23 +1,21 @@
-# md|studios Card Creator — V0.4.2
+# md|studios Card Creator — V0.4.3
 
-Hotfix: **Syntax fix V0.4**.
+Versione diagnostica Supabase.
 
-## Correzione
+## Perché esiste
 
-- Risolto errore sintattico in `src/main.jsx` vicino alla variabile `cloudStatus`.
-- Aggiunto terminatore esplicito della riga per evitare errore parser Vite/Rolldown.
+La V0.4.2 carica correttamente ma il login mostra `Failed to fetch`.  
+Questa versione aggiunge controlli visibili nella pagina `Account`.
 
-## Mantiene
+## Diagnostica aggiunta
 
-- Sezione `Account`.
-- Collegamento Supabase tramite variabili Netlify.
-- Login email/password.
-- Creazione account.
-- Salvataggio card attiva su Supabase.
-- Salvataggio `cards` e `card_visibility`.
-- Fallback locale se non sei loggato.
+- Verifica se Netlify legge `VITE_SUPABASE_URL`.
+- Verifica se Netlify legge `VITE_SUPABASE_ANON_KEY`.
+- Mostra anteprima sicura di URL/key.
+- Esegue un test connessione verso la tabella `cards`.
+- Mostra errore più leggibile in caso di CORS/rete/database.
 
-## Variabili ambiente Netlify richieste
+## Variabili richieste
 
 ```text
 VITE_SUPABASE_URL

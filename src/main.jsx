@@ -7,7 +7,7 @@ import {
   Settings, Menu, X, Eye, EyeOff, Copy, Mail, MessageCircle, ExternalLink, Plus,
   ArrowLeft, CheckCircle2, CircleOff, Layers, Sparkles
 } from 'lucide-react'
-import { supabase, isSupabaseConfigured } from './supabaseClient.js'
+import { supabase, isSupabaseConfigured, supabaseConfig } from './supabaseClient.js'
 import './style.css'
 
 const STORAGE_CARDS = 'md_card_creator_cards_v037'
@@ -594,7 +594,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.4.2 · Syntax fix</span>
+              <span className="eyebrow">MVP 0.4.3 · Diagnostica Supabase</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -676,7 +676,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.4.2 · cloud base</span>
+          <span className="eyebrow">MVP 0.4.3 · diagnostics</span>
           <h2>Crea, gestisci e condividi molte digital card da un’unica piattaforma.</h2>
           <p>Ogni card può avere dati, template, QR, Smart Share e campi visibili diversi. Pensata per professionisti, aziende, team, prodotti ed eventi.</p>
           <div className="hero-actions">
@@ -727,48 +727,78 @@ function Feature({ n, title, text }) {
 }
 
 
+
 function AccountPage({ session, authLoading, cloudLoading, cloudStatus, cards }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
   const [message, setMessage] = useState('')
+  const [diagnostic, setDiagnostic] = useState('Test non ancora eseguito.')
+
+  const runDiagnostic = async () => {
+    if (!supabase) {
+      setDiagnostic(`Supabase non configurato. URL: ${supabaseConfig.urlPreview} · KEY: ${supabaseConfig.keyPreview}`)
+      return
+    }
+
+    try {
+      const { data, error } = await supabase.from('cards').select('id').limit(1)
+
+      if (error) {
+        setDiagnostic(`Connessione raggiunta, ma errore database/RLS: ${error.message}`)
+        return
+      }
+
+      setDiagnostic(`Connessione OK. Risposta database ricevuta. Righe test: ${data?.length ?? 0}`)
+    } catch (error) {
+      setDiagnostic(`Errore rete/CORS: ${error?.message || 'Failed to fetch'}`)
+    }
+  }
 
   const signUp = async () => {
     if (!supabase) {
-      setMessage('Supabase non configurato.')
+      setMessage('Supabase non configurato. Controlla le variabili Netlify.')
       return
     }
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { full_name: fullName } }
-    })
-
-    if (error) {
-      setMessage(error.message)
-      return
-    }
-
-    if (data.user) {
-      await supabase.from('profiles').upsert({
-        id: data.user.id,
+    try {
+      const { data, error } = await supabase.auth.signUp({
         email,
-        full_name: fullName
+        password,
+        options: { data: { full_name: fullName } }
       })
-    }
 
-    setMessage('Account creato. Se Supabase richiede conferma email, controlla la posta.')
+      if (error) {
+        setMessage(`Errore creazione account: ${error.message}`)
+        return
+      }
+
+      if (data.user) {
+        await supabase.from('profiles').upsert({
+          id: data.user.id,
+          email,
+          full_name: fullName
+        })
+      }
+
+      setMessage('Account creato. Se Supabase richiede conferma email, controlla la posta.')
+    } catch (error) {
+      setMessage(`Errore rete/CORS durante creazione account: ${error?.message || 'Failed to fetch'}`)
+    }
   }
 
   const signIn = async () => {
     if (!supabase) {
-      setMessage('Supabase non configurato.')
+      setMessage('Supabase non configurato. Controlla le variabili Netlify.')
       return
     }
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    setMessage(error ? error.message : 'Login effettuato.')
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      setMessage(error ? `Errore login: ${error.message}` : 'Login effettuato.')
+    } catch (error) {
+      setMessage(`Errore rete/CORS durante login: ${error?.message || 'Failed to fetch'}`)
+    }
   }
 
   const signOut = async () => {
@@ -783,16 +813,40 @@ function AccountPage({ session, authLoading, cloudLoading, cloudStatus, cards })
         <div className="page-head">
           <div>
             <span className="eyebrow">Account / Supabase</span>
-            <h2>Salvataggio cloud</h2>
-            <p>Prima base V0.4: login, account e salvataggio card su Supabase.</p>
+            <h2>Diagnostica cloud</h2>
+            <p>Questa versione serve a capire se Netlify legge URL e key e se Supabase risponde.</p>
           </div>
           <span className={`badge ${session ? 'cyan' : ''}`}>{session ? 'Connesso' : 'Non connesso'}</span>
         </div>
 
+        <div className="diagnostic-grid">
+          <div className="diag-card">
+            <span>URL</span>
+            <strong>{supabaseConfig.hasUrl ? 'Presente' : 'Mancante'}</strong>
+            <p>{supabaseConfig.urlPreview}</p>
+            <em>{supabaseConfig.urlLooksValid ? 'Formato valido' : 'Formato da controllare'}</em>
+          </div>
+
+          <div className="diag-card">
+            <span>KEY</span>
+            <strong>{supabaseConfig.hasKey ? 'Presente' : 'Mancante'}</strong>
+            <p>{supabaseConfig.keyPreview}</p>
+            <em>{supabaseConfig.keyLooksValid ? 'Formato valido' : 'Formato da controllare'}</em>
+          </div>
+
+          <div className="diag-card">
+            <span>Client</span>
+            <strong>{isSupabaseConfigured ? 'Configurato' : 'Non configurato'}</strong>
+            <p>{cloudStatus}</p>
+            <em>{authLoading ? 'Controllo sessione...' : 'Sessione controllata'}</em>
+          </div>
+        </div>
+
         <div className="cloud-status">
-          <strong>Stato Supabase</strong>
-          <p>{authLoading ? 'Controllo sessione...' : cloudStatus}</p>
+          <strong>Test connessione</strong>
+          <p>{diagnostic}</p>
           {cloudLoading && <span>Sincronizzazione in corso…</span>}
+          <button className="btn dark" onClick={runDiagnostic}>Esegui test Supabase</button>
         </div>
 
         {session ? (
@@ -801,7 +855,7 @@ function AccountPage({ session, authLoading, cloudLoading, cloudStatus, cards })
             <p>{session.user.email}</p>
             <div className="account-stats">
               <div><strong>{cards.length}</strong><span>Card in app</span></div>
-              <div><strong>V0.4</strong><span>Cloud base</span></div>
+              <div><strong>V0.4.3</strong><span>Diagnostica</span></div>
             </div>
             <button className="btn dark" onClick={signOut}>Logout</button>
           </div>
@@ -830,15 +884,15 @@ function AccountPage({ session, authLoading, cloudLoading, cloudStatus, cards })
 
         <section className="supabase-panel">
           <div>
-            <span className="eyebrow">Come funziona ora</span>
-            <h3>Locale + Cloud</h3>
-            <p>La demo continua a funzionare in locale. Quando sei loggato, il pulsante Salva demo salva la card attiva anche su Supabase.</p>
+            <span className="eyebrow">Nota operativa</span>
+            <h3>Se il test fallisce ancora, il problema è esterno al codice.</h3>
+            <p>Controlleremo URL, key, dominio autorizzato e risposta Auth. La build e la UI ora sono funzionanti.</p>
           </div>
           <div className="data-model">
+            <span>URL</span>
+            <span>KEY</span>
+            <span>CORS</span>
             <span>Auth</span>
-            <span>profiles</span>
-            <span>cards</span>
-            <span>card_visibility</span>
           </div>
         </section>
       </section>

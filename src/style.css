@@ -606,3 +606,54 @@ textarea { min-height: 110px; resize: vertical; }
     grid-template-columns: 1fr;
   }
 }
+
+
+/* V0.4.3 — Supabase diagnostics */
+.diagnostic-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.diag-card {
+  border: 1px solid #deddd7;
+  background: #fff;
+  border-radius: 22px;
+  padding: 18px;
+}
+
+.diag-card span {
+  display: block;
+  color: #777;
+  font-weight: 900;
+  font-size: 13px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.diag-card strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 22px;
+}
+
+.diag-card p {
+  margin: 8px 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  word-break: break-all;
+}
+
+.diag-card em {
+  color: #008295;
+  font-style: normal;
+  font-weight: 900;
+  font-size: 13px;
+}
+
+@media (max-width: 1050px) {
+  .diagnostic-grid {
+    grid-template-columns: 1fr;
+  }
+}
