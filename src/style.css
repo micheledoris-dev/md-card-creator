@@ -1211,3 +1211,188 @@ textarea { min-height: 110px; resize: vertical; }
     padding: 8px 12px;
   }
 }
+
+
+/* V0.4.8 — Smart Share UX */
+.share-hero-panel {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 18px;
+  align-items: stretch;
+  margin-bottom: 18px;
+}
+
+.share-qr-stage,
+.share-action-stage,
+.share-message-panel,
+.share-mini-public {
+  border: 1px solid #deddd7;
+  background: #fff;
+  border-radius: 30px;
+  padding: 24px;
+}
+
+.share-qr-stage {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  text-align: center;
+}
+
+.share-qr-title {
+  margin-bottom: 18px;
+}
+
+.share-qr-title span {
+  display: block;
+  color: #777;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  font-weight: 900;
+  margin-bottom: 5px;
+}
+
+.share-qr-title strong {
+  font-size: clamp(22px, 3vw, 34px);
+  letter-spacing: -0.04em;
+}
+
+.share-qr-box {
+  background: #fff;
+  border: 1px solid #e4e4df;
+  border-radius: 28px;
+  padding: 18px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.08);
+}
+
+.share-qr-stage p {
+  max-width: 300px;
+  word-break: break-all;
+  color: #666;
+  font-size: 13px;
+  margin: 16px 0 0;
+}
+
+.share-action-stage {
+  background: #0f0f0f;
+  color: #fff;
+}
+
+.share-action-stage .eyebrow {
+  color: #9a9a9a;
+}
+
+.share-action-stage h3 {
+  font-size: clamp(34px, 5vw, 64px);
+  line-height: .96;
+  letter-spacing: -0.06em;
+  margin: 10px 0 14px;
+}
+
+.share-action-stage p {
+  color: rgba(255,255,255,.72);
+  font-size: 18px;
+  line-height: 1.4;
+  max-width: 680px;
+}
+
+.share-primary-grid {
+  display: grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap: 10px;
+  margin: 22px 0;
+}
+
+.share-channel-list {
+  display: grid;
+  gap: 10px;
+}
+
+.share-channel-list a {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 16px;
+  align-items: center;
+  text-decoration: none;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.13);
+  background: rgba(255,255,255,.06);
+  border-radius: 18px;
+  padding: 16px 18px;
+}
+
+.share-channel-list span {
+  color: var(--accent, #16e4f4);
+  font-weight: 1000;
+}
+
+.share-channel-list strong {
+  font-size: 17px;
+}
+
+.share-message-panel {
+  display: grid;
+  grid-template-columns: 270px 1fr;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.share-message-panel h3,
+.share-mini-public h3 {
+  font-size: clamp(28px, 4vw, 46px);
+  line-height: 1;
+  letter-spacing: -0.05em;
+  margin: 8px 0 10px;
+}
+
+.share-message-panel p,
+.share-mini-public p {
+  color: #666;
+}
+
+.share-message-panel pre {
+  margin: 0;
+  background: #f2f1ed;
+  border-radius: 22px;
+  padding: 20px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.share-mini-public {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+}
+
+@media (max-width: 1120px) {
+  .share-hero-panel,
+  .share-message-panel {
+    grid-template-columns: 1fr;
+  }
+  .share-mini-public {
+    display: grid;
+  }
+}
+
+@media (max-width: 700px) {
+  .share-qr-stage,
+  .share-action-stage,
+  .share-message-panel,
+  .share-mini-public {
+    padding: 18px;
+    border-radius: 24px;
+  }
+  .share-primary-grid {
+    grid-template-columns: 1fr;
+  }
+  .share-channel-list a {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}

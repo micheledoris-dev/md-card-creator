@@ -1,32 +1,29 @@
-# md|studios Card Creator — V0.4.7
+# md|studios Card Creator — V0.4.8
 
-Public Card Reale.
+Public Card + Smart Share UX.
 
-## Correzione importante
+## Novità
 
-La V0.4.6 non puliva davvero la Public Card perché la pagina pubblica usava ancora il componente PhoneCard interno.
-
-Questa versione sostituisce direttamente `PublicCard`, quindi il biglietto pubblico non mostra più:
-
-- Dati attivi
-- Smart Share come blocco tecnico
-- Template come blocco tecnico
-- QR reale
-- chip tecnici
-- anteprima/prototipo interna
+- Smart Share ridisegnato come schermata operativa.
+- QR pubblico grande e leggibile.
+- Pulsanti:
+  - Copia scheda completa
+  - Copia link
+  - WhatsApp
+  - Email
+  - SMS
+  - LinkedIn
+- Anteprima messaggio generato.
+- Pulsante per aprire la Public Card.
+- Public Card più pulita: il badge non mostra più il nome tecnico del template.
 
 ## Mantiene
 
-- logo / sigla
-- nome card
-- claim
-- headline
-- descrizione
-- motto
-- pulsanti sito / WhatsApp
-- contatti visibili
-- copia scheda completa
-- Supabase, login e salvataggio cloud
+- Supabase
+- login/logout
+- salvataggio cloud
+- card visibility
+- public card pulita V0.4.7
 
 ## Build Netlify
 

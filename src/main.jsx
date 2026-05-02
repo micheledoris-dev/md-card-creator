@@ -600,7 +600,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.4.7 · Public Card Reale</span>
+              <span className="eyebrow">MVP 0.4.8 · Share UX</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -682,7 +682,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.4.7 · Public Card Reale</span>
+          <span className="eyebrow">MVP 0.4.8 · Share UX</span>
           <h2>Crea, gestisci e condividi molte digital card da un’unica piattaforma.</h2>
           <p>Ogni card può avere dati, template, QR, Smart Share e campi visibili diversi. Pensata per professionisti, aziende, team, prodotti ed eventi.</p>
           <div className="hero-actions">
@@ -1074,49 +1074,93 @@ function ControlField({ k, card, updateField, updateVisibility, textarea }) {
   )
 }
 
+
 function SharePage({ card, copy, navigate }) {
   const smartShare = buildSmartShare(card)
   const publicUrl = getPublicCardUrl(card)
 
+  const smsHref = `sms:?&body=${encodeURIComponent(smartShare)}`
+  const linkedInHref = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(publicUrl)}`
+
   return (
     <div className="main-grid">
-      <section className="page-panel">
+      <section className="page-panel share-ux-page">
         <div className="page-head">
           <div>
             <span className="eyebrow">Smart Share</span>
-            <h2>{card.name}</h2>
-            <p>QR, email e WhatsApp sono collegati alla card attiva.</p>
+            <h2>Condividi la card</h2>
+            <p>QR, link e messaggio completo sono collegati alla card attiva. I campi nascosti o vuoti non vengono inviati.</p>
           </div>
           <span className="badge cyan">Card attiva</span>
         </div>
 
-        <div className="share-layout">
-          <div className="qr-card">
-            <RealQr value={publicUrl} name={card.name} />
-            <strong>QR pubblico</strong>
-            <span>{publicUrl}</span>
-            <div className="qr-actions">
-              <button className="btn light" onClick={() => copy(publicUrl, 'Link card')}>Copia link card</button>
+        <section className="share-hero-panel">
+          <div className="share-qr-stage">
+            <div className="share-qr-title">
+              <span>QR pubblico</span>
+              <strong>{card.name}</strong>
+            </div>
+            <div className="share-qr-box">
+              <RealQr value={publicUrl} name={card.name} />
+            </div>
+            <p>{publicUrl}</p>
+          </div>
+
+          <div className="share-action-stage">
+            <span className="eyebrow">Invio rapido</span>
+            <h3>Una card, molti canali.</h3>
+            <p>Usa il QR dal vivo, copia il link oppure invia la scheda completa con WhatsApp, email, SMS o LinkedIn.</p>
+
+            <div className="share-primary-grid">
+              <button type="button" className="btn dark" onClick={() => copy(smartShare, 'Scheda completa')}>Copia scheda completa</button>
+              <button type="button" className="btn light" onClick={() => copy(publicUrl, 'Link card')}>Copia link</button>
+            </div>
+
+            <div className="share-channel-list">
+              <a href={whatsappLink(card)} target="_blank" rel="noreferrer">
+                <span>WhatsApp</span>
+                <strong>Invia messaggio completo</strong>
+              </a>
+              <a href={mailtoLink(card)}>
+                <span>Email</span>
+                <strong>Prepara email con la card</strong>
+              </a>
+              <a href={smsHref}>
+                <span>SMS</span>
+                <strong>Invia testo e link</strong>
+              </a>
+              <a href={linkedInHref} target="_blank" rel="noreferrer">
+                <span>LinkedIn</span>
+                <strong>Condividi il link pubblico</strong>
+              </a>
             </div>
           </div>
-          <div className="share-box">
-            <span>Messaggio generato</span>
-            <pre>{smartShare}</pre>
-            <div className="share-actions">
-              <button className="btn dark" onClick={() => copy(smartShare, 'Scheda completa')}><Copy size={17} /> Copia scheda completa</button>
-              {hasValue(card.email) && <button className="btn light" onClick={() => copy(card.email, 'Email')}><Copy size={17} /> Copia email</button>}
-              {hasValue(card.phone) && <button className="btn light" onClick={() => copy(card.phone, 'Numero')}><Copy size={17} /> Copia numero</button>}
-              {hasValue(card.email) && <a className="btn light" href={mailtoLink(card)}><Mail size={17} /> Invia email</a>}
-              {(hasValue(card.whatsapp) || hasValue(card.phone)) && <a className="btn light" href={whatsappLink(card)} target="_blank" rel="noreferrer"><MessageCircle size={17} /> WhatsApp</a>}
-              <button className="btn light" onClick={() => navigate('public')}><ExternalLink size={17} /> Apri card</button>
-            </div>
+        </section>
+
+        <section className="share-message-panel">
+          <div>
+            <span className="eyebrow">Messaggio generato</span>
+            <h3>Anteprima testo</h3>
+            <p>Questo è quello che viene copiato o inviato dai canali rapidi.</p>
           </div>
-        </div>
+          <pre>{smartShare}</pre>
+        </section>
+
+        <section className="share-mini-public">
+          <div>
+            <span className="eyebrow">Public Card</span>
+            <h3>Controllo finale</h3>
+            <p>Apri la card pubblica per vedere esattamente cosa riceverà il contatto.</p>
+          </div>
+          <button type="button" className="btn dark" onClick={() => navigate('public')}>Apri Public Card</button>
+        </section>
       </section>
+
       <PreviewPanel card={card} />
     </div>
   )
 }
+
 
 function RealQr({ value, name }) {
   const [qrData, setQrData] = useState('')
@@ -1209,7 +1253,7 @@ function PublicCard({ card, back }) {
         <header className="public-real-hero">
           <div className="public-real-top">
             {visibleValue(card, 'logoText') && <div className="public-real-logo">{card.logoText}</div>}
-            <span className="public-real-badge">{template.name}</span>
+            {visibleValue(card, 'company') && <span className="public-real-badge">{card.company}</span>}
           </div>
 
           {visibleValue(card, 'claim') && <p className="public-real-claim">{card.claim}</p>}
