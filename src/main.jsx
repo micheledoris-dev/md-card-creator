@@ -53,6 +53,25 @@ const defaultVisibility = {
   instagram: false
 }
 
+
+const safeLogoText = (value, fallback = 'md') => {
+  const raw = String(value || fallback || '').trim()
+  if (!raw) return 'md'
+
+  const cleaned = raw.replace(/[^a-zA-Z0-9]/g, '')
+  if (!cleaned) return raw.slice(0, 2)
+
+  if (cleaned.length <= 3) return cleaned
+
+  const words = raw.split(/\s+/).filter(Boolean)
+  if (words.length >= 2) {
+    return words.slice(0, 3).map(word => word[0]).join('').toUpperCase()
+  }
+
+  return cleaned.slice(0, 3).toUpperCase()
+}
+
+
 const templates = {
   automotive: {
     name: 'Automotive Dark',
@@ -600,7 +619,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.4.8 · Share UX</span>
+              <span className="eyebrow">MVP 0.4.9 · Logo Fix</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -682,7 +701,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.4.8 · Share UX</span>
+          <span className="eyebrow">MVP 0.4.9 · Logo Fix</span>
           <h2>Crea, gestisci e condividi molte digital card da un’unica piattaforma.</h2>
           <p>Ogni card può avere dati, template, QR, Smart Share e campi visibili diversi. Pensata per professionisti, aziende, team, prodotti ed eventi.</p>
           <div className="hero-actions">
@@ -1205,7 +1224,7 @@ function PhoneCard({ card, compact = false }) {
   return (
     <div className={`phone-card ${compact ? 'compact' : ''} tone-${template.tone}`} style={{ '--accent': template.accent }}>
       <div className="phone-top">
-        {visibleValue(card, 'logoText') && <div className="phone-logo">{card.logoText}</div>}
+        {visibleValue(card, 'logoText') && <div className="phone-logo">{safeLogoText(card.logoText)}</div>}
         <span className="beta">{template.name}</span>
       </div>
       {visibleValue(card, 'claim') && <p className="phone-claim">{card.claim}</p>}
@@ -1252,7 +1271,7 @@ function PublicCard({ card, back }) {
       <article className={`public-real-card tone-${template.tone}`} style={{ '--accent': template.accent }}>
         <header className="public-real-hero">
           <div className="public-real-top">
-            {visibleValue(card, 'logoText') && <div className="public-real-logo">{card.logoText}</div>}
+            {visibleValue(card, 'logoText') && <div className="public-real-logo">{safeLogoText(card.logoText)}</div>}
             {visibleValue(card, 'company') && <span className="public-real-badge">{card.company}</span>}
           </div>
 

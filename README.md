@@ -1,29 +1,30 @@
-# md|studios Card Creator — V0.4.8
+# md|studios Card Creator — V0.4.9
 
-Public Card + Smart Share UX.
+Logo/Sigla fix.
 
-## Novità
+## Correzione
 
-- Smart Share ridisegnato come schermata operativa.
-- QR pubblico grande e leggibile.
-- Pulsanti:
-  - Copia scheda completa
-  - Copia link
-  - WhatsApp
-  - Email
-  - SMS
-  - LinkedIn
-- Anteprima messaggio generato.
-- Pulsante per aprire la Public Card.
-- Public Card più pulita: il badge non mostra più il nome tecnico del template.
+Nella Public Card il testo del logo/sigla non può essere una parola lunga, perché dentro il quadratino diventa illeggibile.
+
+Ora il logo mostra automaticamente:
+
+- massimo 3 caratteri;
+- iniziali se il testo contiene più parole;
+- fallback `md` se il campo è vuoto.
+
+Esempi:
+
+- `md|studios` → `MDS`
+- `Hotel Aurora` → `HA`
+- `hhhhbmmm` → `HHH`
 
 ## Mantiene
 
+- Public Card pulita V0.4.7
+- Smart Share UX V0.4.8
 - Supabase
 - login/logout
 - salvataggio cloud
-- card visibility
-- public card pulita V0.4.7
 
 ## Build Netlify
 

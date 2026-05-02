@@ -1396,3 +1396,32 @@ textarea { min-height: 110px; resize: vertical; }
     gap: 4px;
   }
 }
+
+
+/* V0.4.9 — Logo/Sigla fix */
+.public-real-logo,
+.public-logo-clean,
+.phone-logo,
+.preview-logo,
+.logo-box,
+.logo-mark {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
+  text-align: center;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-size: clamp(14px, 3vw, 22px) !important;
+}
+
+.public-real-logo,
+.public-logo-clean {
+  min-width: 58px;
+  max-width: 74px;
+  aspect-ratio: 1 / 1;
+}
+
+.phone-logo,
+.preview-logo {
+  font-size: 13px !important;
+}
