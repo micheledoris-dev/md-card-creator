@@ -1,47 +1,50 @@
-# md|studios Card Creator — V0.5.1
+# md|studios Card Creator — V0.5.2
 
-Nome e Cognome in Editor.
+Ruolo / Qualifica + ordine dati biglietto.
 
 ## Correzione
 
-La V0.5.0 aveva la logica parziale, ma il campo non compariva realmente nell'Editor.  
-Questa versione aggiunge il campo:
+Aggiunto il campo:
 
 ```text
-Nome e cognome
+Ruolo / qualifica
 ```
 
 separato da:
 
 ```text
+Nome e cognome
 Nome card / brand
 ```
 
-## Importante: migrazione Supabase
+## Struttura corretta della Public Card
 
-Prima o dopo il deploy, eseguire nel nuovo progetto Supabase:
+```text
+Nome e cognome
+Ruolo / qualifica
+Nome card / brand
+Claim / descrizione
+Contatti
+```
+
+## Migrazione Supabase richiesta
+
+Eseguire nel nuovo progetto Supabase:
 
 ```sql
 alter table public.cards
-add column if not exists person_name text;
+add column if not exists role_title text;
 ```
 
 Il file è incluso anche qui:
 
 ```text
-supabase/v051_add_person_name.sql
+supabase/v052_add_role_title.sql
 ```
-
-## Comportamento
-
-Nella Public Card:
-
-- `Nome e cognome` diventa titolo principale;
-- `Nome card / brand` diventa sottotitolo se diverso;
-- se `Nome e cognome` è vuoto, usa ancora il nome card.
 
 ## Mantiene
 
+- V0.5.1 Nome e Cognome in Editor
 - V0.5.0 Stable Cloud
 - Supabase
 - login/logout

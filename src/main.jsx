@@ -16,6 +16,7 @@ const STORAGE_ACTIVE = 'md_card_creator_active_card_v037'
 const fieldLabels = {
   logoText: 'Logo / sigla',
   fullName: 'Nome e cognome',
+  roleTitle: 'Ruolo / qualifica',
   name: 'Nome card',
   claim: 'Claim',
   headline: 'Headline',
@@ -38,6 +39,7 @@ const premiumFields = new Set(['vat', 'address', 'maps', 'linkedin', 'instagram'
 const defaultVisibility = {
   logoText: true,
   fullName: true,
+  roleTitle: true,
   name: true,
   claim: true,
   headline: true,
@@ -112,6 +114,7 @@ const demoCards = [
     id: 'myveicolo',
     slug: 'myveicolo',
     template: 'automotive',
+    roleTitle: 'Gestione intelligente del veicolo',
     fullName: 'myVeicolo.net',
     logoText: 'MV',
     name: 'myVeicolo.net',
@@ -135,6 +138,7 @@ const demoCards = [
     id: 'michele-doris',
     slug: 'michele-doris',
     template: 'personal',
+    roleTitle: 'Digital Product Builder',
     fullName: 'Michele Doris',
     logoText: 'MD',
     name: 'Michele Doris',
@@ -158,6 +162,7 @@ const demoCards = [
     id: 'jacopo-doris',
     slug: 'jacopo-doris',
     template: 'creative',
+    roleTitle: 'Art Director',
     fullName: 'Jacopo Doris',
     logoText: 'JD',
     name: 'Jacopo Doris',
@@ -181,6 +186,7 @@ const demoCards = [
     id: 'studio-rossi',
     slug: 'studio-rossi',
     template: 'corporate',
+    roleTitle: 'Consulenza fiscale e societaria',
     fullName: 'Studio Rossi',
     logoText: 'SR',
     name: 'Studio Rossi',
@@ -204,6 +210,7 @@ const demoCards = [
     id: 'hotel-aurora',
     slug: 'hotel-aurora',
     template: 'hospitality',
+    roleTitle: 'Hospitality premium',
     fullName: 'Hotel Aurora',
     logoText: 'HA',
     name: 'Hotel Aurora',
@@ -261,6 +268,7 @@ function getPublicCardUrl(card) {
 function buildSmartShare(card) {
   const lines = []
   if (visibleValue(card, 'fullName') && card.fullName) lines.push(`👤 ${card.fullName}`)
+  if (visibleValue(card, 'roleTitle') && card.roleTitle) lines.push(`🎯 ${card.roleTitle}`)
   if (visibleValue(card, 'name')) lines.push(`🔹 ${card.name}`)
   if (visibleValue(card, 'headline')) lines.push(card.headline)
   if (visibleValue(card, 'description')) {
@@ -336,6 +344,7 @@ function cardToDb(card, userId) {
     template_key: card.template || 'automotive',
     logo_text: card.logoText || '',
     person_name: card.fullName || '',
+    role_title: card.roleTitle || '',
     name: card.name || '',
     claim: card.claim || '',
     headline: card.headline || '',
@@ -368,6 +377,7 @@ function dbToCard(row, visibilityRows = []) {
     template: row.template_key || 'automotive',
     logoText: row.logo_text || '',
     fullName: row.person_name || row.name || '',
+    roleTitle: row.role_title || '',
     fullName: row.name || '',
     name: row.name || '',
     claim: row.claim || '',
@@ -630,7 +640,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.5.1 · Nome Cognome Editor</span>
+              <span className="eyebrow">MVP 0.5.2 · Ruolo Qualifica</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -712,7 +722,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.5.1 · Nome Cognome Editor</span>
+          <span className="eyebrow">MVP 0.5.2 · Ruolo Qualifica</span>
           <h2>Crea, gestisci, salva e condividi molte digital card da un’unica piattaforma.</h2>
           <p>Ogni card può avere dati, template, QR, Smart Share e campi visibili diversi. Pensata per professionisti, aziende, team, prodotti ed eventi.</p>
           <div className="hero-actions">
@@ -1037,7 +1047,7 @@ function EditorPage({ card, updateField, updateCard, updateVisibility, stats, na
         </EditorSection>
 
         <EditorSection title="Identità">
-          {['logoText', 'fullName', 'name', 'claim', 'motto'].map(k => <ControlField key={k} k={k} card={card} updateField={updateField} updateVisibility={updateVisibility} />)}
+          {['logoText', 'fullName', 'roleTitle', 'name', 'claim', 'motto'].map(k => <ControlField key={k} k={k} card={card} updateField={updateField} updateVisibility={updateVisibility} />)}
         </EditorSection>
 
         <EditorSection title="Contenuto principale">
@@ -1300,6 +1310,7 @@ function PublicCard({ card, back }) {
         {(visibleValue(card, 'fullName') || visibleValue(card, 'name')) && (
           <section className="public-real-name">
             {visibleValue(card, 'fullName') && card.fullName ? <h2>{card.fullName}</h2> : <h2>{card.name}</h2>}
+            {visibleValue(card, 'roleTitle') && card.roleTitle && <h4>{card.roleTitle}</h4>}
             {visibleValue(card, 'fullName') && card.fullName && visibleValue(card, 'name') && card.name && card.name !== card.fullName && <p>{card.name}</p>}
           </section>
         )}

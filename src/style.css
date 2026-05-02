@@ -1451,3 +1451,18 @@ textarea { min-height: 110px; resize: vertical; }
 .public-real-card.tone-light .public-real-name p {
   color: #666;
 }
+
+
+/* V0.5.2 — Ruolo / Qualifica */
+.public-real-name h4 {
+  margin: 12px 0 0;
+  color: var(--accent, #16e4f4);
+  font-size: clamp(22px, 4.5vw, 34px);
+  line-height: 1.12;
+  font-weight: 1000;
+  letter-spacing: -0.03em;
+}
+
+.public-real-card.tone-light .public-real-name h4 {
+  color: var(--accent, #111);
+}
