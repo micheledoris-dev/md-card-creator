@@ -1,20 +1,33 @@
-# md|studios Card Creator — V0.4.4
+# md|studios Card Creator — V0.4.5
 
-Versione diagnostica automatica Supabase.
+Versione pulita dopo collegamento Supabase.
+
+## Stato
+
+Questa versione rimuove la diagnostica tecnica visibile della V0.4.4 e lascia una pagina Account più normale.
+
+## Mantiene
+
+- Supabase collegato tramite variabili Netlify.
+- Login email/password.
+- Creazione account.
+- Logout.
+- Salvataggio card attiva su Supabase.
+- Lettura card salvate da Supabase dopo login.
+- Tabelle:
+  - profiles
+  - cards
+  - card_visibility
 
 ## Novità
 
-- Il test Supabase parte automaticamente entrando in `Account`.
-- Aggiunto test diretto REST verso `/rest/v1/cards`.
-- Il pulsante è ora `Riprova test Supabase`.
-- Mostra se il problema è:
-  - variabile mancante
-  - URL non valido
-  - key non valida
-  - rete/DNS/CORS
-  - risposta Supabase non OK
+- Pagina Account pulita.
+- Stato cloud visibile ma non tecnico.
+- Card disponibili.
+- Pulsante Vai all’editor.
+- Messaggi più chiari su login e creazione account.
 
-## Variabili richieste
+## Variabili Netlify richieste
 
 ```text
 VITE_SUPABASE_URL

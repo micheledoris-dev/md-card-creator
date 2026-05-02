@@ -657,3 +657,115 @@ textarea { min-height: 110px; resize: vertical; }
     grid-template-columns: 1fr;
   }
 }
+
+
+/* V0.4.5 — Clean Account */
+.account-cloud-panel {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.cloud-card {
+  border: 1px solid #deddd7;
+  background: #fff;
+  border-radius: 24px;
+  padding: 20px;
+}
+
+.cloud-card.primary {
+  background: #0f0f0f;
+  color: #fff;
+}
+
+.cloud-card span {
+  display: block;
+  color: #777;
+  font-size: 12px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.cloud-card.primary span,
+.cloud-card.primary p {
+  color: #bdbdbd;
+}
+
+.cloud-card strong {
+  display: block;
+  font-size: clamp(22px, 3vw, 34px);
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.cloud-card p {
+  margin: 0;
+  color: #666;
+}
+
+.account-card.clean,
+.auth-clean-card {
+  border: 1px solid #deddd7;
+  background: #fff;
+  border-radius: 30px;
+  padding: 26px;
+  margin-bottom: 18px;
+}
+
+.account-card.clean {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: center;
+}
+
+.account-card.clean h3,
+.auth-clean-card h3 {
+  font-size: clamp(28px, 4vw, 48px);
+  margin: 6px 0 10px;
+  letter-spacing: -0.04em;
+}
+
+.account-card.clean p,
+.auth-clean-card p {
+  color: #666;
+  max-width: 720px;
+}
+
+.account-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.supabase-panel.clean {
+  margin-top: 18px;
+}
+
+@media (max-width: 1050px) {
+  .account-cloud-panel,
+  .account-card.clean {
+    grid-template-columns: 1fr;
+  }
+
+  .account-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 700px) {
+  .account-card.clean,
+  .auth-clean-card,
+  .cloud-card {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .account-actions .btn {
+    width: 100%;
+  }
+}

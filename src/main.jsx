@@ -440,6 +440,12 @@ function App() {
   }, [session?.user?.id])
 
   useEffect(() => saveStored(STORAGE_CARDS, cards), [cards])
+
+  useEffect(() => {
+    const goEditor = () => setActive('editor')
+    window.addEventListener('md-go-editor', goEditor)
+    return () => window.removeEventListener('md-go-editor', goEditor)
+  }, [])
   useEffect(() => saveStored(STORAGE_ACTIVE, activeId), [activeId])
 
   const stats = useMemo(() => {
@@ -594,7 +600,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.4.4 · Diagnostica automatica</span>
+              <span className="eyebrow">MVP 0.4.5 · Cloud Account</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -676,7 +682,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.4.4 · auto diagnostics</span>
+          <span className="eyebrow">MVP 0.4.5 · Cloud Account</span>
           <h2>Crea, gestisci e condividi molte digital card da un’unica piattaforma.</h2>
           <p>Ogni card può avere dati, template, QR, Smart Share e campi visibili diversi. Pensata per professionisti, aziende, team, prodotti ed eventi.</p>
           <div className="hero-actions">
@@ -729,58 +735,12 @@ function Feature({ n, title, text }) {
 
 
 
+
 function AccountPage({ session, authLoading, cloudLoading, cloudStatus, cards }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
   const [message, setMessage] = useState('')
-  const [diagnostic, setDiagnostic] = useState('Avvio test automatico…')
-  const [manualCount, setManualCount] = useState(0)
-
-  const runDiagnostic = async () => {
-    setManualCount(prev => prev + 1)
-
-    if (!supabaseUrl || !supabaseAnonKey) {
-      setDiagnostic('Variabili mancanti: controlla VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY in Netlify.')
-      return
-    }
-
-    if (!supabaseConfig.urlLooksValid) {
-      setDiagnostic(`URL non valido: ${supabaseUrl}`)
-      return
-    }
-
-    if (!supabaseConfig.keyLooksValid) {
-      setDiagnostic('Key non valida o non riconosciuta. Usa anon public legacy oppure publishable key corretta.')
-      return
-    }
-
-    try {
-      const healthUrl = `${supabaseUrl}/rest/v1/cards?select=id&limit=1`
-      const response = await fetch(healthUrl, {
-        method: 'GET',
-        headers: {
-          apikey: supabaseAnonKey,
-          Authorization: `Bearer ${supabaseAnonKey}`
-        }
-      })
-
-      const text = await response.text()
-
-      if (!response.ok) {
-        setDiagnostic(`Supabase raggiunto, ma risposta non OK: ${response.status} ${response.statusText}. Dettaglio: ${text.slice(0, 180)}`)
-        return
-      }
-
-      setDiagnostic(`Connessione OK. Supabase risponde. Status ${response.status}.`)
-    } catch (error) {
-      setDiagnostic(`Errore rete/DNS/CORS: ${error?.message || 'Failed to fetch'}`)
-    }
-  }
-
-  useEffect(() => {
-    runDiagnostic()
-  }, [])
 
   const signUp = async () => {
     if (!supabase) {
@@ -788,11 +748,21 @@ function AccountPage({ session, authLoading, cloudLoading, cloudStatus, cards })
       return
     }
 
+    if (!email || !password) {
+      setMessage('Inserisci email e password.')
+      return
+    }
+
+    if (password.length < 6) {
+      setMessage('La password deve avere almeno 6 caratteri.')
+      return
+    }
+
     try {
       const { data, error } = await supabase.auth.signUp({
-        email,
+        email: email.trim(),
         password,
-        options: { data: { full_name: fullName } }
+        options: { data: { full_name: fullName.trim() } }
       })
 
       if (error) {
@@ -803,14 +773,14 @@ function AccountPage({ session, authLoading, cloudLoading, cloudStatus, cards })
       if (data.user) {
         await supabase.from('profiles').upsert({
           id: data.user.id,
-          email,
-          full_name: fullName
+          email: email.trim(),
+          full_name: fullName.trim()
         })
       }
 
-      setMessage('Account creato. Se Supabase richiede conferma email, controlla la posta.')
+      setMessage('Account creato. Se richiesto, conferma la mail e poi fai login.')
     } catch (error) {
-      setMessage(`Errore rete/CORS durante creazione account: ${error?.message || 'Failed to fetch'}`)
+      setMessage(`Errore rete durante creazione account: ${error?.message || 'Failed to fetch'}`)
     }
   }
 
@@ -820,11 +790,20 @@ function AccountPage({ session, authLoading, cloudLoading, cloudStatus, cards })
       return
     }
 
+    if (!email || !password) {
+      setMessage('Inserisci email e password.')
+      return
+    }
+
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password
+      })
+
       setMessage(error ? `Errore login: ${error.message}` : 'Login effettuato.')
     } catch (error) {
-      setMessage(`Errore rete/CORS durante login: ${error?.message || 'Failed to fetch'}`)
+      setMessage(`Errore rete durante login: ${error?.message || 'Failed to fetch'}`)
     }
   }
 
@@ -834,92 +813,97 @@ function AccountPage({ session, authLoading, cloudLoading, cloudStatus, cards })
     setMessage('Logout effettuato.')
   }
 
+  const cloudReady = Boolean(supabase && isSupabaseConfigured)
+  const activeCloudText = session
+    ? 'Cloud attivo: le card possono essere salvate su Supabase.'
+    : 'Accedi per salvare le card nel cloud e ritrovarle da altri dispositivi.'
+
   return (
     <div className="main-grid">
       <section className="page-panel">
         <div className="page-head">
           <div>
-            <span className="eyebrow">Account / Supabase</span>
-            <h2>Diagnostica automatica</h2>
-            <p>Questa versione esegue il test da sola appena entri in Account.</p>
+            <span className="eyebrow">Account</span>
+            <h2>Il tuo spazio cloud</h2>
+            <p>{activeCloudText}</p>
           </div>
-          <span className={`badge ${session ? 'cyan' : ''}`}>{session ? 'Connesso' : 'Non connesso'}</span>
+          <span className={`badge ${session ? 'cyan' : ''}`}>{session ? 'Cloud attivo' : 'Accesso richiesto'}</span>
         </div>
 
-        <div className="diagnostic-grid">
-          <div className="diag-card">
-            <span>URL</span>
-            <strong>{supabaseConfig.hasUrl ? 'Presente' : 'Mancante'}</strong>
-            <p>{supabaseConfig.urlPreview}</p>
-            <em>{supabaseConfig.urlLooksValid ? 'Formato valido' : 'Formato da controllare'}</em>
+        <section className="account-cloud-panel">
+          <div className="cloud-card primary">
+            <span>Stato piattaforma</span>
+            <strong>{cloudReady ? 'Supabase collegato' : 'Supabase da configurare'}</strong>
+            <p>{authLoading ? 'Controllo sessione in corso…' : cloudStatus}</p>
           </div>
-
-          <div className="diag-card">
-            <span>KEY</span>
-            <strong>{supabaseConfig.hasKey ? 'Presente' : 'Mancante'}</strong>
-            <p>{supabaseConfig.keyPreview}</p>
-            <em>{supabaseConfig.keyLooksValid ? 'Formato valido' : 'Formato da controllare'}</em>
+          <div className="cloud-card">
+            <span>Card disponibili</span>
+            <strong>{cards.length}</strong>
+            <p>Card caricate nell’app corrente.</p>
           </div>
-
-          <div className="diag-card">
-            <span>Client</span>
-            <strong>{isSupabaseConfigured ? 'Configurato' : 'Non configurato'}</strong>
-            <p>{cloudStatus}</p>
-            <em>{authLoading ? 'Controllo sessione...' : 'Sessione controllata'}</em>
+          <div className="cloud-card">
+            <span>Versione</span>
+            <strong>V0.4.5</strong>
+            <p>Account cloud pulito.</p>
           </div>
-        </div>
-
-        <div className="cloud-status">
-          <strong>Test connessione automatico</strong>
-          <p>{diagnostic}</p>
-          <span>Click manuali test: {manualCount}</span>
-          <button type="button" className="btn dark" onClick={runDiagnostic}>Riprova test Supabase</button>
-        </div>
+        </section>
 
         {session ? (
-          <div className="account-card">
-            <h3>Account collegato</h3>
-            <p>{session.user.email}</p>
-            <div className="account-stats">
-              <div><strong>{cards.length}</strong><span>Card in app</span></div>
-              <div><strong>V0.4.4</strong><span>Auto test</span></div>
+          <div className="account-card clean">
+            <div>
+              <span className="eyebrow">Account collegato</span>
+              <h3>{session.user.email}</h3>
+              <p>Ora puoi andare in Editor, modificare la card attiva e premere <strong>Salva demo</strong> per salvarla su Supabase.</p>
             </div>
-            <button type="button" className="btn dark" onClick={signOut}>Logout</button>
+            <div className="account-actions">
+              <button type="button" className="btn dark" onClick={() => window.dispatchEvent(new CustomEvent('md-go-editor'))}>
+                Vai all’editor
+              </button>
+              <button type="button" className="btn light" onClick={signOut}>Logout</button>
+            </div>
           </div>
         ) : (
-          <div className="auth-grid">
-            <label>
-              Nome completo
-              <input value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Michele Doris" />
-            </label>
-            <label>
-              Email
-              <input value={email} onChange={e => setEmail(e.target.value)} placeholder="nome@email.it" />
-            </label>
-            <label>
-              Password
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="almeno 6 caratteri" />
-            </label>
-            <div className="auth-actions">
-              <button type="button" className="btn dark" onClick={signIn}>Login</button>
-              <button type="button" className="btn light" onClick={signUp}>Crea account</button>
+          <div className="auth-clean-card">
+            <div>
+              <span className="eyebrow">Accesso</span>
+              <h3>Entra o crea il tuo account</h3>
+              <p>Usa email e password. Dopo il login, il salvataggio cloud sarà disponibile.</p>
+            </div>
+
+            <div className="auth-grid">
+              <label>
+                Nome completo
+                <input value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Michele Doris" />
+              </label>
+              <label>
+                Email
+                <input value={email} onChange={e => setEmail(e.target.value)} placeholder="nome@email.it" />
+              </label>
+              <label>
+                Password
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="almeno 6 caratteri" />
+              </label>
+              <div className="auth-actions">
+                <button type="button" className="btn dark" onClick={signIn}>Login</button>
+                <button type="button" className="btn light" onClick={signUp}>Crea account</button>
+              </div>
             </div>
           </div>
         )}
 
         {message && <div className="save-note">{message}</div>}
 
-        <section className="supabase-panel">
+        <section className="supabase-panel clean">
           <div>
-            <span className="eyebrow">Nota operativa</span>
-            <h3>Prima deve funzionare il test. Poi usiamo login e salvataggio.</h3>
-            <p>Se il test dice Connessione OK, passiamo al login. Se dice DNS/CORS, il problema è ancora nella URL/key o nei domini autorizzati.</p>
+            <span className="eyebrow">Come funziona</span>
+            <h3>Locale + Cloud</h3>
+            <p>La demo resta utilizzabile anche in locale. Quando sei loggato, il pulsante Salva demo invia la card attiva al database Supabase.</p>
           </div>
           <div className="data-model">
-            <span>URL</span>
-            <span>KEY</span>
-            <span>REST</span>
-            <span>Auth</span>
+            <span>Account</span>
+            <span>Cards</span>
+            <span>Fields</span>
+            <span>Visibility</span>
           </div>
         </section>
       </section>
