@@ -228,7 +228,7 @@ const demoCards = [
     maps: 'https://maps.google.com',
     linkedin: '',
     instagram: 'https://instagram.com/',
-    visibility: { ...defaultVisibility, vat: false, linkedin: false }
+    visibility: { ...defaultVisibility, fullName: true, roleTitle: true, vat: false, linkedin: false }
   }
 ]
 
@@ -376,9 +376,8 @@ function dbToCard(row, visibilityRows = []) {
     slug: row.slug,
     template: row.template_key || 'automotive',
     logoText: row.logo_text || '',
-    fullName: row.person_name || row.name || '',
+    fullName: row.person_name || '',
     roleTitle: row.role_title || '',
-    fullName: row.name || '',
     name: row.name || '',
     claim: row.claim || '',
     headline: row.headline || '',
@@ -602,12 +601,14 @@ function App() {
       ...demoCards[1],
       id,
       slug: id,
+      fullName: 'Nuova card demo',
+      roleTitle: 'Ruolo / qualifica',
       name: 'Nuova card demo',
       claim: 'Bozza locale',
       headline: 'La tua nuova digital card.',
       description: 'Modifica i dati nell’editor e scegli quali campi rendere visibili.',
       template: 'personal',
-      visibility: { ...defaultVisibility, vat: false, address: false, maps: false, linkedin: false, instagram: false }
+      visibility: { ...defaultVisibility, fullName: true, roleTitle: true, vat: false, address: false, maps: false, linkedin: false, instagram: false }
     }
     setCards(prev => [newCard, ...prev])
     setActiveId(id)
@@ -640,7 +641,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.5.2 · Ruolo Qualifica</span>
+              <span className="eyebrow">MVP 0.5.3 · Person Fields Fix</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -722,7 +723,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.5.2 · Ruolo Qualifica</span>
+          <span className="eyebrow">MVP 0.5.3 · Person Fields Fix</span>
           <h2>Crea, gestisci, salva e condividi molte digital card da un’unica piattaforma.</h2>
           <p>Ogni card può avere dati, template, QR, Smart Share e campi visibili diversi. Pensata per professionisti, aziende, team, prodotti ed eventi.</p>
           <div className="hero-actions">
@@ -1097,10 +1098,10 @@ function ControlField({ k, card, updateField, updateVisibility, textarea }) {
       </div>
 
       <div className="segmented">
-        <button className={isVisible ? 'selected' : ''} onClick={() => updateVisibility(k, true)} type="button" disabled={!filled}>
+        <button className={isVisible ? 'selected' : ''} onClick={() => updateVisibility(k, true)} type="button">
           <Eye size={15} /> Visibile
         </button>
-        <button className={!isVisible ? 'selected' : ''} onClick={() => updateVisibility(k, false)} type="button" disabled={!filled}>
+        <button className={!isVisible ? 'selected' : ''} onClick={() => updateVisibility(k, false)} type="button">
           <EyeOff size={15} /> Nascosto
         </button>
       </div>

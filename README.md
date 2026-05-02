@@ -1,37 +1,25 @@
-# md|studios Card Creator — V0.5.2
+# md|studios Card Creator — V0.5.3
 
-Ruolo / Qualifica + ordine dati biglietto.
+Person Fields Fix.
 
-## Correzione
+## Correzioni
 
-Aggiunto il campo:
+- `Nome e cognome` viene salvato e ricaricato dal cloud tramite `person_name`.
+- `Ruolo / qualifica` viene salvato e ricaricato dal cloud tramite `role_title`.
+- I pulsanti Visibile/Nascosto non sono più bloccati quando il campo è vuoto: puoi preimpostare la visibilità e poi compilare.
+- Public Card mostra:
+  - Nome e cognome
+  - Ruolo / qualifica
+  - Nome card / brand
 
-```text
-Ruolo / qualifica
-```
-
-separato da:
-
-```text
-Nome e cognome
-Nome card / brand
-```
-
-## Struttura corretta della Public Card
-
-```text
-Nome e cognome
-Ruolo / qualifica
-Nome card / brand
-Claim / descrizione
-Contatti
-```
-
-## Migrazione Supabase richiesta
+## Migrazione Supabase
 
 Eseguire nel nuovo progetto Supabase:
 
 ```sql
+alter table public.cards
+add column if not exists person_name text;
+
 alter table public.cards
 add column if not exists role_title text;
 ```
@@ -39,12 +27,11 @@ add column if not exists role_title text;
 Il file è incluso anche qui:
 
 ```text
-supabase/v052_add_role_title.sql
+supabase/v053_person_fields_fix.sql
 ```
 
 ## Mantiene
 
-- V0.5.1 Nome e Cognome in Editor
 - V0.5.0 Stable Cloud
 - Supabase
 - login/logout
