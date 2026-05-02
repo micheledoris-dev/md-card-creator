@@ -769,3 +769,206 @@ textarea { min-height: 110px; resize: vertical; }
     width: 100%;
   }
 }
+
+
+/* V0.4.6 — Public Card Clean */
+.public-page-clean {
+  min-height: 100vh;
+  display: grid;
+  justify-content: center;
+  align-items: start;
+  padding: 34px 18px 70px;
+  background: #f5f5f2;
+}
+
+.public-topbar {
+  width: min(560px, 100%);
+  margin: 0 auto 16px;
+}
+
+.back-pill {
+  border: 0;
+  background: #efeee9;
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.public-card-public {
+  width: min(560px, calc(100vw - 28px));
+  background: #050a0f;
+  color: #fff;
+  border-radius: 34px;
+  padding: clamp(24px, 5vw, 46px);
+  box-shadow: 0 24px 80px rgba(0,0,0,.18);
+  overflow: hidden;
+}
+
+.public-hero-clean {
+  padding: 6px 0 28px;
+  border-bottom: 1px solid rgba(255,255,255,.14);
+}
+
+.public-brand-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: clamp(42px, 8vw, 76px);
+}
+
+.public-logo-clean {
+  width: 70px;
+  height: 70px;
+  border: 2px solid var(--accent, #16e4f4);
+  border-radius: 22px;
+  display: grid;
+  place-items: center;
+  color: var(--accent, #16e4f4);
+  font-weight: 1000;
+  font-size: 24px;
+  background: rgba(255,255,255,.03);
+}
+
+.public-template-badge {
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-weight: 900;
+  color: rgba(255,255,255,.85);
+  background: rgba(255,255,255,.06);
+}
+
+.public-claim-clean {
+  color: rgba(255,255,255,.68);
+  font-size: clamp(20px, 4vw, 30px);
+  line-height: 1.2;
+  margin: 0 0 18px;
+}
+
+.public-hero-clean h1 {
+  font-size: clamp(42px, 10vw, 72px);
+  line-height: .94;
+  letter-spacing: -0.07em;
+  margin: 0 0 22px;
+  max-width: 10ch;
+}
+
+.public-description-clean {
+  color: rgba(255,255,255,.78);
+  font-size: clamp(20px, 4.5vw, 30px);
+  line-height: 1.35;
+  margin: 0 0 26px;
+}
+
+.public-motto-clean {
+  border-left: 5px solid var(--accent, #16e4f4);
+  background: rgba(255,255,255,.07);
+  border-radius: 18px;
+  padding: 18px 20px;
+  font-size: clamp(20px, 4.5vw, 30px);
+  line-height: 1.2;
+  font-weight: 1000;
+  margin: 0 0 28px;
+}
+
+.public-actions-clean {
+  display: grid;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.public-actions-clean a {
+  text-decoration: none;
+  border-radius: 20px;
+  padding: 18px 20px;
+  text-align: center;
+  font-weight: 1000;
+  font-size: 20px;
+}
+
+.public-primary-action {
+  background: var(--accent, #16e4f4);
+  color: #050505;
+}
+
+.public-secondary-action {
+  background: rgba(255,255,255,.12);
+  color: #fff;
+}
+
+.public-identity-clean {
+  padding: 30px 0 12px;
+}
+
+.public-identity-clean h2 {
+  font-size: clamp(38px, 9vw, 66px);
+  line-height: 1;
+  letter-spacing: -0.06em;
+  margin: 0;
+}
+
+.public-contacts-clean {
+  display: grid;
+  gap: 12px;
+  padding-top: 18px;
+}
+
+.public-contacts-clean a,
+.public-contacts-clean div {
+  border: 1px solid rgba(255,255,255,.13);
+  background: rgba(255,255,255,.045);
+  border-radius: 18px;
+  padding: 15px 16px;
+  text-decoration: none;
+  color: #fff;
+}
+
+.public-contacts-clean span {
+  display: block;
+  color: rgba(255,255,255,.56);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.public-contacts-clean strong {
+  color: var(--accent, #16e4f4);
+  font-size: 18px;
+  word-break: break-word;
+}
+
+.public-card-public .data-active,
+.public-card-public .smart-share-info,
+.public-card-public .template-info,
+.public-card-public .public-meta,
+.public-card-public .public-chips,
+.public-card-public .copy-full-card,
+.public-card-public .qr-real,
+.public-card-public [data-public-technical="true"] {
+  display: none !important;
+}
+
+@media (max-width: 520px) {
+  .public-page-clean {
+    padding: 18px 10px 50px;
+  }
+
+  .public-card-public {
+    border-radius: 28px;
+  }
+
+  .public-logo-clean {
+    width: 58px;
+    height: 58px;
+    border-radius: 18px;
+    font-size: 20px;
+  }
+
+  .public-template-badge {
+    padding: 8px 12px;
+  }
+}

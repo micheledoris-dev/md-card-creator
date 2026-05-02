@@ -1,38 +1,35 @@
-# md|studios Card Creator — V0.4.5
+# md|studios Card Creator — V0.4.6
 
-Versione pulita dopo collegamento Supabase.
+Public Card Clean.
 
-## Stato
+## Obiettivo
 
-Questa versione rimuove la diagnostica tecnica visibile della V0.4.4 e lascia una pagina Account più normale.
+Pulire il biglietto pubblico rimuovendo informazioni tecniche/prototipali che non devono apparire a chi riceve il link.
+
+## Rimosso dalla Public Card
+
+- Dati attivi
+- Smart Share
+- Template
+- QR reale
+- chip tecnici
+- blocchi descrittivi interni al Card Creator
 
 ## Mantiene
 
-- Supabase collegato tramite variabili Netlify.
-- Login email/password.
-- Creazione account.
-- Logout.
-- Salvataggio card attiva su Supabase.
-- Lettura card salvate da Supabase dopo login.
-- Tabelle:
-  - profiles
-  - cards
-  - card_visibility
-
-## Novità
-
-- Pagina Account pulita.
-- Stato cloud visibile ma non tecnico.
-- Card disponibili.
-- Pulsante Vai all’editor.
-- Messaggi più chiari su login e creazione account.
-
-## Variabili Netlify richieste
-
-```text
-VITE_SUPABASE_URL
-VITE_SUPABASE_ANON_KEY
-```
+- logo / sigla
+- nome card
+- claim
+- headline
+- descrizione
+- motto
+- sito
+- WhatsApp
+- email
+- telefono
+- indirizzo / maps
+- social se compilati e visibili
+- Supabase, login e salvataggio cloud della V0.4.5
 
 ## Build Netlify
 
