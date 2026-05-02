@@ -1438,3 +1438,16 @@ textarea { min-height: 110px; resize: vertical; }
 .public-real-card.tone-light .public-real-name p {
   color: #666;
 }
+
+
+/* V0.5.1 — Nome e Cognome in Editor */
+.public-real-name p {
+  margin: 10px 0 0;
+  color: rgba(255,255,255,.62);
+  font-size: clamp(20px, 4vw, 28px);
+  font-weight: 800;
+}
+
+.public-real-card.tone-light .public-real-name p {
+  color: #666;
+}

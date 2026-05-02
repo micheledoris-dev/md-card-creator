@@ -1,50 +1,56 @@
-# md|studios Card Creator — V0.5.0 Stable Cloud
+# md|studios Card Creator — V0.5.1
 
-Milestone stabile dopo il collegamento Supabase.
+Nome e Cognome in Editor.
 
-## Stato raggiunto
+## Correzione
 
-Questa è la prima versione stabile di riferimento del progetto.
-
-## Funzioni confermate
-
-- Supabase collegato.
-- Login email/password funzionante.
-- Creazione account funzionante.
-- Salvataggio card attiva su Supabase.
-- Lettura card salvate da Supabase.
-- Tabelle operative:
-  - `profiles`
-  - `cards`
-  - `card_visibility`
-- Public Card pulita.
-- Smart Share con QR, link e canali rapidi.
-- Logo/Sigla fix.
-- Campo Nome e Cognome separato.
-- Display Control con campi visibili/nascosti/non compilati.
-- Multi-card demo.
-- Anteprima smartphone.
-- QR pubblico.
-
-## Variabili Netlify richieste
+La V0.5.0 aveva la logica parziale, ma il campo non compariva realmente nell'Editor.  
+Questa versione aggiunge il campo:
 
 ```text
-VITE_SUPABASE_URL
-VITE_SUPABASE_ANON_KEY
+Nome e cognome
 ```
+
+separato da:
+
+```text
+Nome card / brand
+```
+
+## Importante: migrazione Supabase
+
+Prima o dopo il deploy, eseguire nel nuovo progetto Supabase:
+
+```sql
+alter table public.cards
+add column if not exists person_name text;
+```
+
+Il file è incluso anche qui:
+
+```text
+supabase/v051_add_person_name.sql
+```
+
+## Comportamento
+
+Nella Public Card:
+
+- `Nome e cognome` diventa titolo principale;
+- `Nome card / brand` diventa sottotitolo se diverso;
+- se `Nome e cognome` è vuoto, usa ancora il nome card.
+
+## Mantiene
+
+- V0.5.0 Stable Cloud
+- Supabase
+- login/logout
+- salvataggio cloud
+- Smart Share UX
+- Public Card pulita
+- Logo/Sigla fix
 
 ## Build Netlify
 
 - Build command: `npm run build`
 - Publish directory: `dist`
-
-## Nota strategica
-
-Questa versione è la base prima di passare a funzioni più commerciali:
-
-- gestione workspace/azienda;
-- template premium;
-- contatti/leads;
-- export;
-- piani Free/Premium;
-- Wallet reale Apple/Google.
