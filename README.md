@@ -1,32 +1,50 @@
-# md|studios Card Creator — V0.4.9
+# md|studios Card Creator — V0.5.0 Stable Cloud
 
-Logo/Sigla fix.
+Milestone stabile dopo il collegamento Supabase.
 
-## Correzione
+## Stato raggiunto
 
-Nella Public Card il testo del logo/sigla non può essere una parola lunga, perché dentro il quadratino diventa illeggibile.
+Questa è la prima versione stabile di riferimento del progetto.
 
-Ora il logo mostra automaticamente:
+## Funzioni confermate
 
-- massimo 3 caratteri;
-- iniziali se il testo contiene più parole;
-- fallback `md` se il campo è vuoto.
+- Supabase collegato.
+- Login email/password funzionante.
+- Creazione account funzionante.
+- Salvataggio card attiva su Supabase.
+- Lettura card salvate da Supabase.
+- Tabelle operative:
+  - `profiles`
+  - `cards`
+  - `card_visibility`
+- Public Card pulita.
+- Smart Share con QR, link e canali rapidi.
+- Logo/Sigla fix.
+- Campo Nome e Cognome separato.
+- Display Control con campi visibili/nascosti/non compilati.
+- Multi-card demo.
+- Anteprima smartphone.
+- QR pubblico.
 
-Esempi:
+## Variabili Netlify richieste
 
-- `md|studios` → `MDS`
-- `Hotel Aurora` → `HA`
-- `hhhhbmmm` → `HHH`
-
-## Mantiene
-
-- Public Card pulita V0.4.7
-- Smart Share UX V0.4.8
-- Supabase
-- login/logout
-- salvataggio cloud
+```text
+VITE_SUPABASE_URL
+VITE_SUPABASE_ANON_KEY
+```
 
 ## Build Netlify
 
 - Build command: `npm run build`
 - Publish directory: `dist`
+
+## Nota strategica
+
+Questa versione è la base prima di passare a funzioni più commerciali:
+
+- gestione workspace/azienda;
+- template premium;
+- contatti/leads;
+- export;
+- piani Free/Premium;
+- Wallet reale Apple/Google.

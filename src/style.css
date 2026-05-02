@@ -1425,3 +1425,16 @@ textarea { min-height: 110px; resize: vertical; }
 .preview-logo {
   font-size: 13px !important;
 }
+
+
+/* V0.4.10 — Nome e Cognome */
+.public-real-name p {
+  margin: 10px 0 0;
+  color: rgba(255,255,255,.62);
+  font-size: clamp(20px, 4vw, 28px);
+  font-weight: 800;
+}
+
+.public-real-card.tone-light .public-real-name p {
+  color: #666;
+}
