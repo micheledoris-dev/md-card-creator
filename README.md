@@ -1,19 +1,19 @@
-# md|studios Card Creator — V0.4.6
+# md|studios Card Creator — V0.4.7
 
-Public Card Clean.
+Public Card Reale.
 
-## Obiettivo
+## Correzione importante
 
-Pulire il biglietto pubblico rimuovendo informazioni tecniche/prototipali che non devono apparire a chi riceve il link.
+La V0.4.6 non puliva davvero la Public Card perché la pagina pubblica usava ancora il componente PhoneCard interno.
 
-## Rimosso dalla Public Card
+Questa versione sostituisce direttamente `PublicCard`, quindi il biglietto pubblico non mostra più:
 
 - Dati attivi
-- Smart Share
-- Template
+- Smart Share come blocco tecnico
+- Template come blocco tecnico
 - QR reale
 - chip tecnici
-- blocchi descrittivi interni al Card Creator
+- anteprima/prototipo interna
 
 ## Mantiene
 
@@ -23,13 +23,10 @@ Pulire il biglietto pubblico rimuovendo informazioni tecniche/prototipali che no
 - headline
 - descrizione
 - motto
-- sito
-- WhatsApp
-- email
-- telefono
-- indirizzo / maps
-- social se compilati e visibili
-- Supabase, login e salvataggio cloud della V0.4.5
+- pulsanti sito / WhatsApp
+- contatti visibili
+- copia scheda completa
+- Supabase, login e salvataggio cloud
 
 ## Build Netlify
 

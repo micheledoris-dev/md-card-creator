@@ -972,3 +972,242 @@ textarea { min-height: 110px; resize: vertical; }
     padding: 8px 12px;
   }
 }
+
+
+/* V0.4.7 — vera Public Card, senza blocchi tecnici */
+.public-real-wrap {
+  display: grid;
+  justify-content: center;
+  padding: 34px 18px 80px;
+}
+
+.public-real-wrap .back-btn {
+  width: fit-content;
+  margin: 0 0 18px;
+}
+
+.public-real-card {
+  width: min(560px, calc(100vw - 28px));
+  background: #050a0f;
+  color: #fff;
+  border-radius: 34px;
+  padding: clamp(24px, 5vw, 46px);
+  box-shadow: 0 24px 80px rgba(0,0,0,.18);
+  overflow: hidden;
+}
+
+.public-real-card.tone-light {
+  background: #ffffff;
+  color: #101010;
+  border: 1px solid #e4e4df;
+}
+
+.public-real-hero {
+  padding-bottom: 30px;
+  border-bottom: 1px solid rgba(255,255,255,.14);
+}
+
+.public-real-card.tone-light .public-real-hero {
+  border-bottom-color: #e4e4df;
+}
+
+.public-real-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: clamp(46px, 8vw, 78px);
+}
+
+.public-real-logo {
+  width: 70px;
+  height: 70px;
+  border: 2px solid var(--accent, #16e4f4);
+  border-radius: 22px;
+  display: grid;
+  place-items: center;
+  color: var(--accent, #16e4f4);
+  font-weight: 1000;
+  font-size: 24px;
+  background: rgba(255,255,255,.03);
+}
+
+.public-real-badge {
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-weight: 900;
+  color: rgba(255,255,255,.85);
+  background: rgba(255,255,255,.06);
+}
+
+.public-real-card.tone-light .public-real-badge {
+  color: #111;
+  border-color: #ddd;
+  background: #f4f3ef;
+}
+
+.public-real-claim {
+  color: rgba(255,255,255,.68);
+  font-size: clamp(20px, 4vw, 30px);
+  line-height: 1.2;
+  margin: 0 0 18px;
+}
+
+.public-real-card.tone-light .public-real-claim {
+  color: #666;
+}
+
+.public-real-hero h1 {
+  font-size: clamp(42px, 10vw, 72px);
+  line-height: .94;
+  letter-spacing: -0.07em;
+  margin: 0 0 22px;
+  max-width: 10ch;
+}
+
+.public-real-desc {
+  color: rgba(255,255,255,.78);
+  font-size: clamp(20px, 4.5vw, 30px);
+  line-height: 1.35;
+  margin: 0 0 26px;
+}
+
+.public-real-card.tone-light .public-real-desc {
+  color: #555;
+}
+
+.public-real-motto {
+  border-left: 5px solid var(--accent, #16e4f4);
+  background: rgba(255,255,255,.07);
+  border-radius: 18px;
+  padding: 18px 20px;
+  font-size: clamp(20px, 4.5vw, 30px);
+  line-height: 1.2;
+  font-weight: 1000;
+  margin: 0 0 28px;
+}
+
+.public-real-card.tone-light .public-real-motto {
+  background: #f3f2ee;
+}
+
+.public-real-actions {
+  display: grid;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.public-real-actions a {
+  text-decoration: none;
+  border-radius: 20px;
+  padding: 18px 20px;
+  text-align: center;
+  font-weight: 1000;
+  font-size: 20px;
+}
+
+.public-real-actions .primary {
+  background: var(--accent, #16e4f4);
+  color: #050505;
+}
+
+.public-real-actions .secondary {
+  background: rgba(255,255,255,.12);
+  color: #fff;
+}
+
+.public-real-card.tone-light .public-real-actions .secondary {
+  background: #111;
+  color: #fff;
+}
+
+.public-real-name {
+  padding: 30px 0 12px;
+}
+
+.public-real-name h2 {
+  font-size: clamp(38px, 9vw, 66px);
+  line-height: 1;
+  letter-spacing: -0.06em;
+  margin: 0;
+}
+
+.public-real-contacts {
+  display: grid;
+  gap: 12px;
+  padding-top: 18px;
+}
+
+.public-real-contacts a,
+.public-real-contacts div {
+  border: 1px solid rgba(255,255,255,.13);
+  background: rgba(255,255,255,.045);
+  border-radius: 18px;
+  padding: 15px 16px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.public-real-card.tone-light .public-real-contacts a,
+.public-real-card.tone-light .public-real-contacts div {
+  border-color: #e4e4df;
+  background: #f8f7f3;
+}
+
+.public-real-contacts span {
+  display: block;
+  color: rgba(255,255,255,.56);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.public-real-card.tone-light .public-real-contacts span {
+  color: #777;
+}
+
+.public-real-contacts strong {
+  color: var(--accent, #16e4f4);
+  font-size: 18px;
+  word-break: break-word;
+}
+
+.public-copy-button {
+  margin-top: 22px;
+  border: 0;
+  border-radius: 999px;
+  padding: 14px 18px;
+  background: rgba(255,255,255,.10);
+  color: #fff;
+  font-weight: 1000;
+  cursor: pointer;
+}
+
+.public-real-card.tone-light .public-copy-button {
+  background: #111;
+  color: #fff;
+}
+
+@media (max-width: 520px) {
+  .public-real-wrap {
+    padding: 18px 10px 50px;
+  }
+
+  .public-real-card {
+    border-radius: 28px;
+  }
+
+  .public-real-logo {
+    width: 58px;
+    height: 58px;
+    border-radius: 18px;
+    font-size: 20px;
+  }
+
+  .public-real-badge {
+    padding: 8px 12px;
+  }
+}

@@ -600,7 +600,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.4.6 · Public Card Clean</span>
+              <span className="eyebrow">MVP 0.4.7 · Public Card Reale</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -682,7 +682,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.4.6 · Public Card Clean</span>
+          <span className="eyebrow">MVP 0.4.7 · Public Card Reale</span>
           <h2>Crea, gestisci e condividi molte digital card da un’unica piattaforma.</h2>
           <p>Ogni card può avere dati, template, QR, Smart Share e campi visibili diversi. Pensata per professionisti, aziende, team, prodotti ed eventi.</p>
           <div className="hero-actions">
@@ -1186,29 +1186,69 @@ function InfoCard({ title, text }) {
 }
 
 function PublicCard({ card, back }) {
+  const template = templates[card.template] || templates.automotive
   const smartShare = buildSmartShare(card)
+
+  const contactRows = [
+    visibleValue(card, 'email') ? { label: 'Email', value: card.email, href: mailtoLink(card) } : null,
+    visibleValue(card, 'website') ? { label: 'Sito web', value: card.website, href: card.website } : null,
+    visibleValue(card, 'phone') ? { label: 'Telefono', value: card.phone, href: `tel:${normalizePhone(card.phone)}` } : null,
+    visibleValue(card, 'maps') ? { label: 'Mappa', value: 'Apri posizione Google Maps', href: card.maps } : null,
+    visibleValue(card, 'address') ? { label: 'Indirizzo', value: card.address, href: null } : null,
+    visibleValue(card, 'company') ? { label: 'Azienda', value: card.company, href: null } : null,
+    visibleValue(card, 'vat') ? { label: 'P. IVA', value: card.vat, href: null } : null,
+    visibleValue(card, 'linkedin') ? { label: 'LinkedIn', value: 'Apri LinkedIn', href: card.linkedin } : null,
+    visibleValue(card, 'instagram') ? { label: 'Instagram', value: 'Apri Instagram', href: card.instagram } : null
+  ].filter(Boolean)
+
   return (
-    <section className="public-wrap">
+    <section className="public-wrap public-real-wrap">
       <button className="btn light back-btn" onClick={back}><ArrowLeft size={18} /> Torna al Card Creator</button>
-      <div className="public-card">
-        <PhoneCard card={card} />
-        <div className="public-extra">
-          <h2>{card.name}</h2>
-          <div className="tag-list">
-            <span>{templates[card.template]?.category}</span>
-            <span>{templates[card.template]?.name}</span>
-            <span>QR reale</span>
-            <span>Smart Share</span>
+
+      <article className={`public-real-card tone-${template.tone}`} style={{ '--accent': template.accent }}>
+        <header className="public-real-hero">
+          <div className="public-real-top">
+            {visibleValue(card, 'logoText') && <div className="public-real-logo">{card.logoText}</div>}
+            <span className="public-real-badge">{template.name}</span>
           </div>
-          <div className="public-links">
-            {visibleValue(card, 'email') && <a href={mailtoLink(card)}>{card.email}</a>}
-            {visibleValue(card, 'website') && <a href={card.website} target="_blank" rel="noreferrer">{card.website}</a>}
-            {visibleValue(card, 'phone') && <a href={`tel:${normalizePhone(card.phone)}`}>{card.phone}</a>}
-            {visibleValue(card, 'maps') && <a href={card.maps} target="_blank" rel="noreferrer">Apri posizione Google Maps</a>}
+
+          {visibleValue(card, 'claim') && <p className="public-real-claim">{card.claim}</p>}
+          {visibleValue(card, 'headline') && <h1>{card.headline}</h1>}
+          {visibleValue(card, 'description') && <p className="public-real-desc">{card.description}</p>}
+          {visibleValue(card, 'motto') && <div className="public-real-motto">{card.motto}</div>}
+
+          <div className="public-real-actions">
+            {visibleValue(card, 'website') && <a className="primary" href={card.website} target="_blank" rel="noreferrer">Visita il sito</a>}
+            {(visibleValue(card, 'whatsapp') || visibleValue(card, 'phone')) && <a className="secondary" href={whatsappLink(card)} target="_blank" rel="noreferrer">WhatsApp</a>}
           </div>
-          <button className="btn dark" onClick={() => copyText(smartShare)}>Copia scheda completa</button>
-        </div>
-      </div>
+        </header>
+
+        {visibleValue(card, 'name') && (
+          <section className="public-real-name">
+            <h2>{card.name}</h2>
+          </section>
+        )}
+
+        {contactRows.length > 0 && (
+          <section className="public-real-contacts">
+            {contactRows.map((row) => (
+              row.href ? (
+                <a key={`${row.label}-${row.value}`} href={row.href} target="_blank" rel="noreferrer">
+                  <span>{row.label}</span>
+                  <strong>{row.value}</strong>
+                </a>
+              ) : (
+                <div key={`${row.label}-${row.value}`}>
+                  <span>{row.label}</span>
+                  <strong>{row.value}</strong>
+                </div>
+              )
+            ))}
+          </section>
+        )}
+
+        <button className="public-copy-button" onClick={() => copyText(smartShare)}>Copia scheda completa</button>
+      </article>
     </section>
   )
 }
