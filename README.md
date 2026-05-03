@@ -1,37 +1,37 @@
-# md|studios Card Creator — V0.6.1
+# md|studios Card Creator — V0.6.2
 
-Media Layout Polish.
+Sharing & Business Identity.
 
-## Obiettivo
+## Novità
 
-La V0.6.0 ha reso funzionanti foto profilo e logo aziendale.  
-La V0.6.1 migliora il layout della Public Card quando sono presenti immagini.
+- Campo `Codice Univoco / SDI`.
+- Visibilità on/off per Codice Univoco.
+- Codice Univoco visibile nella Public Card se compilato.
+- Codice Univoco incluso nello Smart Share se visibile.
+- QR visibile nella Public Card.
+- Pulsanti:
+  - Copia link
+  - Copia scheda completa
+- Footer branding:
+  - Creato con md|studios Card Creator
 
-## Miglioramenti
+## Migrazione Supabase richiesta
 
-- Foto profilo più elegante e tonda.
-- Logo aziendale meno "appoggiato" e più integrato.
-- Meno spazio verticale inutile.
-- Layout più compatto quando foto/logo sono presenti.
-- Gerarchia visiva più chiara:
-  - logo / brand
-  - foto
-  - claim / headline
-  - nome e ruolo
-  - contatti
+```sql
+alter table public.cards
+add column if not exists sdi_code text;
+```
 
-## Mantiene
+File incluso:
 
-- V0.6.0 Media Identity Basic
-- Supabase Storage
-- bucket `card-media`
-- foto profilo
-- logo aziendale
-- salvataggio cloud
-- Public Card pulita
-- Smart Share
-- social
-- WhatsApp
+```text
+supabase/v062_sharing_business_identity.sql
+```
+
+## Nota prodotto
+
+Il branding md|studios è previsto nel piano Free/Base.  
+In futuro potrà essere rimosso nei piani Premium / Business / White Label.
 
 ## Build Netlify
 

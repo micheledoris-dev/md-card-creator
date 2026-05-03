@@ -33,6 +33,7 @@ const fieldLabels = {
   whatsapp: 'WhatsApp',
   company: 'Nome azienda',
   vat: 'Partita IVA',
+  sdiCode: 'Codice Univoco / SDI',
   address: 'Indirizzo',
   maps: 'Google Maps',
   linkedin: 'LinkedIn',
@@ -368,6 +369,7 @@ function cardToDb(card, userId) {
     whatsapp: card.whatsapp || '',
     company: card.company || '',
     vat: card.vat || '',
+    sdi_code: card.sdiCode || '',
     address: card.address || '',
     maps: card.maps || '',
     linkedin: card.linkedin || '',
@@ -403,6 +405,7 @@ function dbToCard(row, visibilityRows = []) {
     whatsapp: row.whatsapp || '',
     company: row.company || '',
     vat: row.vat || '',
+    sdiCode: row.sdi_code || '',
     address: row.address || '',
     maps: row.maps || '',
     linkedin: row.linkedin || '',
@@ -655,7 +658,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.6.1 · Media Layout Polish.1 · Claim + Editor Cleanup</span>
+              <span className="eyebrow">MVP 0.6.2 · Sharing Identity.1 · Claim + Editor Cleanup</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -737,7 +740,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.6.1 · Media Layout Polish.1 · Claim + Editor Cleanup</span>
+          <span className="eyebrow">MVP 0.6.2 · Sharing Identity.1 · Claim + Editor Cleanup</span>
           <h2>Una sola piattaforma. Infinite identità da condividere.</h2>
           <p>Crea, gestisci e aggiorna le digital card di persone, team, sedi, eventi e progetti da un unico spazio cloud.</p>
           <div className="hero-actions">
@@ -1147,7 +1150,7 @@ function EditorPage({ card, updateField, updateCard, updateVisibility, stats, na
         </EditorSection>
 
         <EditorSection title="Azienda / brand">
-          {['company', 'vat', 'address', 'maps'].map(k => <ControlField key={k} k={k} card={card} updateField={updateField} updateVisibility={updateVisibility} />)}
+          {['company', 'vat', 'sdiCode', 'address', 'maps'].map(k => <ControlField key={k} k={k} card={card} updateField={updateField} updateVisibility={updateVisibility} />)}
         </EditorSection>
 
         <EditorSection title="Social">
@@ -1395,6 +1398,8 @@ function normalizeSocialUrl(value, type) {
   return `https://${raw}`
 }
 
+
+const publicLink = (card) => typeof getPublicCardUrl === 'function' ? getPublicCardUrl(card) : `${window.location.origin}/?card=${card.slug || card.id || 'card'}`
 function PublicCard({ card, back }) {
   const template = templates[card.template] || templates.automotive
   const smartShare = buildSmartShare(card)
@@ -1408,6 +1413,7 @@ function PublicCard({ card, back }) {
     visibleValue(card, 'address') ? { label: 'Indirizzo', value: card.address, href: null } : null,
     visibleValue(card, 'company') ? { label: 'Azienda', value: card.company, href: null } : null,
     visibleValue(card, 'vat') ? { label: 'P. IVA', value: card.vat, href: null } : null,
+    visibleValue(card, 'sdiCode') && card.sdiCode ? { label: 'Codice Univoco', value: card.sdiCode, href: null } : null,
     visibleValue(card, 'linkedin') ? { label: 'LinkedIn', value: 'Apri LinkedIn', href: card.linkedin } : null,
     visibleValue(card, 'instagram') ? { label: 'Instagram', value: 'Apri Instagram', href: card.instagram } : null
   ].filter(Boolean)
@@ -1468,7 +1474,24 @@ function PublicCard({ card, back }) {
           </section>
         )}
 
-        <button className="public-copy-button" onClick={() => copyText(smartShare)}>Copia scheda completa</button>
+        <div className="public-sharing-actions">
+          <button className="public-copy-button" onClick={() => copyText(publicLink(card))}>Copia link</button>
+          <button className="public-copy-button" onClick={() => copyText(smartShare)}>Copia scheda completa</button>
+        </div>
+
+        <section className="public-card-qr-panel">
+          <div>
+            <span>QR Card</span>
+            <strong>Scansiona per aprire questa card</strong>
+          </div>
+          <div className="public-card-qr-box">
+            <RealQr value={publicLink(card)} name={card.name} />
+          </div>
+        </section>
+
+        <footer className="public-md-branding">
+          Creato con <strong>md|studios Card Creator</strong>
+        </footer>
       </article>
     </section>
   )
