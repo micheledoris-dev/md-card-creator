@@ -1549,3 +1549,20 @@ textarea { min-height: 110px; resize: vertical; }
     border-radius: 22px;
   }
 }
+
+
+/* V0.5.4.2 — WhatsApp Visible Fix */
+.public-real-contacts a[href*="wa.me"] strong {
+  color: #25d366;
+}
+
+
+/* V0.5.4.3 — Social Visible Fix */
+.public-real-contacts a[href*="linkedin"] strong,
+.public-real-contacts a[href*="instagram"] strong {
+  color: var(--accent, #16e4f4);
+}
+
+.editor-section:has(.control-field) {
+  scroll-margin-top: 24px;
+}

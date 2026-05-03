@@ -1,22 +1,39 @@
-# md|studios Card Creator — V0.5.4.1
+# md|studios Card Creator — V0.5.4.3
 
-Hotfix visibilità versione.
+Social Visible Fix.
 
-## Deve comparire nel sito
+## Correzione
 
-```text
-MVP 0.5.4.1 · Claim + Editor Cleanup
-```
+LinkedIn e Instagram devono essere verificabili chiaramente.
 
-## Include
+## Cosa cambia
 
-- Claim commerciale:
-  - Una sola piattaforma. Infinite identità da condividere.
-- Sottotitolo:
-  - Crea, gestisci e aggiorna le digital card di persone, team, sedi, eventi e progetti da un unico spazio cloud.
-- Editor Cleanup.
-- Sezione Premium futura.
-- Tutte le funzioni della V0.5.3.
+- Sezione Social nell'Editor.
+- Campi:
+  - LinkedIn
+  - Instagram
+- Visibilità attivabile/disattivabile.
+- Social visibili nella Public Card se compilati.
+- Social presenti nello Smart Share se compilati.
+
+## Regola
+
+I social non devono comparire se:
+
+- sono vuoti;
+- oppure sono impostati su Nascosto.
+
+## Mantiene
+
+- V0.5.4.2 WhatsApp Visible Fix
+- Claim commerciale
+- Editor Cleanup
+- Nome e cognome
+- Ruolo / qualifica
+- Supabase
+- salvataggio cloud
+- Public Card pulita
+- Smart Share UX
 
 ## Build Netlify
 

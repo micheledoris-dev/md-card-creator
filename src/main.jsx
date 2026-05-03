@@ -647,7 +647,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.5.4.1 · Claim + Editor Cleanup.1 · Claim + Editor Cleanup</span>
+              <span className="eyebrow">MVP 0.5.4.3 · Social Visible Fix.1 · Claim + Editor Cleanup</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -729,7 +729,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.5.4.1 · Claim + Editor Cleanup.1 · Claim + Editor Cleanup</span>
+          <span className="eyebrow">MVP 0.5.4.3 · Social Visible Fix.1 · Claim + Editor Cleanup</span>
           <h2>Una sola piattaforma. Infinite identità da condividere.</h2>
           <p>Crea, gestisci e aggiorna le digital card di persone, team, sedi, eventi e progetti da un unico spazio cloud.</p>
           <div className="hero-actions">
@@ -1289,6 +1289,19 @@ function InfoCard({ title, text }) {
   return <div className="info-card"><strong>{title}</strong><p>{text}</p></div>
 }
 
+
+function normalizeSocialUrl(value, type) {
+  const raw = String(value || '').trim()
+  if (!raw) return '#'
+  if (/^https?:\/\//i.test(raw)) return raw
+
+  const clean = raw.replace(/^@/, '')
+  if (type === 'instagram') return `https://www.instagram.com/${clean}`
+  if (type === 'linkedin') return raw.includes('linkedin.com') ? `https://${raw}` : `https://www.linkedin.com/in/${clean}`
+
+  return `https://${raw}`
+}
+
 function PublicCard({ card, back }) {
   const template = templates[card.template] || templates.automotive
   const smartShare = buildSmartShare(card)
@@ -1297,6 +1310,7 @@ function PublicCard({ card, back }) {
     visibleValue(card, 'email') ? { label: 'Email', value: card.email, href: mailtoLink(card) } : null,
     visibleValue(card, 'website') ? { label: 'Sito web', value: card.website, href: card.website } : null,
     visibleValue(card, 'phone') ? { label: 'Telefono', value: card.phone, href: `tel:${normalizePhone(card.phone)}` } : null,
+    visibleValue(card, 'whatsapp') ? { label: 'WhatsApp', value: card.whatsapp, href: whatsappLink(card) } : null,
     visibleValue(card, 'maps') ? { label: 'Mappa', value: 'Apri posizione Google Maps', href: card.maps } : null,
     visibleValue(card, 'address') ? { label: 'Indirizzo', value: card.address, href: null } : null,
     visibleValue(card, 'company') ? { label: 'Azienda', value: card.company, href: null } : null,
