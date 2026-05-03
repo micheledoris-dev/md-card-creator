@@ -1,44 +1,22 @@
-# md|studios Card Creator — V0.5.3
+# md|studios Card Creator — V0.5.4.1
 
-Person Fields Fix.
+Hotfix visibilità versione.
 
-## Correzioni
-
-- `Nome e cognome` viene salvato e ricaricato dal cloud tramite `person_name`.
-- `Ruolo / qualifica` viene salvato e ricaricato dal cloud tramite `role_title`.
-- I pulsanti Visibile/Nascosto non sono più bloccati quando il campo è vuoto: puoi preimpostare la visibilità e poi compilare.
-- Public Card mostra:
-  - Nome e cognome
-  - Ruolo / qualifica
-  - Nome card / brand
-
-## Migrazione Supabase
-
-Eseguire nel nuovo progetto Supabase:
-
-```sql
-alter table public.cards
-add column if not exists person_name text;
-
-alter table public.cards
-add column if not exists role_title text;
-```
-
-Il file è incluso anche qui:
+## Deve comparire nel sito
 
 ```text
-supabase/v053_person_fields_fix.sql
+MVP 0.5.4.1 · Claim + Editor Cleanup
 ```
 
-## Mantiene
+## Include
 
-- V0.5.0 Stable Cloud
-- Supabase
-- login/logout
-- salvataggio cloud
-- Smart Share UX
-- Public Card pulita
-- Logo/Sigla fix
+- Claim commerciale:
+  - Una sola piattaforma. Infinite identità da condividere.
+- Sottotitolo:
+  - Crea, gestisci e aggiorna le digital card di persone, team, sedi, eventi e progetti da un unico spazio cloud.
+- Editor Cleanup.
+- Sezione Premium futura.
+- Tutte le funzioni della V0.5.3.
 
 ## Build Netlify
 

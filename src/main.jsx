@@ -15,6 +15,9 @@ const STORAGE_ACTIVE = 'md_card_creator_active_card_v037'
 
 const fieldLabels = {
   logoText: 'Logo / sigla',
+  profilePhoto: 'Foto profilo — Premium',
+  uploadedLogo: 'Logo caricato — Premium',
+  coverImage: 'Cover visual — Premium',
   fullName: 'Nome e cognome',
   roleTitle: 'Ruolo / qualifica',
   name: 'Nome card',
@@ -34,10 +37,13 @@ const fieldLabels = {
   instagram: 'Instagram'
 }
 
-const premiumFields = new Set(['vat', 'address', 'maps', 'linkedin', 'instagram', 'motto'])
+const premiumFields = new Set(['profilePhoto', 'uploadedLogo', 'coverImage', 'vat', 'address', 'maps', 'linkedin', 'instagram', 'motto'])
 
 const defaultVisibility = {
   logoText: true,
+  profilePhoto: false,
+  uploadedLogo: false,
+  coverImage: false,
   fullName: true,
   roleTitle: true,
   name: true,
@@ -641,7 +647,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.5.3 · Person Fields Fix</span>
+              <span className="eyebrow">MVP 0.5.4.1 · Claim + Editor Cleanup.1 · Claim + Editor Cleanup</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -723,9 +729,9 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.5.3 · Person Fields Fix</span>
-          <h2>Crea, gestisci, salva e condividi molte digital card da un’unica piattaforma.</h2>
-          <p>Ogni card può avere dati, template, QR, Smart Share e campi visibili diversi. Pensata per professionisti, aziende, team, prodotti ed eventi.</p>
+          <span className="eyebrow">MVP 0.5.4.1 · Claim + Editor Cleanup.1 · Claim + Editor Cleanup</span>
+          <h2>Una sola piattaforma. Infinite identità da condividere.</h2>
+          <p>Crea, gestisci e aggiorna le digital card di persone, team, sedi, eventi e progetti da un unico spazio cloud.</p>
           <div className="hero-actions">
             <button className="btn dark" onClick={() => navigate('cards')}><Layers size={18} /> Gestisci card</button>
             <button className="btn light" onClick={createDemoCard}><Plus size={18} /> Nuova card demo</button>
@@ -745,8 +751,8 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
 
         <section className="logic-panel">
           <span className="eyebrow">Scopo prodotto</span>
-          <h2>Per aziende con 50 card. Per admin con 30 template diversi.</h2>
-          <p>La direzione commerciale è chiara: creare, duplicare e gestire molte card da un’unica piattaforma, con dati visibili/nascosti e messaggi Smart Share completi.</p>
+          <h2>Per persone, team, sedi, eventi e progetti.</h2>
+          <p>La direzione commerciale è chiara: ogni identità digitale può essere creata, aggiornata e condivisa da un unico spazio cloud, senza perdere coerenza.</p>
         </section>
 
         <section className="supabase-panel">
@@ -1047,11 +1053,11 @@ function EditorPage({ card, updateField, updateCard, updateVisibility, stats, na
           </div>
         </EditorSection>
 
-        <EditorSection title="Identità">
+        <EditorSection title="Persona">
           {['logoText', 'fullName', 'roleTitle', 'name', 'claim', 'motto'].map(k => <ControlField key={k} k={k} card={card} updateField={updateField} updateVisibility={updateVisibility} />)}
         </EditorSection>
 
-        <EditorSection title="Contenuto principale">
+        <EditorSection title="Brand / messaggio">
           <ControlField k="headline" card={card} updateField={updateField} updateVisibility={updateVisibility} />
           <ControlField k="description" card={card} updateField={updateField} updateVisibility={updateVisibility} textarea />
         </EditorSection>
@@ -1060,12 +1066,25 @@ function EditorPage({ card, updateField, updateCard, updateVisibility, stats, na
           {['website', 'email', 'phone', 'whatsapp'].map(k => <ControlField key={k} k={k} card={card} updateField={updateField} updateVisibility={updateVisibility} />)}
         </EditorSection>
 
-        <EditorSection title="Azienda">
+        <EditorSection title="Azienda / brand">
           {['company', 'vat', 'address', 'maps'].map(k => <ControlField key={k} k={k} card={card} updateField={updateField} updateVisibility={updateVisibility} />)}
         </EditorSection>
 
-        <EditorSection title="Social / Premium">
+        <EditorSection title="Social">
           {['linkedin', 'instagram'].map(k => <ControlField key={k} k={k} card={card} updateField={updateField} updateVisibility={updateVisibility} />)}
+        </EditorSection>
+
+        <EditorSection title="Extra / Premium">
+          <div className="premium-placeholder">
+            <span>Funzioni future</span>
+            <h4>Identità visiva Premium</h4>
+            <p>Foto profilo, logo caricato e cover visual richiederanno Supabase Storage. Per ora sono segnate come direzione prodotto, non ancora attive.</p>
+            <div className="premium-future-grid">
+              <strong>Foto profilo</strong>
+              <strong>Logo caricato</strong>
+              <strong>Cover visual</strong>
+            </div>
+          </div>
         </EditorSection>
       </section>
       <PreviewPanel card={card} />

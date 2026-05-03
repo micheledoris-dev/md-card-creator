@@ -1490,3 +1490,62 @@ textarea { min-height: 110px; resize: vertical; }
   opacity: 1;
   cursor: pointer;
 }
+
+
+/* V0.5.4 — Claim commerciale + Editor Cleanup */
+.premium-placeholder {
+  grid-column: 1 / -1;
+  border: 1px solid #deddd7;
+  background: linear-gradient(135deg, #111, #2a2a2a);
+  color: #fff;
+  border-radius: 26px;
+  padding: 24px;
+}
+
+.premium-placeholder span {
+  display: block;
+  color: #b9b9b9;
+  font-size: 12px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.premium-placeholder h4 {
+  margin: 0 0 10px;
+  font-size: clamp(26px, 4vw, 44px);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.premium-placeholder p {
+  color: rgba(255,255,255,.74);
+  max-width: 780px;
+}
+
+.premium-future-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.premium-future-grid strong {
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.08);
+  border-radius: 999px;
+  padding: 11px 14px;
+  font-size: 14px;
+}
+
+.editor-section h3 {
+  letter-spacing: -0.04em;
+}
+
+@media (max-width: 700px) {
+  .premium-placeholder {
+    padding: 18px;
+    border-radius: 22px;
+  }
+}
