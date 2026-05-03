@@ -1684,3 +1684,149 @@ textarea { min-height: 110px; resize: vertical; }
     margin-top: -24px;
   }
 }
+
+
+/* V0.6.1 — Media Layout Polish */
+.public-real-card.has-media {
+  padding-top: clamp(22px, 4vw, 34px);
+}
+
+.public-real-card.has-media .public-real-top {
+  margin-bottom: 28px;
+  align-items: center;
+}
+
+.public-real-card.has-media .public-real-logo {
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  font-size: 17px !important;
+  opacity: .92;
+}
+
+.public-real-card.has-media .public-real-badge {
+  font-size: 14px;
+  padding: 9px 13px;
+}
+
+.public-real-card.has-media .public-company-logo-img {
+  max-width: 128px;
+  max-height: 58px;
+  margin: 0 0 22px;
+  border-radius: 16px;
+  padding: 8px 10px;
+  box-shadow: 0 14px 34px rgba(0,0,0,.20);
+}
+
+.public-real-card.has-media .public-profile-photo-img {
+  width: clamp(112px, 28vw, 156px);
+  height: clamp(112px, 28vw, 156px);
+  border-radius: 999px;
+  border: 3px solid var(--accent, #16e4f4);
+  margin: 4px 0 26px;
+  box-shadow: 0 18px 52px rgba(0,0,0,.32);
+}
+
+.public-real-card.has-media .public-claim-clean,
+.public-real-card.has-media .public-real-claim {
+  font-size: clamp(18px, 3.4vw, 25px);
+  margin-bottom: 14px;
+}
+
+.public-real-card.has-media .public-hero-clean h1,
+.public-real-card.has-media .public-real-hero h1 {
+  font-size: clamp(38px, 8.8vw, 62px);
+  max-width: 11ch;
+  margin-bottom: 18px;
+}
+
+.public-real-card.has-media .public-description-clean,
+.public-real-card.has-media .public-real-desc {
+  font-size: clamp(18px, 3.8vw, 25px);
+  line-height: 1.34;
+  margin-bottom: 22px;
+}
+
+.public-real-card.has-media .public-motto-clean,
+.public-real-card.has-media .public-real-motto {
+  font-size: clamp(18px, 3.8vw, 25px);
+  padding: 16px 18px;
+  margin-bottom: 22px;
+}
+
+.public-real-card.has-media .public-real-actions {
+  margin-top: 18px;
+}
+
+.public-real-card.has-media .public-real-actions a {
+  padding: 16px 18px;
+  border-radius: 18px;
+}
+
+.public-real-card.has-media .public-real-name {
+  padding-top: 26px;
+}
+
+.public-real-card.has-media .public-real-name h2 {
+  font-size: clamp(34px, 8vw, 56px);
+}
+
+.public-real-card.has-media .public-real-name h4 {
+  font-size: clamp(20px, 4vw, 30px);
+  margin-top: 9px;
+}
+
+.public-real-card.has-media .public-real-name p {
+  font-size: clamp(18px, 3.5vw, 25px);
+  margin-top: 8px;
+}
+
+.public-real-card.has-media .public-real-contacts {
+  padding-top: 16px;
+}
+
+.public-real-card.has-media .public-real-contacts a,
+.public-real-card.has-media .public-real-contacts div {
+  border-radius: 16px;
+  padding: 14px 15px;
+}
+
+.public-real-card.has-media .public-copy-button {
+  margin-top: 18px;
+}
+
+/* Better balance for uploaded logo and profile photo in dark/light cards */
+.public-real-card.tone-light.has-media .public-profile-photo-img {
+  box-shadow: 0 18px 52px rgba(0,0,0,.16);
+}
+
+.public-real-card.tone-light.has-media .public-company-logo-img {
+  box-shadow: 0 14px 34px rgba(0,0,0,.08);
+}
+
+/* Desktop centering: card should feel like a premium phone card, not a long technical page */
+.public-real-wrap .public-real-card {
+  margin-bottom: 40px;
+}
+
+@media (max-width: 520px) {
+  .public-real-card.has-media {
+    padding: 22px;
+  }
+
+  .public-real-card.has-media .public-real-top {
+    margin-bottom: 22px;
+  }
+
+  .public-real-card.has-media .public-company-logo-img {
+    max-width: 112px;
+    max-height: 52px;
+    margin-bottom: 18px;
+  }
+
+  .public-real-card.has-media .public-profile-photo-img {
+    width: 118px;
+    height: 118px;
+    margin-bottom: 22px;
+  }
+}

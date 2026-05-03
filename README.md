@@ -1,50 +1,37 @@
-# md|studios Card Creator — V0.6.0
+# md|studios Card Creator — V0.6.1
 
-Media Identity Basic.
+Media Layout Polish.
 
-## Novità
+## Obiettivo
 
-- Foto profilo.
-- Logo aziendale.
-- Importa foto da file.
-- Da telefono, il campo foto profilo può aprire la fotocamera/selfie.
-- Upload su Supabase Storage.
-- Visualizzazione nella Public Card.
-- Rimozione immagine.
+La V0.6.0 ha reso funzionanti foto profilo e logo aziendale.  
+La V0.6.1 migliora il layout della Public Card quando sono presenti immagini.
 
-## Migrazione Supabase richiesta
+## Miglioramenti
 
-Eseguire nel nuovo progetto Supabase il file:
-
-```text
-supabase/v060_media_identity.sql
-```
-
-Oppure incollare in SQL Editor il contenuto del file.
-
-## Bucket Supabase
-
-La versione crea/usa il bucket:
-
-```text
-card-media
-```
+- Foto profilo più elegante e tonda.
+- Logo aziendale meno "appoggiato" e più integrato.
+- Meno spazio verticale inutile.
+- Layout più compatto quando foto/logo sono presenti.
+- Gerarchia visiva più chiara:
+  - logo / brand
+  - foto
+  - claim / headline
+  - nome e ruolo
+  - contatti
 
 ## Mantiene
 
-- V0.5.4.3 Stable Share & Social
-- Nome e cognome
-- Ruolo / qualifica
-- WhatsApp visibile
-- Social
+- V0.6.0 Media Identity Basic
+- Supabase Storage
+- bucket `card-media`
+- foto profilo
+- logo aziendale
+- salvataggio cloud
 - Public Card pulita
 - Smart Share
-- Login e salvataggio cloud
-
-## Nota prodotto
-
-Foto profilo e logo aziendale sono funzioni Premium/Business.  
-Per ora sono attive per testare il valore prodotto; la logica piani verrà definita dopo.
+- social
+- WhatsApp
 
 ## Build Netlify
 

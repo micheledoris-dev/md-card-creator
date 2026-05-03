@@ -655,7 +655,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.6.0 · Media Identity.1 · Claim + Editor Cleanup</span>
+              <span className="eyebrow">MVP 0.6.1 · Media Layout Polish.1 · Claim + Editor Cleanup</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -737,7 +737,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.6.0 · Media Identity.1 · Claim + Editor Cleanup</span>
+          <span className="eyebrow">MVP 0.6.1 · Media Layout Polish.1 · Claim + Editor Cleanup</span>
           <h2>Una sola piattaforma. Infinite identità da condividere.</h2>
           <p>Crea, gestisci e aggiorna le digital card di persone, team, sedi, eventi e progetti da un unico spazio cloud.</p>
           <div className="hero-actions">
@@ -1416,7 +1416,7 @@ function PublicCard({ card, back }) {
     <section className="public-wrap public-real-wrap">
       <button className="btn light back-btn" onClick={back}><ArrowLeft size={18} /> Torna al Card Creator</button>
 
-      <article className={`public-real-card tone-${template.tone}`} style={{ '--accent': template.accent }}>
+      <article className={`public-real-card tone-${template.tone} ${card.profilePhotoUrl || card.companyLogoUrl ? 'has-media' : ''}`} style={{ '--accent': template.accent }}>
         <header className="public-real-hero">
           <div className="public-real-top">
             {visibleValue(card, 'logoText') && <div className="public-real-logo">{safeLogoText(card.logoText)}</div>}
