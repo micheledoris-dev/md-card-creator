@@ -16,6 +16,8 @@ const STORAGE_ACTIVE = 'md_card_creator_active_card_v037'
 const fieldLabels = {
   logoText: 'Logo / sigla',
   profilePhoto: 'Foto profilo — Premium',
+  profilePhotoUrl: 'Foto profilo',
+  companyLogoUrl: 'Logo aziendale',
   uploadedLogo: 'Logo caricato — Premium',
   coverImage: 'Cover visual — Premium',
   fullName: 'Nome e cognome',
@@ -42,6 +44,8 @@ const premiumFields = new Set(['profilePhoto', 'uploadedLogo', 'coverImage', 'va
 const defaultVisibility = {
   logoText: true,
   profilePhoto: false,
+  profilePhotoUrl: true,
+  companyLogoUrl: true,
   uploadedLogo: false,
   coverImage: false,
   fullName: true,
@@ -351,6 +355,8 @@ function cardToDb(card, userId) {
     logo_text: card.logoText || '',
     person_name: card.fullName || '',
     role_title: card.roleTitle || '',
+    profile_photo_url: card.profilePhotoUrl || '',
+    company_logo_url: card.companyLogoUrl || '',
     name: card.name || '',
     claim: card.claim || '',
     headline: card.headline || '',
@@ -384,6 +390,8 @@ function dbToCard(row, visibilityRows = []) {
     logoText: row.logo_text || '',
     fullName: row.person_name || '',
     roleTitle: row.role_title || '',
+    profilePhotoUrl: row.profile_photo_url || '',
+    companyLogoUrl: row.company_logo_url || '',
     name: row.name || '',
     claim: row.claim || '',
     headline: row.headline || '',
@@ -647,7 +655,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.5.4.3 · Social Visible Fix.1 · Claim + Editor Cleanup</span>
+              <span className="eyebrow">MVP 0.6.0 · Media Identity.1 · Claim + Editor Cleanup</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -657,7 +665,7 @@ function App() {
         {active === 'home' && <HomePage navigate={navigate} card={activeCard} cards={cards} createDemoCard={createDemoCard} />}
         {active === 'account' && <AccountPage session={session} authLoading={authLoading} cloudLoading={cloudLoading} cloudStatus={cloudStatus} cards={cards} />}
         {active === 'cards' && <CardsPage navigate={navigate} cards={cards} activeId={activeId} selectCard={selectCard} createDemoCard={createDemoCard} resetDemo={resetDemo} />}
-        {active === 'editor' && <EditorPage card={activeCard} updateField={updateField} updateCard={updateCard} updateVisibility={updateVisibility} stats={stats} navigate={navigate} resetDemo={resetDemo} saveDemo={saveDemo} />}
+        {active === 'editor' && <EditorPage card={activeCard} updateField={updateField} updateCard={updateCard} updateVisibility={updateVisibility} stats={stats} navigate={navigate} resetDemo={resetDemo} saveDemo={saveDemo} session={session} />}
         {active === 'share' && <SharePage card={activeCard} copy={copy} navigate={navigate} />}
         {active === 'public' && <PublicCard card={activeCard} back={() => navigate(lastPanel || 'home')} />}
         {active === 'wallet' && <ComingSoon title="Wallet" items={['Apple Wallet pass', 'Google Wallet pass', 'QR offline', 'Fase 2 dopo database']} />}
@@ -729,7 +737,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.5.4.3 · Social Visible Fix.1 · Claim + Editor Cleanup</span>
+          <span className="eyebrow">MVP 0.6.0 · Media Identity.1 · Claim + Editor Cleanup</span>
           <h2>Una sola piattaforma. Infinite identità da condividere.</h2>
           <p>Crea, gestisci e aggiorna le digital card di persone, team, sedi, eventi e progetti da un unico spazio cloud.</p>
           <div className="hero-actions">
@@ -1016,7 +1024,79 @@ function CardsPage({ navigate, cards, activeId, selectCard, createDemoCard, rese
   )
 }
 
-function EditorPage({ card, updateField, updateCard, updateVisibility, stats, navigate, resetDemo, saveDemo }) {
+
+function MediaUploadField({ title, description, value, onChange, kind, session }) {
+  const [uploading, setUploading] = useState(false)
+  const inputId = `media-${kind}`
+
+  const uploadFile = async (file) => {
+    if (!file) return
+
+    if (!supabase || !session?.user) {
+      onChange(URL.createObjectURL(file))
+      return
+    }
+
+    setUploading(true)
+    const ext = file.name.split('.').pop() || 'jpg'
+    const safeName = `${kind}-${Date.now()}.${ext}`
+    const path = `${session.user.id}/${safeName}`
+
+    const { error } = await supabase.storage
+      .from('card-media')
+      .upload(path, file, {
+        cacheControl: '3600',
+        upsert: true
+      })
+
+    if (error) {
+      alert(`Errore upload ${title}: ${error.message}`)
+      setUploading(false)
+      return
+    }
+
+    const { data } = supabase.storage
+      .from('card-media')
+      .getPublicUrl(path)
+
+    onChange(data.publicUrl)
+    setUploading(false)
+  }
+
+  return (
+    <div className="media-upload-field">
+      <div>
+        <span>{title}</span>
+        <p>{description}</p>
+      </div>
+
+      {value ? (
+        <div className={`media-preview ${kind}`}>
+          <img src={value} alt={title} />
+        </div>
+      ) : (
+        <div className={`media-preview empty ${kind}`}>+</div>
+      )}
+
+      <div className="media-actions">
+        <label className="btn light" htmlFor={inputId}>
+          {uploading ? 'Caricamento…' : 'Importa foto'}
+        </label>
+        <input
+          id={inputId}
+          type="file"
+          accept="image/*"
+          capture={kind === 'profile' ? 'user' : undefined}
+          onChange={(event) => uploadFile(event.target.files?.[0])}
+        />
+        {value && <button type="button" className="btn light" onClick={() => onChange('')}>Rimuovi</button>}
+      </div>
+    </div>
+  )
+}
+
+
+function EditorPage({ card, updateField, updateCard, updateVisibility, stats, navigate, resetDemo, saveDemo, session }) {
   return (
     <div className="main-grid">
       <section className="page-panel">
@@ -1075,15 +1155,28 @@ function EditorPage({ card, updateField, updateCard, updateVisibility, stats, na
         </EditorSection>
 
         <EditorSection title="Extra / Premium">
-          <div className="premium-placeholder">
-            <span>Funzioni future</span>
-            <h4>Identità visiva Premium</h4>
-            <p>Foto profilo, logo caricato e cover visual richiederanno Supabase Storage. Per ora sono segnate come direzione prodotto, non ancora attive.</p>
-            <div className="premium-future-grid">
-              <strong>Foto profilo</strong>
-              <strong>Logo caricato</strong>
-              <strong>Cover visual</strong>
-            </div>
+          <div className="premium-placeholder media-active-panel">
+            <span>Premium Media</span>
+            <h4>Identità visiva</h4>
+            <p>Aggiungi foto profilo e logo aziendale. Da telefono puoi importare una foto o scattare un selfie.</p>
+
+            <MediaUploadField
+              title="Foto profilo"
+              description="Ideale per professionisti, consulenti, manager e team."
+              value={card.profilePhotoUrl}
+              kind="profile"
+              session={session}
+              onChange={(value) => updateCard({ profilePhotoUrl: value })}
+            />
+
+            <MediaUploadField
+              title="Logo aziendale"
+              description="Carica il logo del brand, dello studio, dell’hotel o del progetto."
+              value={card.companyLogoUrl}
+              kind="logo"
+              session={session}
+              onChange={(value) => updateCard({ companyLogoUrl: value })}
+            />
           </div>
         </EditorSection>
       </section>
@@ -1329,6 +1422,14 @@ function PublicCard({ card, back }) {
             {visibleValue(card, 'logoText') && <div className="public-real-logo">{safeLogoText(card.logoText)}</div>}
             {visibleValue(card, 'company') && <span className="public-real-badge">{card.company}</span>}
           </div>
+
+          {visibleValue(card, 'companyLogoUrl') && card.companyLogoUrl && (
+            <img className="public-company-logo-img" src={card.companyLogoUrl} alt="Logo aziendale" />
+          )}
+
+          {visibleValue(card, 'profilePhotoUrl') && card.profilePhotoUrl && (
+            <img className="public-profile-photo-img" src={card.profilePhotoUrl} alt={card.fullName || card.name || 'Foto profilo'} />
+          )}
 
           {visibleValue(card, 'claim') && <p className="public-real-claim">{card.claim}</p>}
           {visibleValue(card, 'headline') && <h1>{card.headline}</h1>}

@@ -1,39 +1,50 @@
-# md|studios Card Creator — V0.5.4.3
+# md|studios Card Creator — V0.6.0
 
-Social Visible Fix.
+Media Identity Basic.
 
-## Correzione
+## Novità
 
-LinkedIn e Instagram devono essere verificabili chiaramente.
+- Foto profilo.
+- Logo aziendale.
+- Importa foto da file.
+- Da telefono, il campo foto profilo può aprire la fotocamera/selfie.
+- Upload su Supabase Storage.
+- Visualizzazione nella Public Card.
+- Rimozione immagine.
 
-## Cosa cambia
+## Migrazione Supabase richiesta
 
-- Sezione Social nell'Editor.
-- Campi:
-  - LinkedIn
-  - Instagram
-- Visibilità attivabile/disattivabile.
-- Social visibili nella Public Card se compilati.
-- Social presenti nello Smart Share se compilati.
+Eseguire nel nuovo progetto Supabase il file:
 
-## Regola
+```text
+supabase/v060_media_identity.sql
+```
 
-I social non devono comparire se:
+Oppure incollare in SQL Editor il contenuto del file.
 
-- sono vuoti;
-- oppure sono impostati su Nascosto.
+## Bucket Supabase
+
+La versione crea/usa il bucket:
+
+```text
+card-media
+```
 
 ## Mantiene
 
-- V0.5.4.2 WhatsApp Visible Fix
-- Claim commerciale
-- Editor Cleanup
+- V0.5.4.3 Stable Share & Social
 - Nome e cognome
 - Ruolo / qualifica
-- Supabase
-- salvataggio cloud
+- WhatsApp visibile
+- Social
 - Public Card pulita
-- Smart Share UX
+- Smart Share
+- Login e salvataggio cloud
+
+## Nota prodotto
+
+Foto profilo e logo aziendale sono funzioni Premium/Business.  
+Per ora sono attive per testare il valore prodotto; la logica piani verrà definita dopo.
 
 ## Build Netlify
 
