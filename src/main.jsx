@@ -18,6 +18,15 @@ const fieldLabels = {
   profilePhoto: 'Foto profilo — Premium',
   profilePhotoUrl: 'Foto profilo',
   companyLogoUrl: 'Logo aziendale',
+  material1Title: 'Titolo materiale 1',
+  material1Type: 'Tipo materiale 1',
+  material1Url: 'File / link materiale 1',
+  material2Title: 'Titolo materiale 2',
+  material2Type: 'Tipo materiale 2',
+  material2Url: 'File / link materiale 2',
+  material3Title: 'Titolo materiale 3',
+  material3Type: 'Tipo materiale 3',
+  material3Url: 'File / link materiale 3',
   uploadedLogo: 'Logo caricato — Premium',
   coverImage: 'Cover visual — Premium',
   fullName: 'Nome e cognome',
@@ -47,6 +56,15 @@ const defaultVisibility = {
   profilePhoto: false,
   profilePhotoUrl: true,
   companyLogoUrl: true,
+  material1Title: true,
+  material1Type: true,
+  material1Url: true,
+  material2Title: true,
+  material2Type: true,
+  material2Url: true,
+  material3Title: true,
+  material3Type: true,
+  material3Url: true,
   uploadedLogo: false,
   coverImage: false,
   fullName: true,
@@ -271,33 +289,9 @@ function visibleValue(card, key) {
   return Boolean(card.visibility?.[key] && hasValue(card[key]))
 }
 
-function getPublicCardSlug(card) {
-  return slugify(card?.slug || card?.id || card?.name || 'card')
-}
-
 function getPublicCardUrl(card) {
-  const slug = getPublicCardSlug(card)
-  if (typeof window === 'undefined') return `https://md-card-creator.netlify.app/c/${slug}`
-  return `${window.location.origin}/c/${slug}`
-}
-
-function getRequestedPublicSlug() {
-  if (typeof window === 'undefined') return ''
-  const pathMatch = window.location.pathname.match(/^\/c\/([^/?#]+)/)
-  if (pathMatch?.[1]) return decodeURIComponent(pathMatch[1])
-  return new URLSearchParams(window.location.search).get('card') || ''
-}
-
-function normalizeWebsiteUrl(value) {
-  const raw = String(value || '').trim()
-  if (!raw) return '#'
-  return /^https?:\/\//i.test(raw) ? raw : `https://${raw}`
-}
-
-function isBlackProfile(card) {
-  const template = templates[card?.template] || templates.automotive
-  const accent = String(template.accent || '').toLowerCase()
-  return template.tone === 'dark' || accent === '#111111' || accent === '#000000'
+  if (typeof window === 'undefined') return `https://md-card-creator.netlify.app/?card=${card.slug}`
+  return `${window.location.origin}${window.location.pathname}?card=${card.slug}`
 }
 
 function buildSmartShare(card) {
@@ -382,6 +376,7 @@ function cardToDb(card, userId) {
     role_title: card.roleTitle || '',
     profile_photo_url: card.profilePhotoUrl || '',
     company_logo_url: card.companyLogoUrl || '',
+    materials: card.materials || buildMaterialsFromFields(card),
     name: card.name || '',
     claim: card.claim || '',
     headline: card.headline || '',
@@ -418,6 +413,7 @@ function dbToCard(row, visibilityRows = []) {
     roleTitle: row.role_title || '',
     profilePhotoUrl: row.profile_photo_url || '',
     companyLogoUrl: row.company_logo_url || '',
+    materials: row.materials || [],
     name: row.name || '',
     claim: row.claim || '',
     headline: row.headline || '',
@@ -440,12 +436,11 @@ function dbToCard(row, visibilityRows = []) {
 
 
 function App() {
-  const requestedSlug = getRequestedPublicSlug()
+  const requestedSlug = new URLSearchParams(window.location.search).get('card')
   const [cards, setCards] = useState(() => loadStored(STORAGE_CARDS, demoCards))
   const [activeId, setActiveId] = useState(() => {
-    const storedCards = loadStored(STORAGE_CARDS, demoCards)
     const stored = loadStored(STORAGE_ACTIVE, demoCards[0].id)
-    const bySlug = requestedSlug ? storedCards.find(c => getPublicCardSlug(c) === slugify(requestedSlug) || c.id === requestedSlug)?.id : null
+    const bySlug = requestedSlug ? demoCards.find(c => c.slug === requestedSlug)?.id : null
     return bySlug || stored
   })
   const [active, setActive] = useState(() => requestedSlug ? 'public' : 'home')
@@ -683,7 +678,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.6.3.5 SAFE · Dark CTA + Public QR Fix</span>
+              <span className="eyebrow">MVP 0.6.4 · Materiali / Brochure.1 · Claim + Editor Cleanup</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -765,7 +760,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.6.3.5 SAFE · Dark CTA + Public QR Fix</span>
+          <span className="eyebrow">MVP 0.6.4 · Materiali / Brochure.1 · Claim + Editor Cleanup</span>
           <h2>Una sola piattaforma. Infinite identità da condividere.</h2>
           <p>Crea, gestisci e aggiorna le digital card di persone, team, sedi, eventi e progetti da un unico spazio cloud.</p>
           <div className="hero-actions">
@@ -1053,6 +1048,41 @@ function CardsPage({ navigate, cards, activeId, selectCard, createDemoCard, rese
 }
 
 
+
+const materialTypeOptions = ['Brochure', 'Regolamento', 'Menu', 'Catalogo', 'Portfolio', 'Documento evento', 'Listino', 'Presentazione', 'Altro']
+
+function materialTypeLabel(type) {
+  return type || 'Materiale'
+}
+
+function buildMaterialsFromFields(card) {
+  return [1, 2, 3].map((index) => ({
+    title: card[`material${index}Title`] || '',
+    type: card[`material${index}Type`] || '',
+    url: card[`material${index}Url`] || ''
+  })).filter(item => item.title || item.url)
+}
+
+function visibleMaterials(card) {
+  const stored = Array.isArray(card.materials) ? card.materials : []
+  const fromFields = buildMaterialsFromFields(card)
+  const items = stored.length ? stored : fromFields
+  return items
+    .map((item, index) => ({
+      title: item.title || `${materialTypeLabel(item.type)} ${index + 1}`,
+      type: item.type || 'Materiale',
+      url: item.url || ''
+    }))
+    .filter(item => item.url)
+}
+
+function normalizeMaterialUrl(value) {
+  const raw = String(value || '').trim()
+  if (!raw) return '#'
+  if (/^https?:\/\//i.test(raw)) return raw
+  return `https://${raw}`
+}
+
 function MediaUploadField({ title, description, value, onChange, kind, session }) {
   const [uploading, setUploading] = useState(false)
   const inputId = `media-${kind}`
@@ -1124,6 +1154,89 @@ function MediaUploadField({ title, description, value, onChange, kind, session }
 }
 
 
+
+function MaterialUploadField({ index, card, updateCard, session }) {
+  const [uploading, setUploading] = useState(false)
+  const titleKey = `material${index}Title`
+  const typeKey = `material${index}Type`
+  const urlKey = `material${index}Url`
+
+  const uploadFile = async (file) => {
+    if (!file) return
+
+    if (!supabase || !session?.user) {
+      updateCard({ [urlKey]: URL.createObjectURL(file), [titleKey]: card[titleKey] || file.name.replace(/\.[^.]+$/, '') })
+      return
+    }
+
+    setUploading(true)
+    const ext = file.name.split('.').pop() || 'pdf'
+    const safeFileName = file.name
+      .replace(/\.[^.]+$/, '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-zA-Z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .toLowerCase() || `materiale-${index}`
+    const path = `${session.user.id}/materials/${safeFileName}-${Date.now()}.${ext}`
+
+    const { error } = await supabase.storage
+      .from('card-materials')
+      .upload(path, file, { cacheControl: '3600', upsert: true })
+
+    if (error) {
+      alert(`Errore upload materiale: ${error.message}`)
+      setUploading(false)
+      return
+    }
+
+    const { data } = supabase.storage.from('card-materials').getPublicUrl(path)
+
+    updateCard({
+      [urlKey]: data.publicUrl,
+      [titleKey]: card[titleKey] || file.name.replace(/\.[^.]+$/, '')
+    })
+    setUploading(false)
+  }
+
+  return (
+    <div className="material-upload-card">
+      <div className="material-upload-head">
+        <span>Materiale {index}</span>
+        <strong>{card[titleKey] || 'Nuovo materiale'}</strong>
+      </div>
+
+      <div className="material-upload-grid">
+        <label>
+          Titolo
+          <input value={card[titleKey] || ''} onChange={(event) => updateCard({ [titleKey]: event.target.value })} placeholder="Es. Brochure aziendale" />
+        </label>
+
+        <label>
+          Tipo
+          <select value={card[typeKey] || ''} onChange={(event) => updateCard({ [typeKey]: event.target.value })}>
+            <option value="">Seleziona tipo</option>
+            {materialTypeOptions.map(option => <option key={option} value={option}>{option}</option>)}
+          </select>
+        </label>
+
+        <label className="material-url-field">
+          Link / file
+          <input value={card[urlKey] || ''} onChange={(event) => updateCard({ [urlKey]: event.target.value })} placeholder="Carica un PDF o incolla un link" />
+        </label>
+      </div>
+
+      <div className="material-actions">
+        <label className="btn light" htmlFor={`material-file-${index}`}>{uploading ? 'Caricamento…' : 'Carica PDF / file'}</label>
+        <input id={`material-file-${index}`} type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.jpeg,.png" onChange={(event) => uploadFile(event.target.files?.[0])} />
+        {card[urlKey] && <a className="btn dark" href={normalizeMaterialUrl(card[urlKey])} target="_blank" rel="noreferrer">Apri</a>}
+        {card[urlKey] && <button type="button" className="btn light" onClick={() => updateCard({ [urlKey]: '', [titleKey]: '', [typeKey]: '' })}>Rimuovi</button>}
+      </div>
+    </div>
+  )
+}
+
+
 function EditorPage({ card, updateField, updateCard, updateVisibility, stats, navigate, resetDemo, saveDemo, session }) {
   return (
     <div className="main-grid">
@@ -1180,6 +1293,20 @@ function EditorPage({ card, updateField, updateCard, updateVisibility, stats, na
 
         <EditorSection title="Social">
           {['linkedin', 'instagram'].map(k => <ControlField key={k} k={k} card={card} updateField={updateField} updateVisibility={updateVisibility} />)}
+        </EditorSection>
+
+        
+        <EditorSection title="Materiali / Brochure">
+          <div className="materials-editor-panel">
+            <div className="materials-editor-intro">
+              <span>Premium / Business</span>
+              <h4>Documenti da condividere</h4>
+              <p>Carica brochure, regolamenti, menu, cataloghi, portfolio o materiali evento. Verranno mostrati nella Public Card come pulsanti scaricabili.</p>
+            </div>
+            {[1, 2, 3].map(index => (
+              <MaterialUploadField key={index} index={index} card={card} updateCard={updateCard} session={session} />
+            ))}
+          </div>
         </EditorSection>
 
         <EditorSection title="Extra / Premium">
@@ -1394,7 +1521,7 @@ function PhoneCard({ card, compact = false }) {
       {visibleValue(card, 'description') && <p className="phone-desc">{card.description}</p>}
       {visibleValue(card, 'motto') && <div className="phone-motto">{card.motto}</div>}
       <div className="phone-actions">
-        {visibleValue(card, 'website') && <a className={`visit-site-btn ${isBlackProfile(card) ? 'black-profile-site-btn' : ''}`} href={normalizeWebsiteUrl(card.website)} target="_blank" rel="noreferrer">Visita il sito</a>}
+        {visibleValue(card, 'website') && <a href={card.website} target="_blank" rel="noreferrer">Visita il sito</a>}
         {visibleValue(card, 'whatsapp') && <a href={whatsappLink(card)} target="_blank" rel="noreferrer">WhatsApp</a>}
       </div>
       <div className="phone-features">
@@ -1446,7 +1573,7 @@ function PublicCard({ card, back }) {
 
   const contactRows = [
     visibleValue(card, 'email') ? { label: 'Email', value: card.email, href: mailtoLink(card) } : null,
-    visibleValue(card, 'website') ? { label: 'Sito web', value: card.website, href: normalizeWebsiteUrl(card.website) } : null,
+    visibleValue(card, 'website') ? { label: 'Sito web', value: card.website, href: card.website } : null,
     visibleValue(card, 'phone') ? { label: 'Telefono', value: card.phone, href: `tel:${normalizePhone(card.phone)}` } : null,
     visibleValue(card, 'whatsapp') ? { label: 'WhatsApp', value: card.whatsapp, href: whatsappLink(card) } : null,
     visibleValue(card, 'maps') ? { label: 'Mappa', value: 'Apri posizione Google Maps', href: normalizeMapsUrl(card.maps, card.address) } : null,
@@ -1483,7 +1610,7 @@ function PublicCard({ card, back }) {
           {visibleValue(card, 'motto') && <div className="public-real-motto">{card.motto}</div>}
 
           <div className="public-real-actions">
-            {visibleValue(card, 'website') && <a className={`primary website-cta-definitive visit-site-btn ${isBlackProfile(card) ? 'black-profile-site-btn' : ''}`} href={normalizeWebsiteUrl(card.website)} target="_blank" rel="noreferrer">Visita il sito</a>}
+            {visibleValue(card, 'website') && <a className="primary" href={card.website} target="_blank" rel="noreferrer">Visita il sito</a>}
             {(visibleValue(card, 'whatsapp') || visibleValue(card, 'phone')) && <a className="secondary" href={whatsappLink(card)} target="_blank" rel="noreferrer">WhatsApp</a>}
           </div>
         </header>
@@ -1515,22 +1642,27 @@ function PublicCard({ card, back }) {
         )}
 
         <div className="public-sharing-actions">
-          <button className="public-copy-button primary-contact" onClick={async () => {
-            const url = publicLink(card)
-            if (navigator.share) {
-              await navigator.share({
-                title: card.name || 'Digital Card',
-                text: 'Ti condivido la mia digital card:',
-                url
-              })
-            } else {
-              await copyText(url)
-              alert('Link della card copiato negli appunti')
-            }
-          }}>Condividi card</button>
           <button className="public-copy-button" onClick={() => copyText(publicLink(card))}>Copia link</button>
           <button className="public-copy-button" onClick={() => copyText(smartShare)}>Copia scheda completa</button>
         </div>
+
+        
+        {visibleMaterials(card).length > 0 && (
+          <section className="public-materials-panel">
+            <div className="public-materials-head">
+              <span>Materiali</span>
+              <strong>Documenti condivisi</strong>
+            </div>
+            <div className="public-materials-list">
+              {visibleMaterials(card).map((item, index) => (
+                <a key={`${item.url}-${index}`} href={normalizeMaterialUrl(item.url)} target="_blank" rel="noreferrer">
+                  <span>{materialTypeLabel(item.type)}</span>
+                  <strong>{item.title}</strong>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section className="public-card-qr-panel">
           <div>

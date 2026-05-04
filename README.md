@@ -1,54 +1,69 @@
-# md|studios Card Creator — MVP 0.6.3.5 SAFE
+# md|studios Card Creator — V0.6.4
 
-Versione corretta con fix definitivo per il pulsante “Visita il sito” nel profilo nero/dark, QR sempre visibile su fondo bianco, link pubblico `/c/:slug` e pulsante “Condividi card”.
+Materiali / Brochure.
 
-# md|studios Card Creator — V0.6.3.4
+## Novità
 
-Accent Button + Maps Link Fix.
+Aggiunta sezione Premium / Business per allegare materiali alla Public Card:
 
-## Correzioni
+- brochure PDF;
+- regolamento;
+- menu;
+- catalogo;
+- portfolio;
+- documento evento;
+- listino;
+- presentazione;
+- altri materiali.
 
-### 1. Pulsante `Visita il sito`
+## Editor
 
-Il pulsante non resta più azzurro fisso.  
-Ora segue il colore accent scelto dal template.
-
-Esempio:
+Nuova sezione:
 
 ```text
-accent oro → pulsante oro
-accent azzurro → pulsante azzurro
-accent verde → pulsante verde
+Materiali / Brochure
 ```
 
-Il testo resta sempre leggibile.
+Sono disponibili 3 materiali base.
 
-### 2. Google Maps
+Ogni materiale ha:
 
-Il link `Apri posizione Google Maps` ora viene normalizzato.
+- titolo;
+- tipo;
+- file / link;
+- pulsante Apri;
+- rimozione.
 
-Funziona con:
+## Public Card
+
+Compare una sezione:
 
 ```text
-https://maps.google.com/...
+Materiali
+Documenti condivisi
 ```
 
-oppure con un indirizzo normale:
+con pulsanti scaricabili/apribili.
+
+## Supabase
+
+Migrazione richiesta:
 
 ```text
-Via Ascanio Sforza, 9, Milano
+supabase/v064_materials_brochure.sql
 ```
 
-In quel caso genera:
+Aggiunge la colonna:
 
-```text
-https://www.google.com/maps/search/?api=1&query=...
+```sql
+alter table public.cards
+add column if not exists materials jsonb default '[]'::jsonb;
 ```
 
-## Deve comparire nel sito
+e crea il bucket:
 
 ```text
-MVP 0.6.3.5 SAFE · Accent Button + Maps Fix
+card-materials
 ```
 
 ## Build Netlify
