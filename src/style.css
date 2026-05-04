@@ -2099,3 +2099,88 @@ button.public-whatsapp-button {
   -webkit-text-fill-color: #ffffff !important;
   border-color: #20242b !important;
 }
+
+/* MVP 0.6.3.5 SAFE — Dark profile CTA + QR visibility definitive fix */
+.phone-card.tone-dark .visit-site-btn,
+.phone-card .black-profile-site-btn,
+.public-real-card.tone-dark .visit-site-btn,
+.public-real-card .black-profile-site-btn,
+.public-real-card.tone-dark .website-cta-definitive,
+.public-real-card .black-profile-site-btn.website-cta-definitive {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #050505 !important;
+  -webkit-text-fill-color: #050505 !important;
+  border: 1px solid rgba(255,255,255,.70) !important;
+  box-shadow: 0 14px 34px rgba(255,255,255,.10) !important;
+  opacity: 1 !important;
+  filter: none !important;
+  mix-blend-mode: normal !important;
+  text-shadow: none !important;
+}
+
+.phone-card.tone-dark .visit-site-btn:hover,
+.phone-card .black-profile-site-btn:hover,
+.public-real-card.tone-dark .visit-site-btn:hover,
+.public-real-card .black-profile-site-btn:hover {
+  background: #f2f2f2 !important;
+  background-color: #f2f2f2 !important;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+.phone-card.tone-dark .visit-site-btn *,
+.phone-card .black-profile-site-btn *,
+.public-real-card.tone-dark .visit-site-btn *,
+.public-real-card .black-profile-site-btn * {
+  color: #050505 !important;
+  -webkit-text-fill-color: #050505 !important;
+}
+
+.real-qr,
+.public-card-qr-box,
+.share-qr-stage .real-qr,
+.share-qr-card .real-qr,
+.card-qr-box,
+.qr-box,
+.qr-code-wrapper {
+  background: #ffffff !important;
+  border-radius: 18px !important;
+}
+
+.public-card-qr-box {
+  padding: 12px !important;
+  border: 1px solid rgba(0,0,0,.08) !important;
+}
+
+.real-qr img,
+.real-qr canvas,
+.real-qr svg,
+.public-card-qr-box img,
+.public-card-qr-box canvas,
+.public-card-qr-box svg,
+.qr-box img,
+.qr-box canvas,
+.qr-box svg,
+.qr-code-wrapper img,
+.qr-code-wrapper canvas,
+.qr-code-wrapper svg {
+  background: #ffffff !important;
+  border-radius: 14px !important;
+  display: block !important;
+}
+
+.public-card-qr-box .real-qr img {
+  width: 128px !important;
+  max-width: 128px !important;
+  padding: 6px !important;
+  border: 0 !important;
+}
+
+.public-sharing-actions .primary-contact {
+  background: #ffffff !important;
+  color: #050505 !important;
+  -webkit-text-fill-color: #050505 !important;
+  border: 1px solid rgba(0,0,0,.10) !important;
+}

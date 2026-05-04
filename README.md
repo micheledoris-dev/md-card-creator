@@ -1,3 +1,7 @@
+# md|studios Card Creator — MVP 0.6.3.5 SAFE
+
+Versione corretta con fix definitivo per il pulsante “Visita il sito” nel profilo nero/dark, QR sempre visibile su fondo bianco, link pubblico `/c/:slug` e pulsante “Condividi card”.
+
 # md|studios Card Creator — V0.6.3.4
 
 Accent Button + Maps Link Fix.
@@ -44,7 +48,7 @@ https://www.google.com/maps/search/?api=1&query=...
 ## Deve comparire nel sito
 
 ```text
-MVP 0.6.3.4 · Accent Button + Maps Fix
+MVP 0.6.3.5 SAFE · Accent Button + Maps Fix
 ```
 
 ## Build Netlify
