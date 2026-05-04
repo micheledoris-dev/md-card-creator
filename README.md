@@ -1,37 +1,54 @@
-# md|studios Card Creator — V0.6.2
+# md|studios Card Creator — V0.6.3
 
-Sharing & Business Identity.
+Public Link + vCard.
+
+## Obiettivo
+
+Separare meglio:
+
+- Card Creator = pannello di creazione/modifica
+- Public Card = biglietto pubblico da inviare/scansionare
 
 ## Novità
 
-- Campo `Codice Univoco / SDI`.
-- Visibilità on/off per Codice Univoco.
-- Codice Univoco visibile nella Public Card se compilato.
-- Codice Univoco incluso nello Smart Share se visibile.
-- QR visibile nella Public Card.
+- Public Card più autonoma quando aperta da link `?card=slug`.
+- Caricamento della card pubblica da Supabase tramite slug.
+- Pulsante `Aggiungi ai contatti`.
+- Generazione file `.vcf`.
+- QR orientato alla condivisione/salvataggio contatto.
 - Pulsanti:
   - Copia link
+  - Aggiungi ai contatti
   - Copia scheda completa
-- Footer branding:
-  - Creato con md|studios Card Creator
 
-## Migrazione Supabase richiesta
+## Come si usa
+
+1. Crea/modifica la card nel Creator.
+2. Salva su Supabase.
+3. Copia il link pubblico o mostra il QR.
+4. Chi riceve apre la Public Card.
+5. Può cliccare `Aggiungi ai contatti`.
+
+## Mantiene
+
+- V0.6.2 Sharing & Business Identity
+- Codice Univoco / SDI
+- QR in Public Card
+- Branding md|studios
+- Foto profilo
+- Logo aziendale
+- Supabase Storage
+- Smart Share
+
+## Migrazione Supabase
+
+Nessuna nuova migrazione obbligatoria rispetto alla V0.6.2.
+Assicurarsi che esista già:
 
 ```sql
 alter table public.cards
 add column if not exists sdi_code text;
 ```
-
-File incluso:
-
-```text
-supabase/v062_sharing_business_identity.sql
-```
-
-## Nota prodotto
-
-Il branding md|studios è previsto nel piano Free/Base.  
-In futuro potrà essere rimosso nei piani Premium / Business / White Label.
 
 ## Build Netlify
 
