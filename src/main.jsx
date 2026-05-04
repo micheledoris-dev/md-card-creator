@@ -678,7 +678,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.6.4 · Materiali / Brochure.1 · Claim + Editor Cleanup</span>
+              <span className="eyebrow">MVP 0.6.4.1 · Material Labels Polish.1 · Material Labels Polish.1 · Claim + Editor Cleanup</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -760,7 +760,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.6.4 · Materiali / Brochure.1 · Claim + Editor Cleanup</span>
+          <span className="eyebrow">MVP 0.6.4.1 · Material Labels Polish.1 · Material Labels Polish.1 · Claim + Editor Cleanup</span>
           <h2>Una sola piattaforma. Infinite identità da condividere.</h2>
           <p>Crea, gestisci e aggiorna le digital card di persone, team, sedi, eventi e progetti da un unico spazio cloud.</p>
           <div className="hero-actions">
@@ -1049,15 +1049,43 @@ function CardsPage({ navigate, cards, activeId, selectCard, createDemoCard, rese
 
 
 
+
 const materialTypeOptions = ['Brochure', 'Regolamento', 'Menu', 'Catalogo', 'Portfolio', 'Documento evento', 'Listino', 'Presentazione', 'Altro']
+
+const materialIconMap = {
+  Brochure: '📘',
+  Regolamento: '📋',
+  Menu: '🍽️',
+  Catalogo: '🗂️',
+  Portfolio: '🎨',
+  'Documento evento': '🎟️',
+  Listino: '€',
+  Presentazione: '▣',
+  Altro: '📎',
+  Materiale: '📎'
+}
 
 function materialTypeLabel(type) {
   return type || 'Materiale'
 }
 
+function materialIcon(type) {
+  return materialIconMap[type || 'Materiale'] || '📎'
+}
+
+function cleanMaterialTitle(value) {
+  const raw = String(value || '').trim()
+  if (!raw) return ''
+  return raw
+    .replace(/\.[a-z0-9]{2,5}$/i, '')
+    .replace(/[_-]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
 function buildMaterialsFromFields(card) {
   return [1, 2, 3].map((index) => ({
-    title: card[`material${index}Title`] || '',
+    title: cleanMaterialTitle(card[`material${index}Title`] || ''),
     type: card[`material${index}Type`] || '',
     url: card[`material${index}Url`] || ''
   })).filter(item => item.title || item.url)
@@ -1067,21 +1095,34 @@ function visibleMaterials(card) {
   const stored = Array.isArray(card.materials) ? card.materials : []
   const fromFields = buildMaterialsFromFields(card)
   const items = stored.length ? stored : fromFields
+  const seen = new Set()
+
   return items
-    .map((item, index) => ({
-      title: item.title || `${materialTypeLabel(item.type)} ${index + 1}`,
-      type: item.type || 'Materiale',
-      url: item.url || ''
-    }))
-    .filter(item => item.url)
+    .map((item, index) => {
+      const title = cleanMaterialTitle(item.title) || `${materialTypeLabel(item.type)} ${index + 1}`
+      return {
+        title,
+        type: item.type || 'Materiale',
+        url: item.url || ''
+      }
+    })
+    .filter(item => {
+      if (!item.url) return false
+      const key = `${item.url}|${item.title}`.toLowerCase()
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
 }
 
 function normalizeMaterialUrl(value) {
   const raw = String(value || '').trim()
   if (!raw) return '#'
+  if (raw.startsWith('blob:')) return raw
   if (/^https?:\/\//i.test(raw)) return raw
   return `https://${raw}`
 }
+
 
 function MediaUploadField({ title, description, value, onChange, kind, session }) {
   const [uploading, setUploading] = useState(false)
@@ -1165,7 +1206,7 @@ function MaterialUploadField({ index, card, updateCard, session }) {
     if (!file) return
 
     if (!supabase || !session?.user) {
-      updateCard({ [urlKey]: URL.createObjectURL(file), [titleKey]: card[titleKey] || file.name.replace(/\.[^.]+$/, '') })
+      updateCard({ [urlKey]: URL.createObjectURL(file), [titleKey]: card[titleKey] || cleanMaterialTitle(file.name) })
       return
     }
 
@@ -1194,7 +1235,7 @@ function MaterialUploadField({ index, card, updateCard, session }) {
 
     updateCard({
       [urlKey]: data.publicUrl,
-      [titleKey]: card[titleKey] || file.name.replace(/\.[^.]+$/, '')
+      [titleKey]: card[titleKey] || cleanMaterialTitle(file.name)
     })
     setUploading(false)
   }
@@ -1301,7 +1342,7 @@ function EditorPage({ card, updateField, updateCard, updateVisibility, stats, na
             <div className="materials-editor-intro">
               <span>Premium / Business</span>
               <h4>Documenti da condividere</h4>
-              <p>Carica brochure, regolamenti, menu, cataloghi, portfolio o materiali evento. Verranno mostrati nella Public Card come pulsanti scaricabili.</p>
+              <p>Aggiungi brochure, regolamenti, menu, cataloghi, portfolio o documenti evento. Nella Public Card appariranno come risorse professionali da aprire o scaricare.</p>
             </div>
             {[1, 2, 3].map(index => (
               <MaterialUploadField key={index} index={index} card={card} updateCard={updateCard} session={session} />
@@ -1650,14 +1691,15 @@ function PublicCard({ card, back }) {
         {visibleMaterials(card).length > 0 && (
           <section className="public-materials-panel">
             <div className="public-materials-head">
-              <span>Materiali</span>
-              <strong>Documenti condivisi</strong>
+              <span>Risorse disponibili</span>
+              <strong>Brochure, documenti e materiali sempre aggiornati.</strong>
             </div>
             <div className="public-materials-list">
               {visibleMaterials(card).map((item, index) => (
                 <a key={`${item.url}-${index}`} href={normalizeMaterialUrl(item.url)} target="_blank" rel="noreferrer">
+                  <i>{materialIcon(item.type)}</i>
                   <span>{materialTypeLabel(item.type)}</span>
-                  <strong>{item.title}</strong>
+                  <strong>{cleanMaterialTitle(item.title)}</strong>
                 </a>
               ))}
             </div>

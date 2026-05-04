@@ -2270,3 +2270,90 @@ button.public-whatsapp-button {
     display: grid;
   }
 }
+
+
+/* V0.6.4.1 — Material Labels Polish */
+.public-materials-panel {
+  background: linear-gradient(135deg, rgba(255,255,255,.07), rgba(255,255,255,.035)) !important;
+}
+
+.public-materials-head strong {
+  max-width: 430px;
+}
+
+.public-materials-list a {
+  position: relative;
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  grid-template-areas:
+    "icon type"
+    "icon title";
+  column-gap: 12px;
+  align-items: center;
+  transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+
+.public-materials-list a:hover {
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.10);
+  border-color: rgba(255,255,255,.22);
+}
+
+.public-materials-list a i {
+  grid-area: icon;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,.10);
+  font-style: normal;
+  font-size: 20px;
+}
+
+.public-materials-list a span {
+  grid-area: type;
+  margin-bottom: 3px;
+}
+
+.public-materials-list a strong {
+  grid-area: title;
+  font-size: 18px;
+  line-height: 1.15;
+}
+
+.public-real-card.tone-light .public-materials-list a:hover {
+  background: #f1f0eb;
+  border-color: #d7d6cf;
+}
+
+.public-real-card.tone-light .public-materials-list a i {
+  background: #f1f0eb;
+}
+
+.material-upload-card {
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+.material-upload-card:focus-within {
+  border-color: #111;
+  box-shadow: 0 12px 35px rgba(0,0,0,.08);
+}
+
+.material-upload-head strong {
+  max-width: 70%;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 560px) {
+  .public-materials-list a {
+    grid-template-columns: 38px 1fr;
+    column-gap: 10px;
+  }
+
+  .public-materials-list a i {
+    width: 38px;
+    height: 38px;
+    border-radius: 13px;
+  }
+}
