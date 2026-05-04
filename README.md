@@ -1,17 +1,32 @@
-# md|studios Card Creator — V0.6.3.2
+# md|studios Card Creator — V0.6.3.2 SAFE
 
-Site Button Hard Fix.
+Pacchetto sicuro per ripristino.
+
+## Deve comparire nel sito
+
+```text
+MVP 0.6.3.2 SAFE · Site Button Fix
+```
 
 ## Correzione
 
-Il pulsante `Visita il sito` nella versione nera/scura poteva risultare illeggibile.
+- Pulsante `Visita il sito` leggibile nel tema nero/scuro.
+- WhatsApp resta leggibile.
+- `index.html` verificato come file app React, non README/migrazione SQL.
 
-## Sistemato
+## Caricamento
 
-- pulsante principale con fondo accent;
-- testo nero leggibile;
-- WhatsApp separato con fondo scuro e testo bianco;
-- compatibilità con tema scuro.
+Caricare su GitHub:
+
+```text
+index.html
+package.json
+vite.config.js
+netlify.toml
+README.md
+src/
+supabase/
+```
 
 ## Build Netlify
 

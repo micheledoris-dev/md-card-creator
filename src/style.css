@@ -1999,3 +1999,50 @@ textarea { min-height: 110px; resize: vertical; }
   opacity: .45;
   pointer-events: none;
 }
+
+
+/* V0.6.3.2 SAFE — Site Button Fix */
+.public-real-actions a:first-child,
+.public-actions-clean a:first-child,
+.public-real-actions .primary,
+.public-actions-clean .primary,
+.public-site-button,
+a.public-site-button,
+button.public-site-button {
+  background: #16e4f4 !important;
+  background-color: #16e4f4 !important;
+  color: #000000 !important;
+  border-color: #16e4f4 !important;
+  opacity: 1 !important;
+  filter: none !important;
+  font-weight: 1000 !important;
+  text-shadow: none !important;
+}
+
+.public-real-actions a:first-child *,
+.public-actions-clean a:first-child *,
+.public-real-actions .primary *,
+.public-actions-clean .primary *,
+.public-site-button * {
+  color: #000000 !important;
+}
+
+.public-real-actions a[href*="wa.me"],
+.public-actions-clean a[href*="wa.me"],
+.public-whatsapp-button,
+a.public-whatsapp-button,
+button.public-whatsapp-button {
+  background: #20242b !important;
+  background-color: #20242b !important;
+  color: #ffffff !important;
+  border-color: #20242b !important;
+  opacity: 1 !important;
+  filter: none !important;
+  font-weight: 1000 !important;
+}
+
+.public-real-actions a[href*="wa.me"] *,
+.public-actions-clean a[href*="wa.me"] *,
+.public-whatsapp-button * {
+  color: #ffffff !important;
+}

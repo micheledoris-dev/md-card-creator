@@ -1,6 +1,6 @@
 {
-  "name": "md-card-creator-v06-3-2",
-  "version": "0.6.3-2",
+  "name": "md-card-creator-v0632-safe",
+  "version": "0.6.3-2-safe",
   "private": true,
   "type": "module",
   "scripts": {
