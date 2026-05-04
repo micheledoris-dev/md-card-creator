@@ -1,54 +1,27 @@
-# md|studios Card Creator — V0.6.3
+# md|studios Card Creator — V0.6.3.1
 
-Public Link + vCard.
+Button Contrast Fix.
 
-## Obiettivo
+## Correzione
 
-Separare meglio:
+Il pulsante `Visita il sito` nella Public Card poteva risultare con testo scuro su sfondo scuro.
 
-- Card Creator = pannello di creazione/modifica
-- Public Card = biglietto pubblico da inviare/scansionare
+## Sistemato
 
-## Novità
-
-- Public Card più autonoma quando aperta da link `?card=slug`.
-- Caricamento della card pubblica da Supabase tramite slug.
-- Pulsante `Aggiungi ai contatti`.
-- Generazione file `.vcf`.
-- QR orientato alla condivisione/salvataggio contatto.
-- Pulsanti:
-  - Copia link
-  - Aggiungi ai contatti
-  - Copia scheda completa
-
-## Come si usa
-
-1. Crea/modifica la card nel Creator.
-2. Salva su Supabase.
-3. Copia il link pubblico o mostra il QR.
-4. Chi riceve apre la Public Card.
-5. Può cliccare `Aggiungi ai contatti`.
+- pulsante primario sempre leggibile;
+- `Visita il sito` con fondo accent e testo scuro;
+- pulsanti secondari con fondo scuro e testo bianco;
+- compatibilità tema chiaro/scuro.
 
 ## Mantiene
 
-- V0.6.2 Sharing & Business Identity
+- V0.6.3 Public Link + vCard
+- Aggiungi ai contatti
+- QR Public Card
 - Codice Univoco / SDI
-- QR in Public Card
-- Branding md|studios
-- Foto profilo
-- Logo aziendale
-- Supabase Storage
+- foto profilo
+- logo aziendale
 - Smart Share
-
-## Migrazione Supabase
-
-Nessuna nuova migrazione obbligatoria rispetto alla V0.6.2.
-Assicurarsi che esista già:
-
-```sql
-alter table public.cards
-add column if not exists sdi_code text;
-```
 
 ## Build Netlify
 
