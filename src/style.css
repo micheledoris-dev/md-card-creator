@@ -2046,3 +2046,56 @@ button.public-whatsapp-button {
 .public-whatsapp-button * {
   color: #ffffff !important;
 }
+
+
+/* V0.6.3.4 — Accent Button + Maps Link Fix */
+
+/* Il pulsante principale deve seguire il colore scelto, non restare sempre azzurro. */
+.website-cta-definitive,
+a.website-cta-definitive,
+button.website-cta-definitive,
+.public-real-actions .website-cta-definitive,
+.public-actions-clean .website-cta-definitive,
+.public-real-card .website-cta-definitive,
+.public-real-card.tone-dark .website-cta-definitive,
+.public-real-card.tone-light .website-cta-definitive,
+.public-real-card.has-media .website-cta-definitive,
+.public-real-actions > a:first-child,
+.public-real-actions > button:first-child,
+.public-actions-clean > a:first-child,
+.public-actions-clean > button:first-child {
+  background: var(--accent, #16e4f4) !important;
+  background-color: var(--accent, #16e4f4) !important;
+  background-image: none !important;
+  color: #050505 !important;
+  -webkit-text-fill-color: #050505 !important;
+  border-color: var(--accent, #16e4f4) !important;
+  opacity: 1 !important;
+  filter: none !important;
+  mix-blend-mode: normal !important;
+  text-shadow: none !important;
+  font-weight: 1000 !important;
+}
+
+.website-cta-definitive *,
+.public-real-actions > a:first-child *,
+.public-real-actions > button:first-child *,
+.public-actions-clean > a:first-child *,
+.public-actions-clean > button:first-child * {
+  color: #050505 !important;
+  -webkit-text-fill-color: #050505 !important;
+}
+
+/* WhatsApp resta secondario e leggibile. */
+.public-real-actions a[href*="wa.me"],
+.public-actions-clean a[href*="wa.me"],
+.public-whatsapp-button,
+a.public-whatsapp-button,
+button.public-whatsapp-button {
+  background: #20242b !important;
+  background-color: #20242b !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border-color: #20242b !important;
+}

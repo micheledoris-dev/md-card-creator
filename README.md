@@ -1,31 +1,50 @@
-# md|studios Card Creator — V0.6.3.2 SAFE
+# md|studios Card Creator — V0.6.3.4
 
-Pacchetto sicuro per ripristino.
+Accent Button + Maps Link Fix.
+
+## Correzioni
+
+### 1. Pulsante `Visita il sito`
+
+Il pulsante non resta più azzurro fisso.  
+Ora segue il colore accent scelto dal template.
+
+Esempio:
+
+```text
+accent oro → pulsante oro
+accent azzurro → pulsante azzurro
+accent verde → pulsante verde
+```
+
+Il testo resta sempre leggibile.
+
+### 2. Google Maps
+
+Il link `Apri posizione Google Maps` ora viene normalizzato.
+
+Funziona con:
+
+```text
+https://maps.google.com/...
+```
+
+oppure con un indirizzo normale:
+
+```text
+Via Ascanio Sforza, 9, Milano
+```
+
+In quel caso genera:
+
+```text
+https://www.google.com/maps/search/?api=1&query=...
+```
 
 ## Deve comparire nel sito
 
 ```text
-MVP 0.6.3.2 SAFE · Site Button Fix
-```
-
-## Correzione
-
-- Pulsante `Visita il sito` leggibile nel tema nero/scuro.
-- WhatsApp resta leggibile.
-- `index.html` verificato come file app React, non README/migrazione SQL.
-
-## Caricamento
-
-Caricare su GitHub:
-
-```text
-index.html
-package.json
-vite.config.js
-netlify.toml
-README.md
-src/
-supabase/
+MVP 0.6.3.4 · Accent Button + Maps Fix
 ```
 
 ## Build Netlify
