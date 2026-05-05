@@ -1,33 +1,29 @@
-# md|studios Card Creator — V0.6.5
+# md|studios Card Creator — V0.6.5.1
 
-Public Card Clean Branding.
+Public Card Blank Fix.
 
-## Obiettivo
+## Correzione
 
-Quando una persona apre il link della Public Card, deve vedere il biglietto, non il pannello del creator.
+La V0.6.5 poteva mostrare una pagina vuota cliccando su Public Card perché la funzione PublicCard usava `standalone` senza dichiararlo.
 
-## Cosa cambia
+## Sistemato
 
-- Nasconde l’header pubblico con `md|studios`.
-- Nasconde il badge `Demo`.
-- Nasconde `Torna al Card Creator` quando il link è pubblico.
-- Mantiene in basso un footer molto discreto:
-  - `Powered by md|studios`
-- Predisposizione futura White Label:
-  - nelle versioni Business/Premium il branding potrà essere rimosso.
+- Public Card torna a caricarsi nel Creator.
+- Il branding pulito resta attivo solo quando la card viene aperta da link pubblico.
+- Mantiene:
+  - Materiali / Brochure
+  - Foto/logo
+  - WhatsApp
+  - Google Maps
+  - QR
+  - vCard
+  - Footer discreto Powered by md|studios
 
-## Mantiene
+## Deve comparire nel sito
 
-- V0.6.4.1 Material Labels Polish
-- Materiali / Brochure
-- Foto profilo
-- Logo aziendale
-- WhatsApp
-- Google Maps
-- QR
-- vCard
-- Smart Share
-- Salvataggio cloud
+```text
+MVP 0.6.5.1 · Public Card Blank Fix
+```
 
 ## Build Netlify
 

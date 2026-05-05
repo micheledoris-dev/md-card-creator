@@ -678,7 +678,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.6.5 · Public Card Clean Branding.1 · Material Labels Polish.1 · Claim + Editor Cleanup</span>
+              <span className="eyebrow">MVP 0.6.5.1 · Public Card Blank Fix.1 · Public Card Blank Fix.1 · Material Labels Polish.1 · Claim + Editor Cleanup</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -690,7 +690,7 @@ function App() {
         {active === 'cards' && <CardsPage navigate={navigate} cards={cards} activeId={activeId} selectCard={selectCard} createDemoCard={createDemoCard} resetDemo={resetDemo} />}
         {active === 'editor' && <EditorPage card={activeCard} updateField={updateField} updateCard={updateCard} updateVisibility={updateVisibility} stats={stats} navigate={navigate} resetDemo={resetDemo} saveDemo={saveDemo} session={session} />}
         {active === 'share' && <SharePage card={activeCard} copy={copy} navigate={navigate} />}
-        {active === 'public' && <PublicCard card={activeCard} back={() => navigate(lastPanel || 'home')} />}
+        {active === 'public' && <PublicCard card={activeCard} back={() => navigate(lastPanel || 'home')} standalone={Boolean(requestedSlug)} />}
         {active === 'wallet' && <ComingSoon title="Wallet" items={['Apple Wallet pass', 'Google Wallet pass', 'QR offline', 'Fase 2 dopo database']} />}
         {active === 'analytics' && <ComingSoon title="Analytics" items={['Visite per card', 'Click sui pulsanti', 'Report azienda', 'Card più performanti']} />}
         {active === 'branding' && <ComingSoon title="Branding" items={['Template aziendali', 'Brand kit', 'Colori globali', 'Rimozione branding']} />}
@@ -760,7 +760,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.6.5 · Public Card Clean Branding.1 · Material Labels Polish.1 · Claim + Editor Cleanup</span>
+          <span className="eyebrow">MVP 0.6.5.1 · Public Card Blank Fix.1 · Public Card Blank Fix.1 · Material Labels Polish.1 · Claim + Editor Cleanup</span>
           <h2>Una sola piattaforma. Infinite identità da condividere.</h2>
           <p>Crea, gestisci e aggiorna le digital card di persone, team, sedi, eventi e progetti da un unico spazio cloud.</p>
           <div className="hero-actions">
@@ -1608,7 +1608,7 @@ function normalizeMapsUrl(value, addressFallback = '') {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(target)}`
 }
 
-function PublicCard({ card, back }) {
+function PublicCard({ card, back, standalone = false }) {
   const template = templates[card.template] || templates.automotive
   const smartShare = buildSmartShare(card)
 
@@ -1627,7 +1627,7 @@ function PublicCard({ card, back }) {
   ].filter(Boolean)
 
   return (
-    <section className="public-wrap public-real-wrap">
+    <section className={`public-wrap public-real-wrap ${standalone ? "standalone-public-card public-clean-branding" : ""}`}>
       {!standalone && <button className="btn light back-btn" onClick={back}><ArrowLeft size={18} /> Torna al Card Creator</button>}
 
       <article className={`public-real-card tone-${template.tone} ${card.profilePhotoUrl || card.companyLogoUrl ? 'has-media' : ''}`} style={{ '--accent': template.accent }}>
