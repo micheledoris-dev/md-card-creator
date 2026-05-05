@@ -2357,3 +2357,77 @@ button.public-whatsapp-button {
     border-radius: 13px;
   }
 }
+
+
+/* V0.6.5 — Public Card Clean Branding */
+.public-clean-branding .back-btn,
+.standalone-public-card .back-btn,
+.public-clean-branding .public-brand-header,
+.public-clean-branding .public-demo-badge,
+.public-clean-branding .creator-public-header,
+.public-clean-branding .demo-pill,
+.public-clean-branding .app-public-top,
+.public-clean-branding .public-topbar,
+.public-clean-branding .public-nav {
+  display: none !important;
+}
+
+.public-clean-branding {
+  padding-top: 18px !important;
+}
+
+/* Footer md|studios: discreto, non invasivo */
+.public-md-branding {
+  margin-top: 22px !important;
+  padding-top: 16px !important;
+  border-top: 1px solid rgba(255,255,255,.10) !important;
+  text-align: center !important;
+  font-size: 10px !important;
+  line-height: 1.2 !important;
+  letter-spacing: .02em !important;
+  color: rgba(255,255,255,.30) !important;
+  font-weight: 500 !important;
+}
+
+.public-md-branding a {
+  color: rgba(255,255,255,.34) !important;
+  text-decoration: none !important;
+}
+
+.public-md-branding strong {
+  color: rgba(255,255,255,.50) !important;
+  font-weight: 700 !important;
+}
+
+.public-md-branding a:hover,
+.public-md-branding a:hover strong {
+  color: rgba(255,255,255,.75) !important;
+}
+
+.public-real-card.tone-light .public-md-branding {
+  border-top-color: rgba(0,0,0,.08) !important;
+  color: rgba(0,0,0,.32) !important;
+}
+
+.public-real-card.tone-light .public-md-branding a {
+  color: rgba(0,0,0,.36) !important;
+}
+
+.public-real-card.tone-light .public-md-branding strong {
+  color: rgba(0,0,0,.52) !important;
+}
+
+/* Predisposizione futura White Label */
+.public-real-card.white-label .public-md-branding,
+.white-label-public-card .public-md-branding {
+  display: none !important;
+}
+
+@media (max-width: 720px) {
+  .public-clean-branding {
+    padding-top: 8px !important;
+  }
+  .public-clean-branding .public-real-card {
+    margin-top: 0 !important;
+  }
+}

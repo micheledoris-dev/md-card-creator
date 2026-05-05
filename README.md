@@ -1,42 +1,32 @@
-# md|studios Card Creator — V0.6.4.1
+# md|studios Card Creator — V0.6.5
 
-Material Labels Polish.
+Public Card Clean Branding.
 
 ## Obiettivo
 
-Rifinire la sezione Materiali senza toccare le funzioni stabili.
+Quando una persona apre il link della Public Card, deve vedere il biglietto, non il pannello del creator.
 
-## Miglioramenti
+## Cosa cambia
 
-- Etichette più chiare:
-  - Brochure
-  - Regolamento
-  - Menu
-  - Catalogo
-  - Portfolio
-  - Documento evento
-  - Listino
-  - Presentazione
-- Titoli file ripuliti:
-  - `Proposta_v5.pdf` diventa `Proposta v5`
-- Sezione Public Card più elegante:
-  - `Risorse disponibili`
-  - `Brochure, documenti e materiali sempre aggiornati.`
-- Piccole icone per tipo materiale.
-- Riduzione duplicati visivi.
-- Nessuna nuova migrazione Supabase richiesta.
+- Nasconde l’header pubblico con `md|studios`.
+- Nasconde il badge `Demo`.
+- Nasconde `Torna al Card Creator` quando il link è pubblico.
+- Mantiene in basso un footer molto discreto:
+  - `Powered by md|studios`
+- Predisposizione futura White Label:
+  - nelle versioni Business/Premium il branding potrà essere rimosso.
 
 ## Mantiene
 
-- V0.6.4 Stable Materials / Brochure
-- Upload materiali
-- Bucket `card-materials`
-- Public Card
-- QR
-- vCard
-- Foto/logo
+- V0.6.4.1 Material Labels Polish
+- Materiali / Brochure
+- Foto profilo
+- Logo aziendale
 - WhatsApp
 - Google Maps
+- QR
+- vCard
+- Smart Share
 - Salvataggio cloud
 
 ## Build Netlify
