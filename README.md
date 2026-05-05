@@ -1,26 +1,31 @@
-# md|studios Card Creator — V0.6.5.2
+# md|studios Card Creator — V0.6.5.3
 
-Company Logo Right of Profile.
+Media Spacing Balance.
 
 ## Obiettivo
 
-Rendere il logo aziendale più importante senza aumentare lo spazio verticale della card.
+Rifinire gli spazi nella parte alta della Public Card quando sono presenti foto profilo e logo aziendale.
 
 ## Cosa cambia
 
-- Foto profilo a sinistra.
-- Logo aziendale a destra.
-- Logo più grande.
-- Stessa fascia orizzontale.
-- Nessuno spazio verticale aggiunto.
-- Se manca il logo, la foto resta normale.
-- Se manca la foto, il logo resta ordinato.
+- Foto profilo e logo aziendale più ordinati.
+- Logo aziendale più grande ma controllato.
+- Foto leggermente meno invadente.
+- Migliore spazio tra:
+  - logo md / badge
+  - media row
+  - claim
+  - headline
+  - descrizione
+  - motto
+  - CTA
+- Headline leggermente meno enorme, più premium.
+- Nessuna modifica funzionale.
 
 ## Mantiene
 
-- V0.6.5.1 Public Card Blank Fix
+- V0.6.5.2 Logo Beside Profile
 - Public Card pulita
-- Footer discreto Powered by md|studios
 - Materiali / Brochure
 - QR
 - vCard
@@ -31,7 +36,7 @@ Rendere il logo aziendale più importante senza aumentare lo spazio verticale de
 ## Deve comparire nel sito
 
 ```text
-MVP 0.6.5.2 · Logo Beside Profile
+MVP 0.6.5.3 · Media Spacing Balance
 ```
 
 ## Build Netlify
