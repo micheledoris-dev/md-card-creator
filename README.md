@@ -1,28 +1,37 @@
-# md|studios Card Creator — V0.6.5.1
+# md|studios Card Creator — V0.6.5.2
 
-Public Card Blank Fix.
+Company Logo Right of Profile.
 
-## Correzione
+## Obiettivo
 
-La V0.6.5 poteva mostrare una pagina vuota cliccando su Public Card perché la funzione PublicCard usava `standalone` senza dichiararlo.
+Rendere il logo aziendale più importante senza aumentare lo spazio verticale della card.
 
-## Sistemato
+## Cosa cambia
 
-- Public Card torna a caricarsi nel Creator.
-- Il branding pulito resta attivo solo quando la card viene aperta da link pubblico.
-- Mantiene:
-  - Materiali / Brochure
-  - Foto/logo
-  - WhatsApp
-  - Google Maps
-  - QR
-  - vCard
-  - Footer discreto Powered by md|studios
+- Foto profilo a sinistra.
+- Logo aziendale a destra.
+- Logo più grande.
+- Stessa fascia orizzontale.
+- Nessuno spazio verticale aggiunto.
+- Se manca il logo, la foto resta normale.
+- Se manca la foto, il logo resta ordinato.
+
+## Mantiene
+
+- V0.6.5.1 Public Card Blank Fix
+- Public Card pulita
+- Footer discreto Powered by md|studios
+- Materiali / Brochure
+- QR
+- vCard
+- WhatsApp
+- Google Maps
+- Salvataggio cloud
 
 ## Deve comparire nel sito
 
 ```text
-MVP 0.6.5.1 · Public Card Blank Fix
+MVP 0.6.5.2 · Logo Beside Profile
 ```
 
 ## Build Netlify

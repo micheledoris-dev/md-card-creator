@@ -2431,3 +2431,78 @@ button.public-whatsapp-button {
     margin-top: 0 !important;
   }
 }
+
+
+/* V0.6.5.2 — Company Logo Right of Profile */
+
+/*
+  Quando sono presenti sia foto profilo sia logo aziendale,
+  il logo viene spostato a destra della foto tramite layout visivo.
+  Non modifichiamo il JSX: usiamo CSS Grid sui due elementi media.
+*/
+.public-real-card.has-media .public-company-logo-img,
+.public-real-card.has-media .public-profile-photo-img {
+  margin-top: 0 !important;
+}
+
+/* Caso completo: logo + foto nella stessa fascia */
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-company-logo-img,
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-profile-photo-img {
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+/* Foto: resta protagonista */
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-profile-photo-img {
+  width: clamp(118px, 27vw, 162px) !important;
+  height: clamp(118px, 27vw, 162px) !important;
+  margin: 2px 16px 28px 0 !important;
+  border-radius: 999px !important;
+}
+
+/* Logo: più grande e affiancato a destra */
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-company-logo-img {
+  max-width: clamp(124px, 32vw, 190px) !important;
+  width: clamp(124px, 32vw, 190px) !important;
+  max-height: clamp(92px, 22vw, 132px) !important;
+  height: clamp(92px, 22vw, 132px) !important;
+  object-fit: contain !important;
+  padding: 14px !important;
+  border-radius: 24px !important;
+  margin: 2px 0 28px !important;
+  background: rgba(255,255,255,.96) !important;
+}
+
+/* Se c'è solo il logo, rimane elegante e non enorme */
+.public-real-card.has-media:has(.public-company-logo-img):not(:has(.public-profile-photo-img)) .public-company-logo-img {
+  max-width: 180px !important;
+  max-height: 96px !important;
+  margin-bottom: 26px !important;
+}
+
+/* Se c'è solo la foto, resta centrata/ordinata come prima */
+.public-real-card.has-media:not(:has(.public-company-logo-img)):has(.public-profile-photo-img) .public-profile-photo-img {
+  margin-bottom: 26px !important;
+}
+
+/* Tema chiaro: logo su box pulito */
+.public-real-card.tone-light.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-company-logo-img {
+  background: #fff !important;
+  border: 1px solid #e4e4df !important;
+}
+
+/* Mobile stretto: mantieni affiancamento finché possibile, poi compatta */
+@media (max-width: 420px) {
+  .public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-profile-photo-img {
+    width: 108px !important;
+    height: 108px !important;
+    margin-right: 10px !important;
+  }
+
+  .public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-company-logo-img {
+    width: 120px !important;
+    height: 88px !important;
+    padding: 11px !important;
+    border-radius: 20px !important;
+  }
+}
