@@ -678,7 +678,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.6.5.6 · Public Media Right Balance · Public Card Blank Fix.1 · Material Labels Polish.1 · Claim + Editor Cleanup</span>
+              <span className="eyebrow">MVP 0.6.5.8 · Public Card Contact Row Split · Duplicate Company Hide · Logo Header Centering</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -760,7 +760,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.6.5.6 · Public Media Right Balance · Public Card Blank Fix.1 · Material Labels Polish.1 · Claim + Editor Cleanup</span>
+          <span className="eyebrow">MVP 0.6.5.8 · Public Card Contact Row Split · Duplicate Company Hide · Logo Header Centering</span>
           <h2>Una sola piattaforma. Infinite identità da condividere.</h2>
           <p>Crea, gestisci e aggiorna le digital card di persone, team, sedi, eventi e progetti da un unico spazio cloud.</p>
           <div className="hero-actions">
@@ -1611,6 +1611,8 @@ function normalizeMapsUrl(value, addressFallback = '') {
 function PublicCard({ card, back, standalone = false }) {
   const template = templates[card.template] || templates.automotive
   const smartShare = buildSmartShare(card)
+  const hasCompanyLogo = visibleValue(card, 'companyLogoUrl') && !!card.companyLogoUrl
+  const hasProfilePhoto = visibleValue(card, 'profilePhotoUrl') && !!card.profilePhotoUrl
 
   const contactRows = [
     visibleValue(card, 'email') ? { label: 'Email', value: card.email, href: mailtoLink(card) } : null,
@@ -1620,8 +1622,8 @@ function PublicCard({ card, back, standalone = false }) {
     visibleValue(card, 'maps') ? { label: 'Mappa', value: 'Apri posizione Google Maps', href: normalizeMapsUrl(card.maps, card.address) } : null,
     visibleValue(card, 'address') ? { label: 'Indirizzo', value: card.address, href: null } : null,
     visibleValue(card, 'company') ? { label: 'Azienda', value: card.company, href: null } : null,
-    visibleValue(card, 'vat') ? { label: 'P. IVA', value: card.vat, href: null } : null,
-    visibleValue(card, 'sdiCode') && card.sdiCode ? { label: 'Codice Univoco', value: card.sdiCode, href: null } : null,
+    visibleValue(card, 'vat') ? { label: 'P. IVA', value: card.vat, href: null, className: 'half meta-vat' } : null,
+    visibleValue(card, 'sdiCode') && card.sdiCode ? { label: 'Codice Univoco', value: card.sdiCode, href: null, className: 'half meta-sdi' } : null,
     visibleValue(card, 'linkedin') ? { label: 'LinkedIn', value: 'Apri LinkedIn', href: card.linkedin } : null,
     visibleValue(card, 'instagram') ? { label: 'Instagram', value: 'Apri Instagram', href: card.instagram } : null
   ].filter(Boolean)
@@ -1630,24 +1632,24 @@ function PublicCard({ card, back, standalone = false }) {
     <section className={`public-wrap public-real-wrap ${standalone ? "standalone-public-card public-clean-branding" : ""}`}>
       {!standalone && <button className="btn light back-btn" onClick={back}><ArrowLeft size={18} /> Torna al Card Creator</button>}
 
-      <article className={`public-real-card tone-${template.tone} ${card.profilePhotoUrl || card.companyLogoUrl ? 'has-media' : ''}`} style={{ '--accent': template.accent }}>
+      <article className={`public-real-card tone-${template.tone} ${hasProfilePhoto || hasCompanyLogo ? 'has-media' : ''}`} style={{ '--accent': template.accent }}>
         <header className="public-real-hero">
           <div className="public-real-top">
             {visibleValue(card, 'logoText') && <div className="public-real-logo">{safeLogoText(card.logoText)}</div>}
             {visibleValue(card, 'company') && <span className="public-real-badge">{card.company}</span>}
           </div>
 
-          {(visibleValue(card, 'companyLogoUrl') && card.companyLogoUrl) || (visibleValue(card, 'profilePhotoUrl') && card.profilePhotoUrl) ? (
-            <div className="public-media-row">
-              {visibleValue(card, 'companyLogoUrl') && card.companyLogoUrl && (
+          {(hasCompanyLogo || hasProfilePhoto) && (
+            <div className={`public-media-stage ${hasCompanyLogo && hasProfilePhoto ? 'both' : hasCompanyLogo ? 'only-logo' : 'only-photo'}`}>
+              {hasCompanyLogo && (
                 <img className="public-company-logo-img" src={card.companyLogoUrl} alt="Logo aziendale" />
               )}
 
-              {visibleValue(card, 'profilePhotoUrl') && card.profilePhotoUrl && (
+              {hasProfilePhoto && (
                 <img className="public-profile-photo-img" src={card.profilePhotoUrl} alt={card.fullName || card.name || 'Foto profilo'} />
               )}
             </div>
-          ) : null}
+          )}
 
           {visibleValue(card, 'claim') && <p className="public-real-claim">{card.claim}</p>}
           {visibleValue(card, 'headline') && <h1>{card.headline}</h1>}
@@ -1664,7 +1666,6 @@ function PublicCard({ card, back, standalone = false }) {
           <section className="public-real-name">
             {visibleValue(card, 'fullName') && card.fullName ? <h2>{card.fullName}</h2> : <h2>{card.name}</h2>}
             {visibleValue(card, 'roleTitle') && card.roleTitle && <h4>{card.roleTitle}</h4>}
-            {visibleValue(card, 'fullName') && card.fullName && visibleValue(card, 'name') && card.name && card.name !== card.fullName && <p>{card.name}</p>}
           </section>
         )}
 
@@ -1672,12 +1673,12 @@ function PublicCard({ card, back, standalone = false }) {
           <section className="public-real-contacts">
             {contactRows.map((row) => (
               row.href ? (
-                <a key={`${row.label}-${row.value}`} href={row.href} target="_blank" rel="noreferrer">
+                <a key={`${row.label}-${row.value}`} className={row.className || ''} href={row.href} target="_blank" rel="noreferrer">
                   <span>{row.label}</span>
                   <strong>{row.value}</strong>
                 </a>
               ) : (
-                <div key={`${row.label}-${row.value}`}>
+                <div key={`${row.label}-${row.value}`} className={row.className || ''}>
                   <span>{row.label}</span>
                   <strong>{row.value}</strong>
                 </div>

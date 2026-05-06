@@ -2916,93 +2916,103 @@ button.public-whatsapp-button {
 }
 
 
-/* V0.6.5.6 — Public Card media row: foto più a destra, logo più grande */
-.public-real-card.has-media .public-media-row {
+/* V0.6.5.8 — Public Card: PI+SDI same row, hide duplicate company, better centered company logo */
+.public-media-stage {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: clamp(12px, 3vw, 22px);
-  width: 100%;
-  margin: 0 0 28px;
+  justify-content: center;
+  gap: clamp(14px, 3.4vw, 26px);
+  margin: 0 0 clamp(18px, 4vw, 28px);
 }
 
-.public-real-card.has-media .public-media-row .public-company-logo-img,
-.public-real-card.has-media .public-media-row .public-profile-photo-img {
+.public-media-stage.only-logo,
+.public-media-stage.only-photo {
+  justify-content: center;
+}
+
+.public-media-stage .public-company-logo-img,
+.public-media-stage .public-profile-photo-img {
+  float: none !important;
   display: block !important;
   margin: 0 !important;
-  flex-shrink: 0;
 }
 
-.public-real-card.has-media .public-media-row .public-company-logo-img {
-  order: 1;
-  width: clamp(142px, 34vw, 212px) !important;
-  max-width: clamp(142px, 34vw, 212px) !important;
-  height: clamp(76px, 18vw, 118px) !important;
-  max-height: clamp(76px, 18vw, 118px) !important;
+.public-media-stage .public-company-logo-img {
+  width: clamp(124px, 34vw, 168px) !important;
+  max-width: clamp(124px, 34vw, 168px) !important;
+  height: clamp(84px, 22vw, 112px) !important;
+  max-height: clamp(84px, 22vw, 112px) !important;
   object-fit: contain !important;
-  padding: 12px 14px !important;
-  border-radius: 22px !important;
+  object-position: center center !important;
+  padding: clamp(10px, 2.2vw, 14px) !important;
+  border-radius: 20px !important;
   background: rgba(255,255,255,.96) !important;
+  box-shadow: 0 14px 34px rgba(0,0,0,.18) !important;
 }
 
-.public-real-card.has-media .public-media-row .public-profile-photo-img {
-  order: 2;
-  width: clamp(104px, 24vw, 144px) !important;
-  height: clamp(104px, 24vw, 144px) !important;
+.public-real-card.tone-light .public-media-stage .public-company-logo-img {
+  background: #fff !important;
+}
+
+.public-media-stage .public-profile-photo-img {
+  width: clamp(104px, 28vw, 126px) !important;
+  height: clamp(104px, 28vw, 126px) !important;
   border-radius: 999px !important;
   object-fit: cover !important;
   object-position: center center !important;
-  margin-right: clamp(-6px, -1.2vw, 0px) !important;
 }
 
-.public-real-card.has-media .public-media-row:has(.public-company-logo-img):has(.public-profile-photo-img) {
-  padding-left: clamp(18px, 5vw, 58px);
+.public-real-name p {
+  display: none !important;
 }
 
-.public-real-card.has-media .public-media-row:not(:has(.public-company-logo-img)) {
-  justify-content: flex-end;
+.public-real-contacts {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
 }
 
-.public-real-card.has-media .public-media-row:not(:has(.public-profile-photo-img)) {
-  justify-content: flex-end;
+.public-real-contacts > a,
+.public-real-contacts > div {
+  grid-column: 1 / -1;
+}
+
+.public-real-contacts > .half {
+  grid-column: span 1;
+}
+
+.public-real-contacts > .half strong {
+  font-size: clamp(16px, 3.6vw, 18px);
+  line-height: 1.15;
+}
+
+.public-real-contacts > .half span {
+  font-size: 12px;
 }
 
 @media (max-width: 520px) {
-  .public-real-card.has-media .public-media-row {
-    gap: 10px;
-    margin-bottom: 22px;
+  .public-media-stage {
+    gap: 12px;
   }
 
-  .public-real-card.has-media .public-media-row .public-company-logo-img {
-    width: clamp(124px, 42vw, 158px) !important;
-    max-width: clamp(124px, 42vw, 158px) !important;
-    height: 78px !important;
-    max-height: 78px !important;
-    padding: 10px 12px !important;
-    border-radius: 18px !important;
+  .public-media-stage .public-company-logo-img {
+    width: 120px !important;
+    max-width: 120px !important;
+    height: 80px !important;
+    max-height: 80px !important;
+    padding: 9px !important;
   }
 
-  .public-real-card.has-media .public-media-row .public-profile-photo-img {
-    width: 102px !important;
-    height: 102px !important;
-    margin-right: -4px !important;
-  }
-}
-
-@media (max-width: 390px) {
-  .public-real-card.has-media .public-media-row {
-    gap: 8px;
+  .public-media-stage .public-profile-photo-img {
+    width: 98px !important;
+    height: 98px !important;
   }
 
-  .public-real-card.has-media .public-media-row .public-company-logo-img {
-    width: 116px !important;
-    max-width: 116px !important;
-    height: 70px !important;
-    max-height: 70px !important;
+  .public-real-contacts > .half {
+    min-width: 0;
   }
 
-  .public-real-card.has-media .public-media-row .public-profile-photo-img {
-    width: 92px !important;
-    height: 92px !important;
+  .public-real-contacts > .half strong {
+    word-break: break-word;
+    font-size: 15px;
   }
 }
