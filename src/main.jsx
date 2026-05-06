@@ -678,7 +678,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.6.5.9 · Company Under Name · Email Lower Contact Row</span>
+              <span className="eyebrow">MVP 0.6.5.10 · Real Preview Data · Light Card Creator Label</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -723,7 +723,7 @@ function Sidebar({ active, navigate, open, setOpen }) {
           <div className="brand-logo">md</div>
           <div>
             <strong>md|studios</strong>
-            <span>Card Creator</span>
+            <span className="brand-subtitle">Card Creator</span>
           </div>
           <button className="close-menu" onClick={() => setOpen(false)}><X size={22} /></button>
         </div>
@@ -760,7 +760,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.6.5.9 · Company Under Name · Email Lower Contact Row</span>
+          <span className="eyebrow">MVP 0.6.5.10 · Real Preview Data · Light Card Creator Label</span>
           <h2>Una sola piattaforma. Infinite identità da condividere.</h2>
           <p>Crea, gestisci e aggiorna le digital card di persone, team, sedi, eventi e progetti da un unico spazio cloud.</p>
           <div className="hero-actions">
@@ -1541,8 +1541,8 @@ function PreviewPanel({ card }) {
   return (
     <aside className="preview-panel">
       <div className="preview-header">
-        <span>Anteprima smartphone</span>
-        <strong>{card.name}</strong>
+        <span>Anteprima dati reali</span>
+        <strong>{card.company || card.name}</strong>
       </div>
       <PhoneCard card={card} compact />
     </aside>
@@ -1551,25 +1551,62 @@ function PreviewPanel({ card }) {
 
 function PhoneCard({ card, compact = false }) {
   const template = templates[card.template] || templates.automotive
+  const hasCompanyLogo = visibleValue(card, 'companyLogoUrl') && !!card.companyLogoUrl
+  const hasProfilePhoto = visibleValue(card, 'profilePhotoUrl') && !!card.profilePhotoUrl
+  const previewRows = [
+    visibleValue(card, 'website') ? { label: 'Sito web', value: card.website } : null,
+    visibleValue(card, 'phone') ? { label: 'Telefono', value: card.phone } : null,
+    visibleValue(card, 'email') ? { label: 'Email', value: card.email } : null,
+    visibleValue(card, 'vat') ? { label: 'P. IVA', value: card.vat, className: 'half' } : null,
+    visibleValue(card, 'sdiCode') && card.sdiCode ? { label: 'Codice Univoco', value: card.sdiCode, className: 'half' } : null,
+    visibleValue(card, 'address') ? { label: 'Indirizzo', value: card.address } : null,
+    visibleValue(card, 'whatsapp') ? { label: 'WhatsApp', value: card.whatsapp } : null,
+    visibleValue(card, 'linkedin') ? { label: 'LinkedIn', value: card.linkedin } : null,
+    visibleValue(card, 'instagram') ? { label: 'Instagram', value: card.instagram } : null
+  ].filter(Boolean)
+
   return (
     <div className={`phone-card ${compact ? 'compact' : ''} tone-${template.tone}`} style={{ '--accent': template.accent }}>
       <div className="phone-top">
         {visibleValue(card, 'logoText') && <div className="phone-logo">{safeLogoText(card.logoText)}</div>}
         <span className="beta">{template.name}</span>
       </div>
+
+      {(hasCompanyLogo || hasProfilePhoto) && (
+        <div className="phone-media-stage">
+          {hasCompanyLogo && <img className="phone-company-logo-img" src={card.companyLogoUrl} alt="Logo aziendale" />}
+          {hasProfilePhoto && <img className="phone-profile-photo-img" src={card.profilePhotoUrl} alt={card.fullName || card.name || 'Foto profilo'} />}
+        </div>
+      )}
+
+      {(visibleValue(card, 'fullName') || visibleValue(card, 'name') || visibleValue(card, 'company')) && (
+        <div className="phone-identity">
+          {visibleValue(card, 'fullName') && card.fullName ? <h2>{card.fullName}</h2> : visibleValue(card, 'name') && <h2>{card.name}</h2>}
+          {visibleValue(card, 'roleTitle') && card.roleTitle && <h4>{card.roleTitle}</h4>}
+          {visibleValue(card, 'company') && card.company && <p>{card.company}</p>}
+        </div>
+      )}
+
       {visibleValue(card, 'claim') && <p className="phone-claim">{card.claim}</p>}
       {visibleValue(card, 'headline') && <h3>{card.headline}</h3>}
       {visibleValue(card, 'description') && <p className="phone-desc">{card.description}</p>}
       {visibleValue(card, 'motto') && <div className="phone-motto">{card.motto}</div>}
+
       <div className="phone-actions">
         {visibleValue(card, 'website') && <a href={card.website} target="_blank" rel="noreferrer">Visita il sito</a>}
-        {visibleValue(card, 'whatsapp') && <a href={whatsappLink(card)} target="_blank" rel="noreferrer">WhatsApp</a>}
+        {(visibleValue(card, 'whatsapp') || visibleValue(card, 'phone')) && <a href={whatsappLink(card)} target="_blank" rel="noreferrer">WhatsApp</a>}
       </div>
-      <div className="phone-features">
-        <InfoCard title="Dati attivi" text="La card mostra solo i campi compilati e impostati su Visibile." />
-        <InfoCard title="Smart Share" text="WhatsApp, email e QR sono collegati a questa card." />
-        <InfoCard title="Template" text={template.name} />
-      </div>
+
+      {previewRows.length > 0 && (
+        <div className="phone-preview-contacts">
+          {previewRows.map((row) => (
+            <div key={`${row.label}-${row.value}`} className={row.className || ''}>
+              <span>{row.label}</span>
+              <strong>{row.value}</strong>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

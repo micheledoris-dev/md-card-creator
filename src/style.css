@@ -21,7 +21,7 @@ a { color: inherit; text-decoration: none; }
 .brand { display: flex; align-items: center; gap: 14px; position: relative; }
 .brand-logo { width: 44px; height: 44px; border-radius: 16px; display: grid; place-items: center; border: 1px solid #333; background: #171717; font-weight: 900; }
 .brand strong { display: block; font-size: 18px; letter-spacing: -1px; }
-.brand span { color: #a5a5a5; font-size: 13px; }
+.brand span { color: #a5a5a5; font-size: 13px; font-weight: 300; letter-spacing: .01em; }
 .close-menu { display: none; margin-left: auto; background: transparent; border: 0; color: #fff; }
 .nav-item {
   width: 100%; border: 0; background: transparent; color: #aaa; display: flex; align-items: center; gap: 13px;
@@ -3034,4 +3034,124 @@ button.public-whatsapp-button {
 
 .public-real-name h4 {
   margin-bottom: 0;
+}
+
+
+/* V0.6.5.10 — Editor preview now uses real card data */
+.brand .brand-subtitle {
+  font-weight: 300 !important;
+}
+
+.phone-media-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: -20px 0 24px;
+}
+
+.phone-company-logo-img {
+  width: 104px;
+  height: 72px;
+  object-fit: contain;
+  object-position: center;
+  background: rgba(255,255,255,.96);
+  border-radius: 16px;
+  padding: 9px;
+}
+
+.phone-profile-photo-img {
+  width: 88px;
+  height: 88px;
+  border-radius: 999px;
+  object-fit: cover;
+  object-position: center;
+  border: 2px solid var(--accent, #00e5ff);
+}
+
+.phone-identity {
+  margin: 0 0 18px;
+}
+
+.phone-identity h2 {
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.055em;
+  margin: 0 0 5px;
+}
+
+.phone-identity h4 {
+  margin: 0 0 4px;
+  color: var(--accent, #00e5ff);
+  font-size: 17px;
+  line-height: 1.1;
+}
+
+.phone-identity p {
+  margin: 0;
+  color: rgba(255,255,255,.72);
+  font-weight: 900;
+}
+
+.tone-light .phone-identity p {
+  color: #555;
+}
+
+.phone-preview-contacts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 18px;
+}
+
+.phone-preview-contacts > div {
+  grid-column: 1 / -1;
+  border: 1px solid rgba(255,255,255,.13);
+  background: rgba(255,255,255,.055);
+  border-radius: 14px;
+  padding: 10px 12px;
+  min-width: 0;
+}
+
+.phone-preview-contacts > div.half {
+  grid-column: span 1;
+}
+
+.phone-preview-contacts span {
+  display: block;
+  color: rgba(255,255,255,.56);
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 3px;
+}
+
+.phone-preview-contacts strong {
+  display: block;
+  color: var(--accent, #00e5ff);
+  font-size: 12px;
+  line-height: 1.18;
+  word-break: break-word;
+}
+
+.tone-light .phone-preview-contacts > div {
+  border-color: #deddd7;
+  background: #fff;
+}
+
+.tone-light .phone-preview-contacts span {
+  color: #777;
+}
+
+.preview-panel .phone-card.compact .phone-top {
+  margin-bottom: 32px;
+}
+
+.preview-panel .phone-card.compact h3 {
+  font-size: 30px;
+}
+
+.preview-panel .phone-card.compact .phone-desc {
+  font-size: 14px;
 }
