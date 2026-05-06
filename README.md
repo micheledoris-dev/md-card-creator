@@ -1,30 +1,23 @@
-# md|studios Card Creator — V0.6.5.3
+# md|studios Card Creator — V0.6.5.4
 
-Media Spacing Balance.
+Media Row Alignment Fix.
 
 ## Obiettivo
 
-Rifinire gli spazi nella parte alta della Public Card quando sono presenti foto profilo e logo aziendale.
+Correggere il blocco logo aziendale + foto profilo nella Public Card.
 
 ## Cosa cambia
 
-- Foto profilo e logo aziendale più ordinati.
-- Logo aziendale più grande ma controllato.
-- Foto leggermente meno invadente.
-- Migliore spazio tra:
-  - logo md / badge
-  - media row
-  - claim
-  - headline
-  - descrizione
-  - motto
-  - CTA
-- Headline leggermente meno enorme, più premium.
-- Nessuna modifica funzionale.
+- Logo aziendale e foto profilo diventano una riga visiva centrata.
+- Le due immagini condividono lo stesso asse verticale.
+- Il logo aziendale viene ridimensionato meglio.
+- La foto resta protagonista ma non sbilancia il layout.
+- Dopo le immagini, i testi tornano allineati correttamente a sinistra.
+- Nessuna funzione viene toccata.
 
 ## Mantiene
 
-- V0.6.5.2 Logo Beside Profile
+- V0.6.5.3 Media Spacing Balance
 - Public Card pulita
 - Materiali / Brochure
 - QR
@@ -36,7 +29,7 @@ Rifinire gli spazi nella parte alta della Public Card quando sono presenti foto 
 ## Deve comparire nel sito
 
 ```text
-MVP 0.6.5.3 · Media Spacing Balance
+MVP 0.6.5.4 · Media Row Alignment Fix
 ```
 
 ## Build Netlify

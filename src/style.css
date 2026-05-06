@@ -2506,3 +2506,271 @@ button.public-whatsapp-button {
     border-radius: 20px !important;
   }
 }
+
+
+/* V0.6.5.3 — Media Spacing Balance */
+
+/*
+  Rifinitura layout media.
+  Obiettivo: foto + logo aziendale in una fascia pulita, più premium,
+  senza aumentare l'altezza e senza spingere troppo giù headline e CTA.
+*/
+
+/* Card più ordinata nella parte alta */
+.public-real-card.has-media {
+  padding-top: clamp(26px, 5vw, 38px) !important;
+}
+
+/* Header alto: md + badge brand */
+.public-real-card.has-media .public-real-top {
+  margin-bottom: clamp(26px, 5vw, 38px) !important;
+  align-items: center !important;
+}
+
+/* Riduce leggermente l'effetto "sparso" di logo e badge */
+.public-real-card.has-media .public-real-logo {
+  width: clamp(46px, 10vw, 58px) !important;
+  height: clamp(46px, 10vw, 58px) !important;
+  border-radius: 17px !important;
+}
+
+.public-real-card.has-media .public-real-badge {
+  padding: 8px 13px !important;
+  font-size: clamp(12px, 2.8vw, 15px) !important;
+}
+
+/* Media row: logo aziendale e foto diventano un blocco visivo equilibrato */
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) {
+  --media-photo-size: clamp(106px, 24vw, 142px);
+  --media-logo-w: clamp(126px, 33vw, 176px);
+  --media-logo-h: clamp(78px, 19vw, 112px);
+}
+
+/* Il logo aziendale sta a sinistra, più grande ma controllato */
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-company-logo-img {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  width: var(--media-logo-w) !important;
+  max-width: var(--media-logo-w) !important;
+  height: var(--media-logo-h) !important;
+  max-height: var(--media-logo-h) !important;
+  object-fit: contain !important;
+  padding: clamp(10px, 2.5vw, 14px) !important;
+  border-radius: 22px !important;
+  margin: 0 clamp(12px, 3vw, 20px) clamp(24px, 5vw, 34px) 0 !important;
+  background: rgba(255,255,255,.96) !important;
+  box-shadow: 0 16px 42px rgba(0,0,0,.24) !important;
+}
+
+/* La foto resta protagonista ma non invade */
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-profile-photo-img {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  width: var(--media-photo-size) !important;
+  height: var(--media-photo-size) !important;
+  border-radius: 999px !important;
+  margin: 0 0 clamp(24px, 5vw, 34px) 0 !important;
+  box-shadow: 0 18px 48px rgba(0,0,0,.30) !important;
+}
+
+/* Spazi sotto media: più aria prima del claim, ma non troppa */
+.public-real-card.has-media .public-claim-clean,
+.public-real-card.has-media .public-real-claim {
+  margin-top: 0 !important;
+  margin-bottom: clamp(12px, 3vw, 18px) !important;
+  font-size: clamp(17px, 3.5vw, 23px) !important;
+}
+
+/* Headline meno urlata: ancora forte, ma più elegante */
+.public-real-card.has-media .public-hero-clean h1,
+.public-real-card.has-media .public-real-hero h1 {
+  font-size: clamp(36px, 8vw, 54px) !important;
+  line-height: .92 !important;
+  letter-spacing: -0.07em !important;
+  margin-bottom: clamp(16px, 3.5vw, 24px) !important;
+  max-width: 11.5ch !important;
+}
+
+/* Testo descrizione più respirato */
+.public-real-card.has-media .public-description-clean,
+.public-real-card.has-media .public-real-desc {
+  font-size: clamp(17px, 3.6vw, 22px) !important;
+  line-height: 1.36 !important;
+  margin-bottom: clamp(18px, 4vw, 26px) !important;
+}
+
+/* Box motto più compatto */
+.public-real-card.has-media .public-motto-clean,
+.public-real-card.has-media .public-real-motto {
+  font-size: clamp(17px, 3.6vw, 22px) !important;
+  line-height: 1.18 !important;
+  padding: clamp(15px, 3.5vw, 20px) !important;
+  margin-bottom: clamp(16px, 4vw, 24px) !important;
+}
+
+/* CTA più vicino al blocco motto, ma senza schiacciare */
+.public-real-card.has-media .public-real-actions {
+  margin-top: 0 !important;
+  gap: 10px !important;
+}
+
+.public-real-card.has-media .public-real-actions a,
+.public-real-card.has-media .public-real-actions button {
+  min-height: 52px !important;
+  border-radius: 17px !important;
+}
+
+/* Tema chiaro: logo pulito */
+.public-real-card.tone-light.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-company-logo-img {
+  background: #fff !important;
+  border: 1px solid #e4e4df !important;
+  box-shadow: 0 14px 34px rgba(0,0,0,.10) !important;
+}
+
+/* Solo logo: proporzione migliore */
+.public-real-card.has-media:has(.public-company-logo-img):not(:has(.public-profile-photo-img)) .public-company-logo-img {
+  width: clamp(126px, 34vw, 182px) !important;
+  max-width: clamp(126px, 34vw, 182px) !important;
+  max-height: 110px !important;
+  margin-bottom: clamp(22px, 5vw, 32px) !important;
+}
+
+/* Solo foto: non toccare troppo */
+.public-real-card.has-media:not(:has(.public-company-logo-img)):has(.public-profile-photo-img) .public-profile-photo-img {
+  width: clamp(112px, 27vw, 148px) !important;
+  height: clamp(112px, 27vw, 148px) !important;
+  margin-bottom: clamp(22px, 5vw, 32px) !important;
+}
+
+/* Mobile piccolo: affiancamento stretto ma ancora ordinato */
+@media (max-width: 430px) {
+  .public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) {
+    --media-photo-size: 104px;
+    --media-logo-w: 122px;
+    --media-logo-h: 82px;
+  }
+
+  .public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-company-logo-img {
+    margin-right: 10px !important;
+    border-radius: 19px !important;
+    padding: 10px !important;
+  }
+
+  .public-real-card.has-media .public-hero-clean h1,
+  .public-real-card.has-media .public-real-hero h1 {
+    font-size: clamp(35px, 11vw, 45px) !important;
+    max-width: 10.5ch !important;
+  }
+}
+
+
+/* V0.6.5.4 — Media Row Alignment Fix */
+
+/*
+  Fix del blocco media:
+  logo aziendale + foto profilo devono sembrare una riga unica,
+  centrata e bilanciata.
+*/
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) {
+  text-align: center !important;
+}
+
+/* Header alto resta col proprio layout */
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-real-top {
+  text-align: left !important;
+}
+
+/* Riga immagini */
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-company-logo-img,
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-profile-photo-img {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  float: none !important;
+}
+
+/* Logo aziendale: più proporzionato */
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-company-logo-img {
+  width: clamp(116px, 30vw, 150px) !important;
+  max-width: clamp(116px, 30vw, 150px) !important;
+  height: clamp(78px, 20vw, 98px) !important;
+  max-height: clamp(78px, 20vw, 98px) !important;
+  object-fit: contain !important;
+  padding: clamp(9px, 2.2vw, 12px) !important;
+  border-radius: 20px !important;
+  margin: 0 clamp(7px, 2vw, 12px) clamp(24px, 5vw, 32px) 0 !important;
+  background: rgba(255,255,255,.96) !important;
+}
+
+/* Foto profilo: protagonista ma allineata */
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-profile-photo-img {
+  width: clamp(104px, 27vw, 126px) !important;
+  height: clamp(104px, 27vw, 126px) !important;
+  border-radius: 999px !important;
+  margin: 0 0 clamp(24px, 5vw, 32px) clamp(7px, 2vw, 12px) !important;
+  object-fit: cover !important;
+}
+
+/* Dopo le immagini, i testi tornano allineati a sinistra */
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-claim-clean,
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-real-claim,
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-hero-clean,
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-real-hero,
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-description-clean,
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-real-desc,
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-motto-clean,
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-real-motto,
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-real-actions,
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-real-name,
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-real-contacts,
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-materials-panel,
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-card-qr-panel,
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-md-branding {
+  text-align: left !important;
+}
+
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-hero-clean h1,
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-real-hero h1 {
+  max-width: 11ch !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+
+/* CTA e bottoni restano centrati */
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-real-actions a,
+.public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-real-actions button {
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+/* Mobile stretto */
+@media (max-width: 430px) {
+  .public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-company-logo-img {
+    width: 112px !important;
+    max-width: 112px !important;
+    height: 74px !important;
+    max-height: 74px !important;
+    margin-right: 6px !important;
+    padding: 9px !important;
+    border-radius: 18px !important;
+  }
+
+  .public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-profile-photo-img {
+    width: 102px !important;
+    height: 102px !important;
+    margin-left: 6px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-company-logo-img {
+    width: 104px !important;
+    height: 70px !important;
+    margin-right: 5px !important;
+  }
+
+  .public-real-card.has-media:has(.public-company-logo-img):has(.public-profile-photo-img) .public-profile-photo-img {
+    width: 96px !important;
+    height: 96px !important;
+    margin-left: 5px !important;
+  }
+}
