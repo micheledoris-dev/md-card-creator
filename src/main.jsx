@@ -678,7 +678,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.6.5.8 · Public Card Contact Row Split · Duplicate Company Hide · Logo Header Centering</span>
+              <span className="eyebrow">MVP 0.6.5.9 · Company Under Name · Email Lower Contact Row</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -760,7 +760,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.6.5.8 · Public Card Contact Row Split · Duplicate Company Hide · Logo Header Centering</span>
+          <span className="eyebrow">MVP 0.6.5.9 · Company Under Name · Email Lower Contact Row</span>
           <h2>Una sola piattaforma. Infinite identità da condividere.</h2>
           <p>Crea, gestisci e aggiorna le digital card di persone, team, sedi, eventi e progetti da un unico spazio cloud.</p>
           <div className="hero-actions">
@@ -1615,13 +1615,12 @@ function PublicCard({ card, back, standalone = false }) {
   const hasProfilePhoto = visibleValue(card, 'profilePhotoUrl') && !!card.profilePhotoUrl
 
   const contactRows = [
-    visibleValue(card, 'email') ? { label: 'Email', value: card.email, href: mailtoLink(card) } : null,
     visibleValue(card, 'website') ? { label: 'Sito web', value: card.website, href: card.website } : null,
     visibleValue(card, 'phone') ? { label: 'Telefono', value: card.phone, href: `tel:${normalizePhone(card.phone)}` } : null,
     visibleValue(card, 'whatsapp') ? { label: 'WhatsApp', value: card.whatsapp, href: whatsappLink(card) } : null,
     visibleValue(card, 'maps') ? { label: 'Mappa', value: 'Apri posizione Google Maps', href: normalizeMapsUrl(card.maps, card.address) } : null,
     visibleValue(card, 'address') ? { label: 'Indirizzo', value: card.address, href: null } : null,
-    visibleValue(card, 'company') ? { label: 'Azienda', value: card.company, href: null } : null,
+    visibleValue(card, 'email') ? { label: 'Email', value: card.email, href: mailtoLink(card) } : null,
     visibleValue(card, 'vat') ? { label: 'P. IVA', value: card.vat, href: null, className: 'half meta-vat' } : null,
     visibleValue(card, 'sdiCode') && card.sdiCode ? { label: 'Codice Univoco', value: card.sdiCode, href: null, className: 'half meta-sdi' } : null,
     visibleValue(card, 'linkedin') ? { label: 'LinkedIn', value: 'Apri LinkedIn', href: card.linkedin } : null,
@@ -1666,6 +1665,7 @@ function PublicCard({ card, back, standalone = false }) {
           <section className="public-real-name">
             {visibleValue(card, 'fullName') && card.fullName ? <h2>{card.fullName}</h2> : <h2>{card.name}</h2>}
             {visibleValue(card, 'roleTitle') && card.roleTitle && <h4>{card.roleTitle}</h4>}
+            {visibleValue(card, 'company') && card.company && <p className="public-real-company-under-name">{card.company}</p>}
           </section>
         )}
 

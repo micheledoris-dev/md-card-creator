@@ -3016,3 +3016,22 @@ button.public-whatsapp-button {
     font-size: 15px;
   }
 }
+
+
+/* V0.6.5.9 — Company under name, email moved into company row position */
+.public-real-company-under-name {
+  display: block !important;
+  margin: 6px 0 0 !important;
+  color: rgba(255,255,255,.72);
+  font-size: clamp(18px, 4.2vw, 25px);
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.public-real-card.tone-light .public-real-company-under-name {
+  color: #555;
+}
+
+.public-real-name h4 {
+  margin-bottom: 0;
+}
