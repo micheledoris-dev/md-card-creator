@@ -678,8 +678,8 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.6.5.10 · Real Preview Data · Light Card Creator Label</span>
-              <h1>md|studios Card Creator</h1>
+              <span className="eyebrow">MVP 0.6.5.11 · Card Creator Light Title</span>
+              <h1 className="desktop-brand-title"><span className="brand-strong">md|studios</span> <span className="brand-light">Card Creator</span></h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
           </div>
@@ -760,7 +760,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.6.5.10 · Real Preview Data · Light Card Creator Label</span>
+          <span className="eyebrow">MVP 0.6.5.11 · Card Creator Light Title</span>
           <h2>Una sola piattaforma. Infinite identità da condividere.</h2>
           <p>Crea, gestisci e aggiorna le digital card di persone, team, sedi, eventi e progetti da un unico spazio cloud.</p>
           <div className="hero-actions">

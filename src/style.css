@@ -3155,3 +3155,18 @@ button.public-whatsapp-button {
 .preview-panel .phone-card.compact .phone-desc {
   font-size: 14px;
 }
+
+
+/* V0.6.5.11 — Header title: Card Creator non bold */
+.desktop-brand-title {
+  font-weight: 400 !important;
+}
+
+.desktop-brand-title .brand-strong {
+  font-weight: 850;
+}
+
+.desktop-brand-title .brand-light {
+  font-weight: 300;
+  letter-spacing: -2px;
+}
