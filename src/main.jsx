@@ -108,31 +108,31 @@ const safeLogoText = (value, fallback = 'md') => {
 const templates = {
   automotive: {
     name: 'Automotive Dark',
-    accent: '#00E5FF',
+    accent: '#C8A646',
     category: 'Prodotto digitale',
     tone: 'dark'
   },
   personal: {
     name: 'Personal Premium',
-    accent: '#111111',
+    accent: '#C8A646',
     category: 'Profilo personale',
     tone: 'light'
   },
   creative: {
     name: 'Creative Portfolio',
-    accent: '#8B5CF6',
+    accent: '#C8A646',
     category: 'Portfolio creativo',
     tone: 'dark'
   },
   corporate: {
     name: 'Corporate Grey',
-    accent: '#64748B',
+    accent: '#C8A646',
     category: 'Azienda / studio',
     tone: 'light'
   },
   hospitality: {
     name: 'Hospitality Gold',
-    accent: '#C9A227',
+    accent: '#C8A646',
     category: 'Hospitality premium',
     tone: 'dark'
   }
@@ -678,7 +678,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.6.5.11 · Card Creator Light Title</span>
+              <span className="eyebrow">UI 2.0 · Clean Premium / Apple-like</span>
               <h1 className="desktop-brand-title"><span className="brand-strong">md|studios</span> <span className="brand-light">Card Creator</span></h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -760,7 +760,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.6.5.11 · Card Creator Light Title</span>
+          <span className="eyebrow">UI 2.0 · Clean Premium / Apple-like</span>
           <h2>Una sola piattaforma. Infinite identità da condividere.</h2>
           <p>Crea, gestisci e aggiorna le digital card di persone, team, sedi, eventi e progetti da un unico spazio cloud.</p>
           <div className="hero-actions">
