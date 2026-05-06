@@ -1,23 +1,23 @@
-# md|studios Card Creator — V0.6.5.4
+# md|studios Card Creator — V0.6.5.5
 
-Media Row Alignment Fix.
+Premium Media Header Balance.
 
 ## Obiettivo
 
-Correggere il blocco logo aziendale + foto profilo nella Public Card.
+Ottimizzare meglio gli spazi nella parte alta della Public Card.
 
 ## Cosa cambia
 
-- Logo aziendale e foto profilo diventano una riga visiva centrata.
-- Le due immagini condividono lo stesso asse verticale.
-- Il logo aziendale viene ridimensionato meglio.
-- La foto resta protagonista ma non sbilancia il layout.
-- Dopo le immagini, i testi tornano allineati correttamente a sinistra.
-- Nessuna funzione viene toccata.
+- Logo aziendale e foto più proporzionati.
+- Meno spazio morto.
+- Media row più compatta.
+- Headline leggermente più equilibrata.
+- Migliore ritmo verticale tra immagini, claim, headline, descrizione, motto e CTA.
+- Nessuna funzione toccata.
 
 ## Mantiene
 
-- V0.6.5.3 Media Spacing Balance
+- V0.6.5.4 Media Row Alignment Fix
 - Public Card pulita
 - Materiali / Brochure
 - QR
@@ -29,7 +29,7 @@ Correggere il blocco logo aziendale + foto profilo nella Public Card.
 ## Deve comparire nel sito
 
 ```text
-MVP 0.6.5.4 · Media Row Alignment Fix
+MVP 0.6.5.5 · Premium Media Header Balance
 ```
 
 ## Build Netlify
