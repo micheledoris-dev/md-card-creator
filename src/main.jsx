@@ -678,7 +678,7 @@ function App() {
         {active !== 'public' && (
           <div className="desktop-title">
             <div>
-              <span className="eyebrow">MVP 0.6.5.5 · Premium Media Header Balance.1 · Public Card Blank Fix.1 · Material Labels Polish.1 · Claim + Editor Cleanup</span>
+              <span className="eyebrow">MVP 0.6.5.6 · Public Media Right Balance · Public Card Blank Fix.1 · Material Labels Polish.1 · Claim + Editor Cleanup</span>
               <h1>md|studios Card Creator</h1>
             </div>
             <button className="btn ghost" onClick={() => navigate('public')}>Apri demo pubblica</button>
@@ -760,7 +760,7 @@ function HomePage({ navigate, card, cards, createDemoCard }) {
     <div className="main-grid">
       <section className="page-panel">
         <div className="hero-card">
-          <span className="eyebrow">MVP 0.6.5.5 · Premium Media Header Balance.1 · Public Card Blank Fix.1 · Material Labels Polish.1 · Claim + Editor Cleanup</span>
+          <span className="eyebrow">MVP 0.6.5.6 · Public Media Right Balance · Public Card Blank Fix.1 · Material Labels Polish.1 · Claim + Editor Cleanup</span>
           <h2>Una sola piattaforma. Infinite identità da condividere.</h2>
           <p>Crea, gestisci e aggiorna le digital card di persone, team, sedi, eventi e progetti da un unico spazio cloud.</p>
           <div className="hero-actions">
@@ -1637,13 +1637,17 @@ function PublicCard({ card, back, standalone = false }) {
             {visibleValue(card, 'company') && <span className="public-real-badge">{card.company}</span>}
           </div>
 
-          {visibleValue(card, 'companyLogoUrl') && card.companyLogoUrl && (
-            <img className="public-company-logo-img" src={card.companyLogoUrl} alt="Logo aziendale" />
-          )}
+          {(visibleValue(card, 'companyLogoUrl') && card.companyLogoUrl) || (visibleValue(card, 'profilePhotoUrl') && card.profilePhotoUrl) ? (
+            <div className="public-media-row">
+              {visibleValue(card, 'companyLogoUrl') && card.companyLogoUrl && (
+                <img className="public-company-logo-img" src={card.companyLogoUrl} alt="Logo aziendale" />
+              )}
 
-          {visibleValue(card, 'profilePhotoUrl') && card.profilePhotoUrl && (
-            <img className="public-profile-photo-img" src={card.profilePhotoUrl} alt={card.fullName || card.name || 'Foto profilo'} />
-          )}
+              {visibleValue(card, 'profilePhotoUrl') && card.profilePhotoUrl && (
+                <img className="public-profile-photo-img" src={card.profilePhotoUrl} alt={card.fullName || card.name || 'Foto profilo'} />
+              )}
+            </div>
+          ) : null}
 
           {visibleValue(card, 'claim') && <p className="public-real-claim">{card.claim}</p>}
           {visibleValue(card, 'headline') && <h1>{card.headline}</h1>}
