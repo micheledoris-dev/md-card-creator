@@ -1,6 +1,6 @@
 {
-  "name": "md-card-creator-ui2-safe-source",
-  "version": "0.6.7-safe",
+  "name": "md-card-creator-ui2-vitefix",
+  "version": "0.6.8-vitefix",
   "private": true,
   "type": "module",
   "scripts": {
@@ -17,7 +17,10 @@
     "lucide-react": "0.468.0",
     "qrcode": "1.5.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "vite": "5.4.11",
+    "@vitejs/plugin-react": "4.3.4"
+  },
   "engines": {
     "node": "20.x"
   }
