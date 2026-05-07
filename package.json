@@ -1,6 +1,6 @@
 {
-  "name": "md-card-creator-v06-5-5",
-  "version": "0.6.5-11",
+  "name": "md-card-creator-ui2-safe-source",
+  "version": "0.6.7-safe",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,13 +9,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "latest",
-    "vite": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "lucide-react": "latest",
-    "qrcode": "latest",
-    "@supabase/supabase-js": "latest"
+    "@supabase/supabase-js": "2.49.4",
+    "@vitejs/plugin-react": "4.3.4",
+    "vite": "5.4.11",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "lucide-react": "0.468.0",
+    "qrcode": "1.5.4"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "engines": {
+    "node": "20.x"
+  }
 }
