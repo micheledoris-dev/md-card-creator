@@ -1,6 +1,6 @@
 {
-  "name": "md-card-creator-ui2-active-card-fix",
-  "version": "0.6.9-active-card-fix",
+  "name": "md-card-creator-ui2-stable-netlify",
+  "version": "0.7.0-stable-netlify",
   "private": true,
   "type": "module",
   "scripts": {
