@@ -5,7 +5,7 @@ import QRCode from 'qrcode'
 import {
   Home, CreditCard, Edit3, QrCode, Share2, Wallet, BarChart3, Palette, Users,
   Settings, Menu, X, Eye, EyeOff, Copy, Mail, MessageCircle, ExternalLink, Plus,
-  ArrowLeft, CheckCircle2, CircleOff, Layers, Sparkles
+  ArrowLeft, CheckCircle2, CircleOff, Layers, Sparkles, Trash2, Lock
 } from 'lucide-react'
 import { supabase, isSupabaseConfigured, supabaseConfig, supabaseUrl, supabaseAnonKey } from './supabaseClient.js'
 import './style.css'
@@ -507,7 +507,7 @@ function App() {
         .from('cards')
         .select('*')
         .eq('user_id', session.user.id)
-        .order('created_at', { ascending: true })
+        .order('created_at', { ascending: false })
 
       if (cardError) {
         setCloudStatus(`Errore caricamento cloud: ${cardError.message}`)
@@ -526,8 +526,13 @@ function App() {
           setCloudStatus(`Errore visibility: ${visError.message}`)
         } else {
           const mapped = cardRows.map(row => dbToCard(row, visRows || []))
+          const storedActive = loadStored(STORAGE_ACTIVE, '')
+          const requestedActive = requestedSlug ? mapped.find(card => card.slug === requestedSlug)?.id : null
+          const storedMatch = storedActive
+            ? mapped.find(card => card.id === storedActive || card.slug === storedActive)?.id
+            : null
           setCards(mapped)
-          setActiveId(mapped[0].id)
+          setActiveId(requestedActive || storedMatch || mapped[0].id)
           setCloudStatus('Card caricate da Supabase')
         }
       } else {
@@ -678,6 +683,46 @@ function App() {
     notify('Nuova card demo creata')
   }
 
+  const deleteCard = async (cardId) => {
+    const target = cards.find(card => card.id === cardId)
+    if (!target) return
+    if (cards.length <= 1) {
+      notify('Non puoi eliminare l’unica card presente')
+      return
+    }
+
+    if (session?.user && supabase && target.dbId) {
+      const { error: visibilityError } = await supabase
+        .from('card_visibility')
+        .delete()
+        .eq('card_id', target.dbId)
+
+      if (visibilityError) {
+        notify('Errore eliminazione visibilità cloud')
+        return
+      }
+
+      const { error } = await supabase
+        .from('cards')
+        .delete()
+        .eq('id', target.dbId)
+        .eq('user_id', session.user.id)
+
+      if (error) {
+        notify('Errore eliminazione cloud')
+        return
+      }
+    }
+
+    const nextCards = cards.filter(card => card.id !== cardId)
+    const nextActiveId = activeId === cardId ? nextCards[0].id : activeId
+    setCards(nextCards)
+    setActiveId(nextActiveId)
+    saveStored(STORAGE_CARDS, nextCards)
+    saveStored(STORAGE_ACTIVE, nextActiveId)
+    notify('Card eliminata')
+  }
+
   const resetDemo = () => {
     setCards(demoCards)
     setActiveId(demoCards[0].id)
@@ -712,8 +757,8 @@ function App() {
 
         {active === 'home' && <HomePage navigate={navigate} card={activeCard} cards={cards} createDemoCard={createDemoCard} />}
         {active === 'account' && <AccountPage session={session} authLoading={authLoading} cloudLoading={cloudLoading} cloudStatus={cloudStatus} cards={cards} />}
-        {active === 'cards' && <CardsPage navigate={navigate} cards={cards} activeId={activeId} selectCard={selectCard} createDemoCard={createDemoCard} resetDemo={resetDemo} />}
-        {active === 'editor' && <EditorPage card={activeCard} updateField={updateField} updateCard={updateCard} updateVisibility={updateVisibility} stats={stats} navigate={navigate} resetDemo={resetDemo} saveDemo={saveDemo} session={session} />}
+        {active === 'cards' && <CardsPage navigate={navigate} cards={cards} activeId={activeId} selectCard={selectCard} createDemoCard={createDemoCard} resetDemo={resetDemo} deleteCard={deleteCard} />}
+        {active === 'editor' && <EditorPage card={activeCard} updateField={updateField} updateCard={updateCard} updateVisibility={updateVisibility} stats={stats} navigate={navigate} resetDemo={resetDemo} saveDemo={saveDemo} session={session} premiumColorDemo={premiumColorDemo} setPremiumColorDemo={setPremiumColorDemo} />}
         {active === 'share' && <SharePage card={activeCard} copy={copy} navigate={navigate} />}
         {active === 'public' && <PublicCard card={activeCard} back={() => navigate(lastPanel || 'home')} standalone={Boolean(requestedSlug)} />}
         {active === 'wallet' && <ComingSoon title="Wallet" items={['Apple Wallet pass', 'Google Wallet pass', 'QR offline', 'Fase 2 dopo database']} />}
@@ -1010,13 +1055,31 @@ function AccountPage({ session, authLoading, cloudLoading, cloudStatus, cards })
           </div>
         </section>
       </section>
-      <PreviewPanel card={cards[0] || demoCards[0]} />
+      <PreviewPanel card={card || cards.find(c => c.id === loadStored(STORAGE_ACTIVE, '')) || cards[0] || demoCards[0]} />
     </div>
   )
 }
 
 
-function CardsPage({ navigate, cards, activeId, selectCard, createDemoCard, resetDemo }) {
+function CardsPage({ navigate, cards, activeId, selectCard, createDemoCard, resetDemo, deleteCard }) {
+  const [deleteTarget, setDeleteTarget] = useState(null)
+  const [deleteConfirm, setDeleteConfirm] = useState('')
+
+  const expectedDeleteNames = deleteTarget ? [deleteTarget.name, deleteTarget.fullName, deleteTarget.slug, deleteTarget.id].filter(Boolean).map(value => String(value).trim()) : []
+  const canConfirmDelete = deleteTarget && expectedDeleteNames.some(value => value.toLowerCase() === deleteConfirm.trim().toLowerCase())
+
+  const requestDelete = (card) => {
+    setDeleteTarget(card)
+    setDeleteConfirm('')
+  }
+
+  const confirmDelete = async () => {
+    if (!deleteTarget || !canConfirmDelete) return
+    await deleteCard(deleteTarget.id)
+    setDeleteTarget(null)
+    setDeleteConfirm('')
+  }
+
   const openFor = (cardId, panel) => {
     selectCard(cardId)
     navigate(panel)
@@ -1061,11 +1124,37 @@ function CardsPage({ navigate, cards, activeId, selectCard, createDemoCard, rese
                   <button className="btn light" onClick={() => openFor(card.id, 'editor')}>Editor</button>
                   <button className="btn light" onClick={() => openFor(card.id, 'share')}>Smart Share</button>
                   <button className="btn dark" onClick={() => openFor(card.id, 'public')}>Public Card</button>
+                  <button className="btn danger-light" onClick={() => requestDelete(card)}><Trash2 size={15} /> Elimina</button>
                 </div>
               </div>
             )
           })}
         </div>
+
+        {deleteTarget && (
+          <div className="delete-modal-backdrop" role="dialog" aria-modal="true">
+            <div className="delete-modal">
+              <div className="delete-modal-icon"><Trash2 size={22} /></div>
+              <span className="eyebrow danger">Eliminazione card</span>
+              <h3>Conferma doppia richiesta</h3>
+              <p>Questa azione elimina la card <strong>{deleteTarget.name}</strong>. Per evitare errori, scrivi esattamente il nome della card oppure il codice/slug.</p>
+              <div className="delete-codes">
+                <span>Nome: <strong>{deleteTarget.name || deleteTarget.fullName}</strong></span>
+                <span>Codice: <strong>{deleteTarget.slug || deleteTarget.id}</strong></span>
+              </div>
+              <input
+                value={deleteConfirm}
+                onChange={event => setDeleteConfirm(event.target.value)}
+                placeholder="Scrivi nome card o codice"
+                autoFocus
+              />
+              <div className="delete-modal-actions">
+                <button type="button" className="btn light" onClick={() => setDeleteTarget(null)}>Annulla</button>
+                <button type="button" className="btn danger" disabled={!canConfirmDelete} onClick={confirmDelete}>Elimina definitivamente</button>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
       <PreviewPanel card={cards.find(c => c.id === activeId) || cards[0]} />
     </div>
@@ -1303,7 +1392,7 @@ function MaterialUploadField({ index, card, updateCard, session }) {
 }
 
 
-function EditorPage({ card, updateField, updateCard, updateVisibility, stats, navigate, resetDemo, saveDemo, session }) {
+function EditorPage({ card, updateField, updateCard, updateVisibility, stats, navigate, resetDemo, saveDemo, session, premiumColorDemo, setPremiumColorDemo }) {
   return (
     <div className="main-grid">
       <section className="page-panel">
@@ -1341,24 +1430,29 @@ function EditorPage({ card, updateField, updateCard, updateVisibility, stats, na
         </EditorSection>
 
         <EditorSection title="Colore accento">
-          <div className="premium-color-panel">
+          <div className={`premium-color-panel ${premiumColorDemo ? 'is-unlocked' : 'is-locked'}`}>
             <div>
               <span className="premium-kicker">Premium</span>
               <h4>Palette colore guidata</h4>
-              <p>Nella versione gratuita ogni template usa il suo colore predefinito. Nella versione a pagamento puoi scegliere una palette elegante, senza perdere coerenza visiva.</p>
+              <p>Free: ogni template usa il suo colore predefinito. Premium: puoi scegliere una palette curata e applicarla subito alla preview e alla Public Card.</p>
+              <button type="button" className="premium-demo-toggle" onClick={() => setPremiumColorDemo(!premiumColorDemo)}>
+                {premiumColorDemo ? 'Disattiva demo Premium' : 'Attiva demo Premium'}
+              </button>
             </div>
             <div className="accent-palette" role="list" aria-label="Palette colore premium">
               {premiumAccentPalette.map(color => (
                 <button
                   key={color.value}
                   type="button"
-                  className={`accent-swatch ${getCardAccent(card).toLowerCase() === color.value.toLowerCase() ? 'selected' : ''}`}
+                  className={`accent-swatch ${getCardAccent(card).toLowerCase() === color.value.toLowerCase() ? 'selected' : ''} ${!premiumColorDemo ? 'locked' : ''}`}
                   style={{ '--swatch': color.value }}
-                  onClick={() => updateCard({ accentColor: color.value })}
-                  title={color.name}
+                  onClick={() => premiumColorDemo && updateCard({ accentColor: color.value })}
+                  title={premiumColorDemo ? color.name : `${color.name} — Premium`}
+                  aria-disabled={!premiumColorDemo}
                 >
                   <span />
                   <em>{color.name}</em>
+                  {!premiumColorDemo && <Lock size={13} />}
                 </button>
               ))}
               <button type="button" className="accent-reset" onClick={() => updateCard({ accentColor: '' })}>Usa colore template</button>
@@ -1493,7 +1587,7 @@ function SharePage({ card, copy, navigate }) {
             <h2>Condividi la card</h2>
             <p>QR, link e messaggio completo sono collegati alla card attiva. I campi nascosti o vuoti non vengono inviati.</p>
           </div>
-          <span className="badge cyan">Card attiva</span>
+          <span className="badge cyan">Card attiva: {card.name}</span>
         </div>
 
         <section className="share-hero-panel">

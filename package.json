@@ -1,6 +1,6 @@
 {
-  "name": "md-card-creator-ui2-vitefix",
-  "version": "0.6.8-vitefix",
+  "name": "md-card-creator-ui2-active-card-fix",
+  "version": "0.6.9-active-card-fix",
   "private": true,
   "type": "module",
   "scripts": {

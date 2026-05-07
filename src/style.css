@@ -4587,3 +4587,121 @@ input:focus, textarea:focus {
   .share-channel-list a { grid-template-columns: 1fr; gap: 4px; }
   .share-payload-row { grid-template-columns: 1fr; gap: 3px; }
 }
+
+/* UI 2.1 — Delete safety + premium color clarity */
+.btn.danger-light {
+  color: #8A1F1F;
+  border-color: rgba(138,31,31,.16);
+  background: rgba(138,31,31,.045);
+}
+.btn.danger-light:hover { background: rgba(138,31,31,.08); }
+.btn.danger {
+  background: #8A1F1F;
+  color: #fff;
+  border-color: #8A1F1F;
+}
+.btn.danger:disabled {
+  opacity: .42;
+  cursor: not-allowed;
+}
+.delete-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(0,0,0,.38);
+  backdrop-filter: blur(14px);
+}
+.delete-modal {
+  width: min(520px, 100%);
+  padding: 28px;
+  border-radius: 28px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.08);
+  box-shadow: 0 30px 100px rgba(0,0,0,.22);
+}
+.delete-modal-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  color: #8A1F1F;
+  background: rgba(138,31,31,.08);
+  margin-bottom: 14px;
+}
+.eyebrow.danger { color: #8A1F1F; }
+.delete-modal h3 {
+  margin: 8px 0 10px;
+  font-size: 26px;
+  letter-spacing: -.045em;
+}
+.delete-modal p { color: #5f6368; line-height: 1.5; margin: 0 0 16px; }
+.delete-codes {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 18px;
+  background: #F5F5F7;
+  border: 1px solid #E5E5EA;
+  margin-bottom: 14px;
+  color: #555;
+}
+.delete-codes strong { color: #111; }
+.delete-modal input {
+  width: 100%;
+  height: 46px;
+  border-radius: 14px;
+  border: 1px solid #D8D8DE;
+  padding: 0 14px;
+  font: inherit;
+  outline: none;
+}
+.delete-modal input:focus {
+  border-color: #8A1F1F;
+  box-shadow: 0 0 0 4px rgba(138,31,31,.10);
+}
+.delete-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+.premium-color-panel.is-locked {
+  position: relative;
+}
+.premium-demo-toggle {
+  margin-top: 16px;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,.10);
+  background: #111;
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+}
+.premium-color-panel.is-unlocked .premium-demo-toggle {
+  background: #F5F5F7;
+  color: #111;
+}
+.accent-swatch.locked {
+  opacity: .64;
+  cursor: not-allowed;
+  filter: grayscale(.12);
+}
+.accent-swatch svg {
+  margin-left: auto;
+  color: #8A7A3A;
+}
+.accent-swatch.selected {
+  outline: 2px solid var(--swatch);
+  outline-offset: 2px;
+}
+.phone-card,
+.public-real-card,
+.share-channel-list span::before {
+  --accent: var(--accent, #C8A646);
+}
