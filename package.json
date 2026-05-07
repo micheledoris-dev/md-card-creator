@@ -1,6 +1,6 @@
 {
-  "name": "md-card-creator-ui2-stable-netlify",
-  "version": "0.7.0-stable-netlify",
+  "name": "md-card-creator-netlify-npx-vite-fix",
+  "version": "0.7.1-npx-vite-fix",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,17 +10,13 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "2.49.4",
-    "@vitejs/plugin-react": "4.3.4",
     "vite": "5.4.11",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "lucide-react": "0.468.0",
     "qrcode": "1.5.4"
   },
-  "devDependencies": {
-    "vite": "5.4.11",
-    "@vitejs/plugin-react": "4.3.4"
-  },
+  "devDependencies": {},
   "engines": {
     "node": "20.x"
   }
