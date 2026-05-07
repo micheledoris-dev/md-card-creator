@@ -36,3 +36,4 @@ MVP 0.6.5.5 · Premium Media Header Balance
 
 - Build command: `npm run build`
 - Publish directory: `dist`
+Deploy refresh
