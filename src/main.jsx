@@ -108,7 +108,7 @@ const safeLogoText = (value, fallback = 'md') => {
 const templates = {
   automotive: {
     name: 'Automotive Dark',
-    accent: '#C8A646',
+    accent: '#3E4756',
     category: 'Prodotto digitale',
     tone: 'dark'
   },
@@ -120,22 +120,38 @@ const templates = {
   },
   creative: {
     name: 'Creative Portfolio',
-    accent: '#C8A646',
+    accent: '#7C6AA6',
     category: 'Portfolio creativo',
     tone: 'dark'
   },
   corporate: {
     name: 'Corporate Grey',
-    accent: '#C8A646',
+    accent: '#6F7C87',
     category: 'Azienda / studio',
     tone: 'light'
   },
   hospitality: {
     name: 'Hospitality Gold',
-    accent: '#C8A646',
+    accent: '#B89558',
     category: 'Hospitality premium',
     tone: 'dark'
   }
+}
+
+const premiumAccentPalette = [
+  { name: 'Graphite', value: '#3E4756' },
+  { name: 'Champagne', value: '#C8A646' },
+  { name: 'Editorial Blue', value: '#496A8F' },
+  { name: 'Sage', value: '#6F7F63' },
+  { name: 'Burgundy', value: '#8A4A52' },
+  { name: 'Bronze', value: '#A06E3F' },
+  { name: 'Slate', value: '#6F7C87' },
+  { name: 'Violet Grey', value: '#7C6AA6' }
+]
+
+const getCardAccent = (card) => {
+  const template = templates[card?.template] || templates.automotive
+  return card?.accentColor || template.accent
 }
 
 const demoCards = [
@@ -309,39 +325,33 @@ function getQrTargetUrl(card) {
   return getPublicCardUrl(card)
 }
 
+function getSmartShareRows(card) {
+  return [
+    visibleValue(card, 'fullName') && { label: 'Nome', value: card.fullName },
+    visibleValue(card, 'roleTitle') && { label: 'Ruolo', value: card.roleTitle },
+    visibleValue(card, 'name') && { label: 'Card', value: card.name },
+    visibleValue(card, 'headline') && { label: 'Headline', value: card.headline },
+    visibleValue(card, 'description') && { label: 'Descrizione', value: card.description },
+    visibleValue(card, 'website') && { label: 'Sito', value: card.website },
+    visibleValue(card, 'email') && { label: 'Email', value: card.email },
+    visibleValue(card, 'phone') && { label: 'Telefono', value: card.phone },
+    visibleValue(card, 'whatsapp') && { label: 'WhatsApp', value: card.whatsapp },
+    visibleValue(card, 'company') && { label: 'Azienda', value: card.company },
+    visibleValue(card, 'vat') && { label: 'P.IVA', value: card.vat },
+    visibleValue(card, 'sdiCode') && { label: 'Codice univoco', value: card.sdiCode },
+    visibleValue(card, 'address') && { label: 'Indirizzo', value: card.address },
+    visibleValue(card, 'maps') && { label: 'Google Maps', value: card.maps },
+    visibleValue(card, 'motto') && { label: 'Motto', value: card.motto },
+    visibleValue(card, 'linkedin') && { label: 'LinkedIn', value: card.linkedin },
+    visibleValue(card, 'instagram') && { label: 'Instagram', value: card.instagram },
+    { label: 'Card digitale', value: getPublicCardUrl(card) }
+  ].filter(Boolean)
+}
+
 function buildSmartShare(card) {
-  const lines = []
-  if (visibleValue(card, 'fullName') && card.fullName) lines.push(`👤 ${card.fullName}`)
-  if (visibleValue(card, 'roleTitle') && card.roleTitle) lines.push(`🎯 ${card.roleTitle}`)
-  if (visibleValue(card, 'name')) lines.push(`🔹 ${card.name}`)
-  if (visibleValue(card, 'headline')) lines.push(card.headline)
-  if (visibleValue(card, 'description')) {
-    lines.push('')
-    lines.push(card.description)
-  }
-
-  const contact = []
-  if (visibleValue(card, 'website')) contact.push(`🌐 Sito: ${card.website}`)
-  if (visibleValue(card, 'email')) contact.push(`📧 Email: ${card.email}`)
-  if (visibleValue(card, 'phone')) contact.push(`📞 Telefono: ${card.phone}`)
-  if (visibleValue(card, 'whatsapp')) contact.push(`💬 WhatsApp: ${card.whatsapp}`)
-  if (visibleValue(card, 'address')) contact.push(`📍 Indirizzo: ${card.address}`)
-  if (visibleValue(card, 'maps')) contact.push(`🗺️ Google Maps: ${card.maps}`)
-  if (contact.length) lines.push('', ...contact)
-
-  const company = []
-  if (visibleValue(card, 'company')) company.push(`🏢 Azienda: ${card.company}`)
-  if (visibleValue(card, 'vat')) company.push(`P.IVA: ${card.vat}`)
-  if (visibleValue(card, 'motto')) company.push(`Motto: ${card.motto}`)
-  if (company.length) lines.push('', ...company)
-
-  const social = []
-  if (visibleValue(card, 'linkedin')) social.push(`LinkedIn: ${card.linkedin}`)
-  if (visibleValue(card, 'instagram')) social.push(`Instagram: ${card.instagram}`)
-  if (social.length) lines.push('', ...social)
-
-  lines.push('', '🔗 Card digitale:', getPublicCardUrl(card))
-  return lines.filter(Boolean).join('\n')
+  return getSmartShareRows(card)
+    .map(row => `${row.label}: ${row.value}`)
+    .join('\n')
 }
 
 function mailtoLink(card) {
@@ -1321,12 +1331,38 @@ function EditorPage({ card, updateField, updateCard, updateVisibility, stats, na
         <EditorSection title="Template">
           <div className="template-grid">
             {Object.entries(templates).map(([key, template]) => (
-              <button key={key} className={`template-card ${card.template === key ? 'selected' : ''}`} onClick={() => updateCard({ template: key })}>
-                <span style={{ background: template.accent }} />
+              <button key={key} className={`template-card ${card.template === key ? 'selected' : ''}`} style={{ '--template-accent': template.accent }} onClick={() => updateCard({ template: key, accentColor: '' })}>
+                <span className="template-chip" />
                 <strong>{template.name}</strong>
                 <em>{template.category}</em>
               </button>
             ))}
+          </div>
+        </EditorSection>
+
+        <EditorSection title="Colore accento">
+          <div className="premium-color-panel">
+            <div>
+              <span className="premium-kicker">Premium</span>
+              <h4>Palette colore guidata</h4>
+              <p>Nella versione gratuita ogni template usa il suo colore predefinito. Nella versione a pagamento puoi scegliere una palette elegante, senza perdere coerenza visiva.</p>
+            </div>
+            <div className="accent-palette" role="list" aria-label="Palette colore premium">
+              {premiumAccentPalette.map(color => (
+                <button
+                  key={color.value}
+                  type="button"
+                  className={`accent-swatch ${getCardAccent(card).toLowerCase() === color.value.toLowerCase() ? 'selected' : ''}`}
+                  style={{ '--swatch': color.value }}
+                  onClick={() => updateCard({ accentColor: color.value })}
+                  title={color.name}
+                >
+                  <span />
+                  <em>{color.name}</em>
+                </button>
+              ))}
+              <button type="button" className="accent-reset" onClick={() => updateCard({ accentColor: '' })}>Usa colore template</button>
+            </div>
           </div>
         </EditorSection>
 
@@ -1441,6 +1477,7 @@ function ControlField({ k, card, updateField, updateVisibility, textarea }) {
 
 function SharePage({ card, copy, navigate }) {
   const smartShare = buildSmartShare(card)
+  const smartShareRows = getSmartShareRows(card)
   const publicUrl = getPublicCardUrl(card)
   const qrTargetUrl = getQrTargetUrl(card)
 
@@ -1508,7 +1545,14 @@ function SharePage({ card, copy, navigate }) {
             <h3>Anteprima testo</h3>
             <p>Questo è quello che viene copiato o inviato dai canali rapidi.</p>
           </div>
-          <pre>{smartShare}</pre>
+          <div className="share-payload-preview">
+            {smartShareRows.map(row => (
+              <div className="share-payload-row" key={`${row.label}-${row.value}`}>
+                <span className="share-payload-label">{row.label}</span>
+                <strong className="share-payload-value">{row.value}</strong>
+              </div>
+            ))}
+          </div>
         </section>
 
         <section className="share-mini-public">
@@ -1582,7 +1626,7 @@ function PhoneCard({ card, compact = false }) {
   ].filter(Boolean)
 
   return (
-    <div className={`phone-card ${compact ? 'compact' : ''} tone-${template.tone}`} style={{ '--accent': template.accent }}>
+    <div className={`phone-card ${compact ? 'compact' : ''} tone-${template.tone}`} style={{ '--accent': getCardAccent(card) }}>
       <div className="phone-top">
         {visibleValue(card, 'logoText') && <div className="phone-logo">{safeLogoText(card.logoText)}</div>}
         <span className="beta">{template.name}</span>
@@ -1684,7 +1728,7 @@ function PublicCard({ card, back, standalone = false }) {
     <section className={`public-wrap public-real-wrap ${standalone ? "standalone-public-card public-clean-branding" : ""}`}>
       {!standalone && <button className="btn light back-btn" onClick={back}><ArrowLeft size={18} /> Torna al Card Creator</button>}
 
-      <article className={`public-real-card tone-${template.tone} ${hasProfilePhoto || hasCompanyLogo ? 'has-media' : ''}`} style={{ '--accent': template.accent }}>
+      <article className={`public-real-card tone-${template.tone} ${hasProfilePhoto || hasCompanyLogo ? 'has-media' : ''}`} style={{ '--accent': getCardAccent(card) }}>
         <header className="public-real-hero">
           <div className="public-real-top">
             {visibleValue(card, 'logoText') && <div className="public-real-logo">{safeLogoText(card.logoText)}</div>}
