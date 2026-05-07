@@ -285,13 +285,28 @@ function normalizePhone(phone) {
   return String(phone || '').replace(/[^\d]/g, '')
 }
 
+function normalizeWebsiteUrl(value) {
+  const raw = String(value || '').trim()
+  if (!raw) return ''
+  if (/^https?:\/\//i.test(raw)) return raw
+  return `https://${raw}`
+}
+
 function visibleValue(card, key) {
   return Boolean(card.visibility?.[key] && hasValue(card[key]))
 }
 
 function getPublicCardUrl(card) {
-  if (typeof window === 'undefined') return `https://md-card-creator.netlify.app/?card=${card.slug}`
-  return `${window.location.origin}${window.location.pathname}?card=${card.slug}`
+  const slug = encodeURIComponent(card?.slug || card?.id || 'card')
+  if (typeof window === 'undefined') return `https://md-card-creator.netlify.app/?card=${slug}`
+  return `${window.location.origin}${window.location.pathname}?card=${slug}`
+}
+
+function getQrTargetUrl(card) {
+  // Il QR principale apre il sito web impostato nella card, se presente e visibile.
+  // Se il sito web non è compilato/visibile, usa il link pubblico della card.
+  if (visibleValue(card, 'website')) return normalizeWebsiteUrl(card.website)
+  return getPublicCardUrl(card)
 }
 
 function buildSmartShare(card) {
@@ -1427,6 +1442,7 @@ function ControlField({ k, card, updateField, updateVisibility, textarea }) {
 function SharePage({ card, copy, navigate }) {
   const smartShare = buildSmartShare(card)
   const publicUrl = getPublicCardUrl(card)
+  const qrTargetUrl = getQrTargetUrl(card)
 
   const smsHref = `sms:?&body=${encodeURIComponent(smartShare)}`
   const linkedInHref = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(publicUrl)}`
@@ -1450,9 +1466,9 @@ function SharePage({ card, copy, navigate }) {
               <strong>{card.name}</strong>
             </div>
             <div className="share-qr-box">
-              <RealQr value={publicUrl} name={card.name} />
+              <RealQr value={qrTargetUrl} name={card.name} />
             </div>
-            <p>{publicUrl}</p>
+            <p>{qrTargetUrl}</p>
           </div>
 
           <div className="share-action-stage">
@@ -1751,10 +1767,10 @@ function PublicCard({ card, back, standalone = false }) {
         <section className="public-card-qr-panel">
           <div>
             <span>QR Card</span>
-            <strong>Scansiona per aprire questa card</strong>
+            <strong>Scansiona per aprire il sito collegato</strong>
           </div>
           <div className="public-card-qr-box">
-            <RealQr value={publicLink(card)} name={card.name} />
+            <RealQr value={getQrTargetUrl(card)} name={card.name} />
           </div>
         </section>
 
