@@ -1,38 +1,46 @@
-# md|studios Card Creator — V0.6.5.5
+# md|studios Card Creator v0.1
 
-Premium Media Header Balance.
+Demo statica React/Vite per una scrivania creativa dedicata alla creazione e gestione di digital business card.
 
-## Obiettivo
+## Cosa contiene
 
-Ottimizzare meglio gli spazi nella parte alta della Public Card.
+- Dashboard
+- Card Studio / editor visivo
+- Anteprima smartphone
+- Team Admin
+- Piani Free / Business / Premium
+- Feature map
+- Roadmap
 
-## Cosa cambia
+## Cosa NON contiene ancora
 
-- Logo aziendale e foto più proporzionati.
-- Meno spazio morto.
-- Media row più compatta.
-- Headline leggermente più equilibrata.
-- Migliore ritmo verticale tra immagini, claim, headline, descrizione, motto e CTA.
-- Nessuna funzione toccata.
+- Supabase
+- Login
+- Database
+- Storage file
+- Variabili ambiente
+- Pagamenti
 
-## Mantiene
+Questa versione serve solo per pubblicare una demo pulita e stabile.
 
-- V0.6.5.4 Media Row Alignment Fix
-- Public Card pulita
-- Materiali / Brochure
-- QR
-- vCard
-- WhatsApp
-- Google Maps
-- Salvataggio cloud
+## Comandi
 
-## Deve comparire nel sito
-
-```text
-MVP 0.6.5.5 · Premium Media Header Balance
+```bash
+npm install
+npm run dev
+npm run build
 ```
 
-## Build Netlify
+## Netlify
 
-- Build command: `npm run build`
-- Publish directory: `dist`
+Build command:
+
+```bash
+npm run build
+```
+
+Publish directory:
+
+```bash
+dist
+```
